@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-parsing-tests",
+    name: "swift-parsers-tests",
     platforms: [
         .macOS(.v26),
         .iOS(.v26),
@@ -21,18 +21,18 @@ let package = Package(
     ],
     targets: [
         .testTarget(
-            name: "Parsing Tests",
+            name: "Parsers Tests",
             dependencies: [
-                .product(name: "Parsing", package: "swift-parsing"),
+                .product(name: "Parsers", package: "swift-parsers"),
                 .product(name: "Testing", package: "swift-testing"),
                 .product(name: "Test Primitives", package: "swift-test-primitives"),
             ],
-            path: "Sources/Parsing Tests"
+            path: "Sources/Parsers Tests"
         ),
         .testTarget(
             name: "Integration Tests",
             dependencies: [
-                .product(name: "Parsing", package: "swift-parsing"),
+                .product(name: "Parsers", package: "swift-parsers"),
                 .product(name: "Testing", package: "swift-testing"),
                 .product(name: "Test Primitives", package: "swift-test-primitives"),
             ],

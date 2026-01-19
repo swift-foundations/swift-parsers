@@ -1,5 +1,5 @@
 //
-//  Parsing.Comment.swift
+//  Parser.Comment.swift
 //  swift-parsing
 //
 //  Comment parsers for line and block comments.
@@ -16,14 +16,14 @@
 //  that allow /* /* nested */ */.
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for comment parsing types.
     public enum Comment: Sendable {}
 }
 
 // MARK: - Line Comment
 
-extension Parsing.Comment {
+extension Parser.Comment {
     /// Parses line comments from prefix to end of line.
     ///
     /// Line comments start with a prefix (e.g., //, #) and continue
@@ -39,13 +39,13 @@ extension Parsing.Comment {
     ///
     /// ```swift
     /// // C/C++/Swift style
-    /// let cpp = Parsing.Comment.Line(prefix: "//")
+    /// let cpp = Parser.Comment.Line(prefix: "//")
     ///
     /// // Shell/Python style
-    /// let shell = Parsing.Comment.Line(prefix: "#")
+    /// let shell = Parser.Comment.Line(prefix: "#")
     ///
     /// // SQL style
-    /// let sql = Parsing.Comment.Line(prefix: "--")
+    /// let sql = Parser.Comment.Line(prefix: "--")
     /// ```
     public struct Line: Sendable {
         /// The comment prefix (e.g., "//", "#").
@@ -62,10 +62,10 @@ extension Parsing.Comment {
     }
 }
 
-extension Parsing.Comment.Line: Parsing.Parser {
+extension Parser.Comment.Line: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -92,7 +92,7 @@ extension Parsing.Comment.Line: Parsing.Parser {
 
 // MARK: - Block Comment
 
-extension Parsing.Comment {
+extension Parser.Comment {
     /// Parses block comments with open/close delimiters.
     ///
     /// Block comments span multiple lines, bounded by open and close
@@ -110,13 +110,13 @@ extension Parsing.Comment {
     ///
     /// ```swift
     /// // C/C++/Java style (non-nesting)
-    /// let c = Parsing.Comment.Block(open: "/*", close: "*/")
+    /// let c = Parser.Comment.Block(open: "/*", close: "*/")
     ///
     /// // Swift style (nesting)
-    /// let swift = Parsing.Comment.Block(open: "/*", close: "*/", nestable: true)
+    /// let swift = Parser.Comment.Block(open: "/*", close: "*/", nestable: true)
     ///
     /// // HTML style
-    /// let html = Parsing.Comment.Block(open: "<!--", close: "-->")
+    /// let html = Parser.Comment.Block(open: "<!--", close: "-->")
     /// ```
     public struct Block: Sendable {
         /// The opening delimiter bytes.
@@ -149,7 +149,7 @@ extension Parsing.Comment {
     }
 }
 
-extension Parsing.Comment.Block {
+extension Parser.Comment.Block {
     /// Errors from block comment parsing.
     public enum Error: Swift.Error, Sendable, Equatable {
         /// Missing opening delimiter.
@@ -160,10 +160,10 @@ extension Parsing.Comment.Block {
     }
 }
 
-extension Parsing.Comment.Block: Parsing.Parser {
+extension Parser.Comment.Block: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parsing.Comment.Block.Error
+    public typealias Failure = Parser.Comment.Block.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -227,13 +227,13 @@ extension Parsing.Comment.Block: Parsing.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to comment parsers via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.comment.Line(prefix: "//")
-    /// Parsing.comment.Block(open: "/*", close: "*/")
+    /// Parser.comment.Line(prefix: "//")
+    /// Parser.comment.Block(open: "/*", close: "*/")
     /// ```
     @inlinable
     public static var comment: Comment.Type { Comment.self }

@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-parsing",
+    name: "swift-parsers",
     platforms: [
         .macOS(.v26),
         .iOS(.v26),
@@ -13,37 +13,35 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Parsing",
-            targets: ["Parsing"]
+            name: "Parsers",
+            targets: ["Parsers"]
         ),
         .library(
-            name: "Parsing Test Support",
-            targets: ["Parsing Test Support"]
+            name: "Parsers Test Support",
+            targets: ["Parsers Test Support"]
         )
     ],
     dependencies: [
-        .package(path: "../swift-primitives/swift-parsing-primitives"),
+        .package(path: "../swift-primitives/swift-parser-primitives"),
         .package(path: "../swift-primitives/swift-formatting-primitives"),
         .package(path: "../swift-primitives/swift-time-primitives"),
-        .package(path: "../swift-primitives/swift-container-primitives"),
         .package(path: "../swift-foundations/swift-async")
     ],
     targets: [
         .target(
-            name: "Parsing",
+            name: "Parsers",
             dependencies: [
-                .product(name: "Parsing Primitives", package: "swift-parsing-primitives"),
-                .product(name: "Parsing Machine", package: "swift-parsing-primitives"),
+                .product(name: "Parser Primitives", package: "swift-parser-primitives"),
+                .product(name: "Parser Machine", package: "swift-parser-primitives"),
                 .product(name: "Formatting Primitives", package: "swift-formatting-primitives"),
                 .product(name: "Time Primitives", package: "swift-time-primitives"),
-                .product(name: "Container Primitives", package: "swift-container-primitives"),
                 .product(name: "Async", package: "swift-async")
             ]
         ),
         .target(
-            name: "Parsing Test Support",
+            name: "Parsers Test Support",
             dependencies: [
-                "Parsing",
+                "Parsers",
                 .product(name: "Test Primitives", package: "swift-test-primitives")
             ]
         )

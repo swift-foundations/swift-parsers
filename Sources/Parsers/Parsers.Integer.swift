@@ -1,5 +1,5 @@
 //
-//  Parsing.Integer.swift
+//  Parser.Integer.swift
 //  swift-parsing
 //
 //  Integer parsers for common numeric formats.
@@ -14,18 +14,18 @@
 //
 //  ```swift
 //  // Parse a decimal integer
-//  let parser = Parsing.Integer<Int>.Decimal()
+//  let parser = Parser.Integer<Int>.Decimal()
 //  var input = "123"[...].utf8
 //  let value = try parser.parse(&input)  // 123
 //
 //  // Parse hexadecimal with prefix
-//  let hex = Parsing.Integer<UInt32>.Hexadecimal(requirePrefix: true)
+//  let hex = Parser.Integer<UInt32>.Hexadecimal(requirePrefix: true)
 //  var input2 = "0xFF"[...].utf8
 //  let value2 = try hex.parse(&input2)  // 255
 //  ```
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for integer parsing types.
     ///
     /// Provides parsers for decimal, hexadecimal, binary, and octal integers
@@ -35,7 +35,7 @@ extension Parsing {
 
 // MARK: - Error Type
 
-extension Parsing.Integer {
+extension Parser.Integer {
     /// Errors specific to integer parsing.
     public enum Error: Swift.Error, Sendable, Equatable {
         /// No digits found at all.
@@ -62,7 +62,7 @@ extension Parsing.Integer {
 
 // MARK: - Decimal Parser
 
-extension Parsing.Integer {
+extension Parser.Integer {
     /// Parses decimal (base-10) integers.
     ///
     /// Supports optional sign prefix (+/-), with configurable leading zeros.
@@ -79,13 +79,13 @@ extension Parsing.Integer {
     ///
     /// ```swift
     /// // Basic usage
-    /// let parser = Parsing.Integer<Int>.Decimal()
+    /// let parser = Parser.Integer<Int>.Decimal()
     /// try parser.parse("123")      // 123
     /// try parser.parse("-456")     // -456
     /// try parser.parse("+789")     // 789
     ///
     /// // Unsigned integers
-    /// let unsigned = Parsing.Integer<UInt>.Decimal(allowSign: false)
+    /// let unsigned = Parser.Integer<UInt>.Decimal(allowSign: false)
     /// try unsigned.parse("123")    // 123
     /// try unsigned.parse("-1")     // throws: no digits (- not recognized)
     /// ```
@@ -112,9 +112,9 @@ extension Parsing.Integer {
     }
 }
 
-extension Parsing.Integer.Decimal: Parsing.Parser {
+extension Parser.Integer.Decimal: Parser.Parser {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parsing.Integer<Output>.Error
+    public typealias Failure = Parser.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -183,7 +183,7 @@ extension Parsing.Integer.Decimal: Parsing.Parser {
 
 // MARK: - Hexadecimal Parser
 
-extension Parsing.Integer {
+extension Parser.Integer {
     /// Parses hexadecimal (base-16) integers.
     ///
     /// Supports optional "0x" or "0X" prefix, case-insensitive digits.
@@ -209,9 +209,9 @@ extension Parsing.Integer {
     }
 }
 
-extension Parsing.Integer.Hexadecimal: Parsing.Parser {
+extension Parser.Integer.Hexadecimal: Parser.Parser {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parsing.Integer<Output>.Error
+    public typealias Failure = Parser.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -276,7 +276,7 @@ extension Parsing.Integer.Hexadecimal: Parsing.Parser {
 
 // MARK: - Binary Parser
 
-extension Parsing.Integer {
+extension Parser.Integer {
     /// Parses binary (base-2) integers.
     ///
     /// Supports optional "0b" or "0B" prefix.
@@ -302,9 +302,9 @@ extension Parsing.Integer {
     }
 }
 
-extension Parsing.Integer.Binary: Parsing.Parser {
+extension Parser.Integer.Binary: Parser.Parser {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parsing.Integer<Output>.Error
+    public typealias Failure = Parser.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -357,7 +357,7 @@ extension Parsing.Integer.Binary: Parsing.Parser {
 
 // MARK: - Octal Parser
 
-extension Parsing.Integer {
+extension Parser.Integer {
     /// Parses octal (base-8) integers.
     ///
     /// Supports optional "0o" or "0O" prefix.
@@ -383,9 +383,9 @@ extension Parsing.Integer {
     }
 }
 
-extension Parsing.Integer.Octal: Parsing.Parser {
+extension Parser.Integer.Octal: Parser.Parser {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parsing.Integer<Output>.Error
+    public typealias Failure = Parser.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -438,13 +438,13 @@ extension Parsing.Integer.Octal: Parsing.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to integer parsers via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.integer(Int.self).Decimal()
-    /// Parsing.integer(UInt32.self).Hexadecimal(requirePrefix: true)
+    /// Parser.integer(Int.self).Decimal()
+    /// Parser.integer(UInt32.self).Hexadecimal(requirePrefix: true)
     /// ```
     @inlinable
     public static func integer<T: FixedWidthInteger & Sendable>(

@@ -1,5 +1,5 @@
 //
-//  Parsing.Whitespace.swift
+//  Parser.Whitespace.swift
 //  swift-parsing
 //
 //  Whitespace parsers for common whitespace patterns.
@@ -16,14 +16,14 @@
 //  which is critical for line-oriented formats.
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for whitespace parsing types.
     public enum Whitespace: Sendable {}
 }
 
 // MARK: - ASCII Constants
 
-extension Parsing.Whitespace {
+extension Parser.Whitespace {
     @usableFromInline
     static let space: UInt8 = 0x20       // ' '
 
@@ -45,7 +45,7 @@ extension Parsing.Whitespace {
 
 // MARK: - Horizontal Whitespace
 
-extension Parsing.Whitespace {
+extension Parser.Whitespace {
     /// Parses one or more horizontal whitespace characters (space, tab).
     ///
     /// Fails if no horizontal whitespace is found.
@@ -61,10 +61,10 @@ extension Parsing.Whitespace {
     }
 }
 
-extension Parsing.Whitespace.Horizontal: Parsing.Parser {
+extension Parser.Whitespace.Horizontal: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parsing.Constraint.Error
+    public typealias Failure = Parser.Constraint.Error
 
     /// Parses horizontal whitespace and returns the count of bytes consumed.
     @inlinable
@@ -72,7 +72,7 @@ extension Parsing.Whitespace.Horizontal: Parsing.Parser {
         var count = 0
 
         while let byte = input.first,
-              byte == Parsing.Whitespace.space || byte == Parsing.Whitespace.tab {
+              byte == Parser.Whitespace.space || byte == Parser.Whitespace.tab {
             input.removeFirst()
             count += 1
         }
@@ -87,7 +87,7 @@ extension Parsing.Whitespace.Horizontal: Parsing.Parser {
 
 // MARK: - Vertical Whitespace
 
-extension Parsing.Whitespace {
+extension Parser.Whitespace {
     /// Parses one or more vertical whitespace characters (newlines).
     ///
     /// Handles LF (\n), CR (\r), and CRLF (\r\n) sequences.
@@ -104,10 +104,10 @@ extension Parsing.Whitespace {
     }
 }
 
-extension Parsing.Whitespace.Vertical: Parsing.Parser {
+extension Parser.Whitespace.Vertical: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parsing.Constraint.Error
+    public typealias Failure = Parser.Constraint.Error
 
     /// Parses vertical whitespace and returns the count of newlines consumed.
     @inlinable
@@ -115,14 +115,14 @@ extension Parsing.Whitespace.Vertical: Parsing.Parser {
         var count = 0
 
         while let byte = input.first {
-            if byte == Parsing.Whitespace.lf {
+            if byte == Parser.Whitespace.lf {
                 input.removeFirst()
                 count += 1
-            } else if byte == Parsing.Whitespace.cr {
+            } else if byte == Parser.Whitespace.cr {
                 input.removeFirst()
                 count += 1
                 // Consume following LF if present (CRLF)
-                if input.first == Parsing.Whitespace.lf {
+                if input.first == Parser.Whitespace.lf {
                     input.removeFirst()
                 }
             } else {
@@ -140,7 +140,7 @@ extension Parsing.Whitespace.Vertical: Parsing.Parser {
 
 // MARK: - `Any` Whitespace
 
-extension Parsing.Whitespace {
+extension Parser.Whitespace {
     /// Parses one or more of any whitespace character.
     ///
     /// Includes space, tab, and all ASCII control characters 0x09-0x0D.
@@ -156,17 +156,17 @@ extension Parsing.Whitespace {
     }
 }
 
-extension Parsing.Whitespace.`Any`: Parsing.Parser {
+extension Parser.Whitespace.`Any`: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parsing.Constraint.Error
+    public typealias Failure = Parser.Constraint.Error
 
     /// Parses any whitespace and returns the count of bytes consumed.
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         var count = 0
 
-        while let byte = input.first, Parsing.Whitespace.isWhitespace(byte) {
+        while let byte = input.first, Parser.Whitespace.isWhitespace(byte) {
             input.removeFirst()
             count += 1
         }
@@ -181,7 +181,7 @@ extension Parsing.Whitespace.`Any`: Parsing.Parser {
 
 // MARK: - Skip Whitespace (Infallible)
 
-extension Parsing.Whitespace {
+extension Parser.Whitespace {
     /// Skips zero or more whitespace characters.
     ///
     /// This parser is infallible (never throws) - it simply consumes
@@ -191,7 +191,7 @@ extension Parsing.Whitespace {
     ///
     /// ```swift
     /// // Skip any whitespace between tokens
-    /// let ws = Parsing.Whitespace.Skip()
+    /// let ws = Parser.Whitespace.Skip()
     /// var input = "   hello"[...].utf8
     /// ws.parse(&input)  // Consumes "   "
     /// // input is now "hello"
@@ -220,7 +220,7 @@ extension Parsing.Whitespace {
     }
 }
 
-extension Parsing.Whitespace.Skip: Parsing.Parser {
+extension Parser.Whitespace.Skip: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Never
@@ -230,17 +230,17 @@ extension Parsing.Whitespace.Skip: Parsing.Parser {
         switch kind {
         case .horizontal:
             while let byte = input.first,
-                  byte == Parsing.Whitespace.space || byte == Parsing.Whitespace.tab {
+                  byte == Parser.Whitespace.space || byte == Parser.Whitespace.tab {
                 input.removeFirst()
             }
 
         case .vertical:
             while let byte = input.first {
-                if byte == Parsing.Whitespace.lf {
+                if byte == Parser.Whitespace.lf {
                     input.removeFirst()
-                } else if byte == Parsing.Whitespace.cr {
+                } else if byte == Parser.Whitespace.cr {
                     input.removeFirst()
-                    if input.first == Parsing.Whitespace.lf {
+                    if input.first == Parser.Whitespace.lf {
                         input.removeFirst()
                     }
                 } else {
@@ -249,7 +249,7 @@ extension Parsing.Whitespace.Skip: Parsing.Parser {
             }
 
         case .any:
-            while let byte = input.first, Parsing.Whitespace.isWhitespace(byte) {
+            while let byte = input.first, Parser.Whitespace.isWhitespace(byte) {
                 input.removeFirst()
             }
         }
@@ -258,7 +258,7 @@ extension Parsing.Whitespace.Skip: Parsing.Parser {
 
 // MARK: - Helper
 
-extension Parsing.Whitespace {
+extension Parser.Whitespace {
     /// Checks if a byte is ASCII whitespace.
     @inlinable
     static func isWhitespace(_ byte: UInt8) -> Bool {
@@ -273,13 +273,13 @@ extension Parsing.Whitespace {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to whitespace parsers via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.whitespace.Skip()
-    /// Parsing.whitespace.Horizontal()
+    /// Parser.whitespace.Skip()
+    /// Parser.whitespace.Horizontal()
     /// ```
     @inlinable
     public static var whitespace: Whitespace.Type { Whitespace.self }

@@ -1,5 +1,5 @@
 //
-//  Parsing.Diagnostic.swift
+//  Parser.Diagnostic.swift
 //  swift-parsing
 //
 //  Error formatting and diagnostic generation.
@@ -16,24 +16,24 @@
 //  ## Usage
 //
 //  ```swift
-//  let source = Parsing.Diagnostic.Source(content: sourceCode, filename: "input.txt")
+//  let source = Parser.Diagnostic.Source(content: sourceCode, filename: "input.txt")
 //
 //  do {
 //      _ = try parser.parse(input)
-//  } catch let error as Parsing.Error.Located<_> {
+//  } catch let error as Parser.Error.Located<_> {
 //      print(error.formatted(in: source, style: .expanded()))
 //  }
 //  ```
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for diagnostic types.
     public enum Diagnostic: Sendable {}
 }
 
 // MARK: - Source
 
-extension Parsing.Diagnostic {
+extension Parser.Diagnostic {
     /// Represents source content for error reporting.
     public struct Source: Sendable {
         /// The original source content.
@@ -72,7 +72,7 @@ extension Parsing.Diagnostic {
 
 // MARK: - Location
 
-extension Parsing.Diagnostic {
+extension Parser.Diagnostic {
     /// A location within source content.
     public struct Location: Sendable, Equatable {
         /// 1-indexed line number.
@@ -93,12 +93,12 @@ extension Parsing.Diagnostic {
     }
 }
 
-extension Parsing.Diagnostic.Source {
+extension Parser.Diagnostic.Source {
     /// Computes the location for a byte offset.
     ///
     /// - Parameter offset: Byte offset (0-indexed).
     /// - Returns: Location with line and column.
-    public func location(at offset: Int) -> Parsing.Diagnostic.Location {
+    public func location(at offset: Int) -> Parser.Diagnostic.Location {
         let targetIndex = content.utf8.index(content.utf8.startIndex, offsetBy: min(offset, content.utf8.count))
 
         // Binary search for line
@@ -118,7 +118,7 @@ extension Parsing.Diagnostic.Source {
         let lineStart = lineStarts[lo]
         let column = content.distance(from: lineStart, to: targetIndex) + 1  // 1-indexed
 
-        return Parsing.Diagnostic.Location(line: lineNumber, column: column, offset: offset)
+        return Parser.Diagnostic.Location(line: lineNumber, column: column, offset: offset)
     }
 
     /// Returns the content of a specific line.
@@ -151,7 +151,7 @@ extension Parsing.Diagnostic.Source {
 
 // MARK: - Style
 
-extension Parsing.Diagnostic {
+extension Parser.Diagnostic {
     /// Formatting style for diagnostics.
     public enum Style: Sendable {
         /// Compact single-line format.
@@ -173,7 +173,7 @@ extension Parsing.Diagnostic {
 
 // MARK: - Formatter
 
-extension Parsing.Diagnostic {
+extension Parser.Diagnostic {
     /// Formats an error with source context.
     ///
     /// - Parameters:
@@ -314,7 +314,7 @@ extension Parsing.Diagnostic {
 
 // MARK: - Error Extension
 
-extension Parsing.Error.LocatedError {
+extension Parser.Error.LocatedError {
     /// Formats this located error with source context.
     ///
     /// - Parameters:
@@ -322,22 +322,22 @@ extension Parsing.Error.LocatedError {
     ///   - style: Formatting style.
     /// - Returns: Formatted diagnostic string.
     public func formatted(
-        in source: Parsing.Diagnostic.Source,
-        style: Parsing.Diagnostic.Style = .expanded()
+        in source: Parser.Diagnostic.Source,
+        style: Parser.Diagnostic.Style = .expanded()
     ) -> String {
-        Parsing.Diagnostic.format(self, at: offset, in: source, style: style)
+        Parser.Diagnostic.format(self, at: offset, in: source, style: style)
     }
 }
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to diagnostic types via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.diagnostic.Source(content: ...)
-    /// Parsing.diagnostic.format(error, at: offset, in: source)
+    /// Parser.diagnostic.Source(content: ...)
+    /// Parser.diagnostic.format(error, at: offset, in: source)
     /// ```
     @inlinable
     public static var diagnostic: Diagnostic.Type { Diagnostic.self }

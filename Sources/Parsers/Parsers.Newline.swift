@@ -1,5 +1,5 @@
 //
-//  Parsing.Newline.swift
+//  Parser.Newline.swift
 //  swift-parsing
 //
 //  Newline parsers for line-oriented parsing.
@@ -14,14 +14,14 @@
 //  This module provides parsers for each style and a universal parser.
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for newline parsing types.
     public enum Newline: Sendable {}
 }
 
 // MARK: - LF (Unix)
 
-extension Parsing.Newline {
+extension Parser.Newline {
     /// Parses Unix-style newline: LF (\n).
     ///
     /// This is the standard for Unix, Linux, and modern macOS.
@@ -31,10 +31,10 @@ extension Parsing.Newline {
     }
 }
 
-extension Parsing.Newline.LF: Parsing.Parser {
+extension Parser.Newline.LF: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
@@ -47,7 +47,7 @@ extension Parsing.Newline.LF: Parsing.Parser {
 
 // MARK: - CR (Classic Mac)
 
-extension Parsing.Newline {
+extension Parser.Newline {
     /// Parses Classic Mac newline: CR (\r).
     ///
     /// Note: This is rarely used in modern systems but may appear in
@@ -58,10 +58,10 @@ extension Parsing.Newline {
     }
 }
 
-extension Parsing.Newline.CR: Parsing.Parser {
+extension Parser.Newline.CR: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
@@ -74,7 +74,7 @@ extension Parsing.Newline.CR: Parsing.Parser {
 
 // MARK: - CRLF (Windows)
 
-extension Parsing.Newline {
+extension Parser.Newline {
     /// Parses Windows-style newline: CRLF (\r\n).
     ///
     /// This is the standard for Windows and many network protocols (HTTP, SMTP).
@@ -84,10 +84,10 @@ extension Parsing.Newline {
     }
 }
 
-extension Parsing.Newline.CRLF: Parsing.Parser {
+extension Parser.Newline.CRLF: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
@@ -109,7 +109,7 @@ extension Parsing.Newline.CRLF: Parsing.Parser {
 
 // MARK: - `Any` Newline
 
-extension Parsing.Newline {
+extension Parser.Newline {
     /// Parses any newline style: CRLF, LF, or CR.
     ///
     /// Attempts to match in order: CRLF, LF, CR.
@@ -118,7 +118,7 @@ extension Parsing.Newline {
     /// ## Usage
     ///
     /// ```swift
-    /// let nl = Parsing.Newline.`Any`()
+    /// let nl = Parser.Newline.`Any`()
     /// // Matches "\r\n", "\n", or "\r"
     /// ```
     public struct `Any`: Sendable {
@@ -127,10 +127,10 @@ extension Parsing.Newline {
     }
 }
 
-extension Parsing.Newline.`Any`: Parsing.Parser {
+extension Parser.Newline.`Any`: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
@@ -155,7 +155,7 @@ extension Parsing.Newline.`Any`: Parsing.Parser {
 
 // MARK: - Line (Until Newline)
 
-extension Parsing.Newline {
+extension Parser.Newline {
     /// Parses content up to (but not including) a newline.
     ///
     /// Does NOT consume the newline itself. Use `Any` after if needed.
@@ -163,7 +163,7 @@ extension Parsing.Newline {
     /// ## Usage
     ///
     /// ```swift
-    /// let line = Parsing.Newline.Line()
+    /// let line = Parser.Newline.Line()
     /// var input = "hello world\nmore"[...].utf8
     /// let content = try line.parse(&input)  // "hello world"
     /// // input is now "\nmore"
@@ -174,7 +174,7 @@ extension Parsing.Newline {
     }
 }
 
-extension Parsing.Newline.Line: Parsing.Parser {
+extension Parser.Newline.Line: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Never
@@ -195,14 +195,14 @@ extension Parsing.Newline.Line: Parsing.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to newline parsers via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.newline.`Any`()
-    /// Parsing.newline.CRLF()
-    /// Parsing.newline.Line()
+    /// Parser.newline.`Any`()
+    /// Parser.newline.CRLF()
+    /// Parser.newline.Line()
     /// ```
     @inlinable
     public static var newline: Newline.Type { Newline.self }

@@ -1,5 +1,5 @@
 //
-//  Parsing.Expression.swift
+//  Parser.Expression.swift
 //  swift-parsing
 //
 //  Expression parsing with precedence climbing.
@@ -28,14 +28,14 @@
 //  needing separate grammar rules for each level.
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for expression parsing types.
     public enum Expression: Sendable {}
 }
 
 // MARK: - Associativity
 
-extension Parsing.Expression {
+extension Parser.Expression {
     /// Operator associativity.
     public enum Associativity: Sendable {
         /// Left-to-right: `1-2-3` = `(1-2)-3`
@@ -49,11 +49,11 @@ extension Parsing.Expression {
 
 // MARK: - Operator
 
-extension Parsing.Expression {
+extension Parser.Expression {
     /// Defines an infix operator with precedence and associativity.
     ///
     /// All operators in a `Climbing` parser must use the same `Op` parser type.
-    public struct Operator<Operand: Sendable, Op: Parsing.Parser & Sendable>: Sendable {
+    public struct Operator<Operand: Sendable, Op: Parser.Parser & Sendable>: Sendable {
         /// The operator parser.
         public let parser: Op
 
@@ -90,9 +90,9 @@ extension Parsing.Expression {
 
 // MARK: - Prefix Operator
 
-extension Parsing.Expression {
+extension Parser.Expression {
     /// Defines a prefix (unary) operator.
-    public struct PrefixOperator<Operand: Sendable, Op: Parsing.Parser & Sendable>: Sendable {
+    public struct PrefixOperator<Operand: Sendable, Op: Parser.Parser & Sendable>: Sendable {
         /// The operator parser.
         public let parser: Op
 
@@ -117,9 +117,9 @@ extension Parsing.Expression {
 
 // MARK: - Postfix Operator
 
-extension Parsing.Expression {
+extension Parser.Expression {
     /// Defines a postfix (unary) operator.
-    public struct PostfixOperator<Operand: Sendable, Op: Parsing.Parser & Sendable>: Sendable {
+    public struct PostfixOperator<Operand: Sendable, Op: Parser.Parser & Sendable>: Sendable {
         /// The operator parser.
         public let parser: Op
 
@@ -144,7 +144,7 @@ extension Parsing.Expression {
 
 // MARK: - Climbing Parser
 
-extension Parsing.Expression {
+extension Parser.Expression {
     /// Precedence climbing expression parser.
     ///
     /// Parses expressions with multiple operators at different precedence
@@ -155,7 +155,7 @@ extension Parsing.Expression {
     ///
     /// ```swift
     /// // Simple arithmetic: 1 + 2 * 3 = 7 (not 9)
-    /// let expr = Parsing.Expression.Climbing(
+    /// let expr = Parser.Expression.Climbing(
     ///     atom: integerParser,
     ///     operators: [
     ///         Operator(parser: Literal("+"), precedence: 1, associativity: .left) { $0 + $1 },
@@ -163,8 +163,8 @@ extension Parsing.Expression {
     ///     ]
     /// )
     /// ```
-    public struct Climbing<Atom: Parsing.Parser & Sendable, Op: Parsing.Parser & Sendable>: Sendable
-    where Atom.Input: Parsing.Input,
+    public struct Climbing<Atom: Parser.Parser & Sendable, Op: Parser.Parser & Sendable>: Sendable
+    where Atom.Input: Parser.Input,
           Atom.Input == Op.Input,
           Atom.Output: Sendable {
 
@@ -209,7 +209,7 @@ extension Parsing.Expression {
     }
 }
 
-extension Parsing.Expression.Climbing: Parsing.Parser {
+extension Parser.Expression.Climbing: Parser.Parser {
     public typealias Input = Atom.Input
     public typealias Output = Atom.Output
     public typealias Failure = Atom.Failure
@@ -240,7 +240,7 @@ extension Parsing.Expression.Climbing: Parsing.Parser {
         // Precedence climbing loop
         while true {
             // Find matching operator at this precedence level
-            var matchedOp: Parsing.Expression.Operator<Operand, Op>?
+            var matchedOp: Parser.Expression.Operator<Operand, Op>?
             var opCheckpoint = input.checkpoint
 
             for op in operators where op.precedence >= minPrecedence {
@@ -307,13 +307,13 @@ extension Parsing.Expression.Climbing: Parsing.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to expression parsing types via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.expression.Climbing(atom: ..., operators: [...])
-    /// Parsing.expression.Operator(parser: ..., precedence: 1, associativity: .left) { $0 + $1 }
+    /// Parser.expression.Climbing(atom: ..., operators: [...])
+    /// Parser.expression.Operator(parser: ..., precedence: 1, associativity: .left) { $0 + $1 }
     /// ```
     @inlinable
     public static var expression: Expression.Type { Expression.self }

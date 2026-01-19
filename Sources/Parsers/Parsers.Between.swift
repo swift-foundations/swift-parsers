@@ -1,5 +1,5 @@
 //
-//  Parsing.Between.swift
+//  Parser.Between.swift
 //  swift-parsing
 //
 //  Combinator for parsing content between delimiters.
@@ -14,7 +14,7 @@
 //  - XML/HTML tags: `<tag>content</tag>`
 //
 
-extension Parsing {
+extension Parsers {
     /// A parser that matches content between open and close delimiters.
     ///
     /// Parses `open`, then `content`, then `close`, returning the content.
@@ -28,10 +28,10 @@ extension Parsing {
     /// ## Examples
     ///
     /// ```swift
-    /// let parens = Parsing.Between(
-    ///     open: Parsing.Literal("("),
+    /// let parens = Parser.Between(
+    ///     open: Parser.Literal("("),
     ///     content: integerParser,
-    ///     close: Parsing.Literal(")")
+    ///     close: Parser.Literal(")")
     /// )
     ///
     /// var input = "(42)"[...].utf8
@@ -72,11 +72,11 @@ extension Parsing {
     }
 }
 
-extension Parsing.Between: Parsing.Parser {
+extension Parser.Between: Parser.Parser {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
-    public typealias Failure = Parsing.Error.Either<
-        Parsing.Error.Either<Open.Failure, Content.Failure>,
+    public typealias Failure = Parser.Error.Either<
+        Parser.Error.Either<Open.Failure, Content.Failure>,
         Close.Failure
     >
 
@@ -110,7 +110,7 @@ extension Parsing.Between: Parsing.Parser {
 
 // MARK: - Parser Extension
 
-extension Parsing.Parser {
+extension Parser.Parser {
     /// Creates a parser that matches this parser between delimiters.
     ///
     /// - Parameters:
@@ -118,19 +118,19 @@ extension Parsing.Parser {
     ///   - close: The closing delimiter parser.
     /// - Returns: A parser matching content between delimiters.
     @inlinable
-    public func between<Open: Parsing.Parser, Close: Parsing.Parser>(
+    public func between<Open: Parser.Parser, Close: Parser.Parser>(
         _ open: Open,
         _ close: Close
-    ) -> Parsing.Between<Open, Self, Close>
+    ) -> Parser.Between<Open, Self, Close>
     where Open.Input == Input, Close.Input == Input,
           Open: Sendable, Close: Sendable, Self: Sendable {
-        Parsing.Between(open: open, content: self, close: close)
+        Parser.Between(open: open, content: self, close: close)
     }
 }
 
 // MARK: - Surrounded (Same Delimiter)
 
-extension Parsing {
+extension Parsers {
     /// A parser that matches content surrounded by the same delimiter.
     ///
     /// Convenience for when open and close delimiters are identical.
@@ -138,8 +138,8 @@ extension Parsing {
     /// ## Examples
     ///
     /// ```swift
-    /// let backticked = Parsing.Surrounded(
-    ///     delimiter: Parsing.Literal("`"),
+    /// let backticked = Parser.Surrounded(
+    ///     delimiter: Parser.Literal("`"),
     ///     content: identifierParser
     /// )
     ///
@@ -174,11 +174,11 @@ extension Parsing {
     }
 }
 
-extension Parsing.Surrounded: Parsing.Parser {
+extension Parser.Surrounded: Parser.Parser {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
-    public typealias Failure = Parsing.Error.Either<
-        Parsing.Error.Either<Delimiter.Failure, Content.Failure>,
+    public typealias Failure = Parser.Error.Either<
+        Parser.Error.Either<Delimiter.Failure, Content.Failure>,
         Delimiter.Failure
     >
 
@@ -212,16 +212,16 @@ extension Parsing.Surrounded: Parsing.Parser {
 
 // MARK: - Parser Extension for Surrounded
 
-extension Parsing.Parser {
+extension Parser.Parser {
     /// Creates a parser that matches this parser surrounded by a delimiter.
     ///
     /// - Parameter delimiter: The delimiter parser (same for open and close).
     /// - Returns: A parser matching content between identical delimiters.
     @inlinable
-    public func surrounded<D: Parsing.Parser>(
+    public func surrounded<D: Parser.Parser>(
         by delimiter: D
-    ) -> Parsing.Surrounded<D, Self>
+    ) -> Parser.Surrounded<D, Self>
     where D.Input == Input, D: Sendable, Self: Sendable {
-        Parsing.Surrounded(delimiter: delimiter, content: self)
+        Parser.Surrounded(delimiter: delimiter, content: self)
     }
 }

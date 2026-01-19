@@ -1,5 +1,5 @@
 //
-//  Parsing.Quoted.swift
+//  Parser.Quoted.swift
 //  swift-parsing
 //
 //  Quoted string parsers with escape sequence handling.
@@ -19,14 +19,14 @@
 //  - Doubling: "" for literal " (CSV/SQL style)
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for quoted string parsing types.
     public enum Quoted: Sendable {}
 }
 
 // MARK: - Escape Style
 
-extension Parsing.Quoted {
+extension Parser.Quoted {
     /// Escape sequence handling styles.
     public enum EscapeStyle: Sendable {
         /// Backslash escapes: \n, \t, \\, \", etc.
@@ -42,7 +42,7 @@ extension Parsing.Quoted {
 
 // MARK: - Error Type
 
-extension Parsing.Quoted {
+extension Parser.Quoted {
     /// Errors from quoted string parsing.
     public enum Error: Swift.Error, Sendable, Equatable {
         /// Missing opening delimiter.
@@ -63,7 +63,7 @@ extension Parsing.Quoted {
 
 // MARK: - Double Quoted String
 
-extension Parsing.Quoted {
+extension Parser.Quoted {
     /// Parses double-quoted strings with backslash escapes.
     ///
     /// Handles standard C/JSON escape sequences:
@@ -86,7 +86,7 @@ extension Parsing.Quoted {
     /// ## Examples
     ///
     /// ```swift
-    /// let parser = Parsing.Quoted.Double()
+    /// let parser = Parser.Quoted.Double()
     /// try parser.parse("\"hello\"")       // "hello"
     /// try parser.parse("\"line\\nbreak\"") // "line\nbreak"
     /// try parser.parse("\"tab\\there\"")   // "tab\there"
@@ -105,10 +105,10 @@ extension Parsing.Quoted {
     }
 }
 
-extension Parsing.Quoted.Double: Parsing.Parser {
+extension Parser.Quoted.Double: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parsing.Quoted.Error
+    public typealias Failure = Parser.Quoted.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -165,7 +165,7 @@ extension Parsing.Quoted.Double: Parsing.Parser {
 
 // MARK: - Single Quoted String
 
-extension Parsing.Quoted {
+extension Parser.Quoted {
     /// Parses single-quoted strings without escape handling.
     ///
     /// Single-quoted strings typically represent literal content without
@@ -191,10 +191,10 @@ extension Parsing.Quoted {
     }
 }
 
-extension Parsing.Quoted.Single: Parsing.Parser {
+extension Parser.Quoted.Single: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parsing.Quoted.Error
+    public typealias Failure = Parser.Quoted.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -231,7 +231,7 @@ extension Parsing.Quoted.Single: Parsing.Parser {
 
 // MARK: - CSV-Style (Doubling Escapes)
 
-extension Parsing.Quoted {
+extension Parser.Quoted {
     /// Parses quoted strings with character doubling for escapes.
     ///
     /// This is the CSV and SQL style where `""` represents a literal `"`.
@@ -256,10 +256,10 @@ extension Parsing.Quoted {
     }
 }
 
-extension Parsing.Quoted.Doubling: Parsing.Parser {
+extension Parser.Quoted.Doubling: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parsing.Quoted.Error
+    public typealias Failure = Parser.Quoted.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -294,14 +294,14 @@ extension Parsing.Quoted.Doubling: Parsing.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to quoted string parsers via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.quoted.Double()
-    /// Parsing.quoted.Single()
-    /// Parsing.quoted.Doubling()
+    /// Parser.quoted.Double()
+    /// Parser.quoted.Single()
+    /// Parser.quoted.Doubling()
     /// ```
     @inlinable
     public static var quoted: Quoted.Type { Quoted.self }

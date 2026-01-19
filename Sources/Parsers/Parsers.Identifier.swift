@@ -1,5 +1,5 @@
 //
-//  Parsing.Identifier.swift
+//  Parser.Identifier.swift
 //  swift-parsing
 //
 //  Identifier parsers for common identifier patterns.
@@ -15,20 +15,20 @@
 //  ## Usage
 //
 //  ```swift
-//  let id = Parsing.Identifier.CStyle()
+//  let id = Parser.Identifier.CStyle()
 //  var input = "myVariable123 = ..."[...].utf8
 //  let count = try id.parse(&input)  // 13 (bytes consumed)
 //  ```
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for identifier parsing types.
     public enum Identifier: Sendable {}
 }
 
 // MARK: - C-Style Identifier
 
-extension Parsing.Identifier {
+extension Parser.Identifier {
     /// Parses C-style identifiers: `[a-zA-Z_][a-zA-Z0-9_]*`
     ///
     /// This is the most common identifier format, used in C, C++, Java,
@@ -47,7 +47,7 @@ extension Parsing.Identifier {
     /// ## Examples
     ///
     /// ```swift
-    /// let id = Parsing.Identifier.CStyle()
+    /// let id = Parser.Identifier.CStyle()
     /// var input = "foo"[...].utf8
     /// let count = try id.parse(&input)  // 3
     /// ```
@@ -57,10 +57,10 @@ extension Parsing.Identifier {
     }
 }
 
-extension Parsing.Identifier.CStyle: Parsing.Parser {
+extension Parser.Identifier.CStyle: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -97,7 +97,7 @@ extension Parsing.Identifier.CStyle: Parsing.Parser {
 
 // MARK: - Custom Identifier
 
-extension Parsing.Identifier {
+extension Parser.Identifier {
     /// Parses identifiers with custom character classes.
     ///
     /// Use this for languages with non-standard identifier rules.
@@ -107,7 +107,7 @@ extension Parsing.Identifier {
     ///
     /// ```swift
     /// // Allow hyphens in identifiers (like CSS, Lisp)
-    /// let kebab = Parsing.Identifier.Custom(
+    /// let kebab = Parser.Identifier.Custom(
     ///     start: { ($0 >= 0x61 && $0 <= 0x7A) || $0 == 0x5F },  // a-z, _
     ///     continue: { ($0 >= 0x61 && $0 <= 0x7A) || $0 == 0x2D }  // a-z, -
     /// )
@@ -135,10 +135,10 @@ extension Parsing.Identifier {
     }
 }
 
-extension Parsing.Identifier.Custom: Parsing.Parser {
+extension Parser.Identifier.Custom: Parser.Parser {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parsing.Match.Error
+    public typealias Failure = Parser.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -162,13 +162,13 @@ extension Parsing.Identifier.Custom: Parsing.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to identifier parsers via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.identifier.CStyle()
-    /// Parsing.identifier.Custom(start: { ... }, continue: { ... })
+    /// Parser.identifier.CStyle()
+    /// Parser.identifier.Custom(start: { ... }, continue: { ... })
     /// ```
     @inlinable
     public static var identifier: Identifier.Type { Identifier.self }

@@ -1,5 +1,5 @@
 //
-//  Parsing.Debug.swift
+//  Parser.Debug.swift
 //  swift-parsing
 //
 //  Debugging tools for parser development.
@@ -15,14 +15,14 @@
 //  changing parsing behavior.
 //
 
-extension Parsing {
+extension Parsers {
     /// Namespace for debugging types.
     public enum Debug: Sendable {}
 }
 
 // MARK: - Trace
 
-extension Parsing.Debug {
+extension Parser.Debug {
     /// Wraps a parser to trace its execution.
     ///
     /// Logs when the parser is entered and whether it succeeded or failed,
@@ -36,8 +36,8 @@ extension Parsing.Debug {
     /// // [myParser] entering at offset 0
     /// // [myParser] succeeded, consumed 5 bytes
     /// ```
-    public struct Trace<P: Parsing.Parser>: Sendable
-    where P: Sendable, P.Input: Parsing.Input {
+    public struct Trace<P: Parser.Parser>: Sendable
+    where P: Sendable, P.Input: Parser.Input {
         /// The wrapped parser.
         @usableFromInline
         let inner: P
@@ -68,7 +68,7 @@ extension Parsing.Debug {
     }
 }
 
-extension Parsing.Debug.Trace: Parsing.Parser {
+extension Parser.Debug.Trace: Parser.Parser {
     public typealias Input = P.Input
     public typealias Output = P.Output
     public typealias Failure = P.Failure
@@ -93,7 +93,7 @@ extension Parsing.Debug.Trace: Parsing.Parser {
 
 // MARK: - Profile
 
-extension Parsing.Debug {
+extension Parser.Debug {
     /// Collects statistics about parser execution.
     ///
     /// Tracks invocation count, success/failure rates, and timing.
@@ -105,7 +105,7 @@ extension Parsing.Debug {
     /// // ... use parser multiple times ...
     /// print(profiled.stats.report())
     /// ```
-    public struct Profile<P: Parsing.Parser>: Sendable
+    public struct Profile<P: Parser.Parser>: Sendable
     where P: Sendable {
         /// The wrapped parser.
         @usableFromInline
@@ -133,7 +133,7 @@ extension Parsing.Debug {
 
 // MARK: - Stats
 
-extension Parsing.Debug.Profile {
+extension Parser.Debug.Profile {
     /// Statistics collected from parser execution.
     public final class Stats: @unchecked Sendable {
         /// Total number of invocations.
@@ -255,7 +255,7 @@ extension Parsing.Debug.Profile {
     }
 }
 
-extension Parsing.Debug.Profile: Parsing.Parser {
+extension Parser.Debug.Profile: Parser.Parser {
     public typealias Input = P.Input
     public typealias Output = P.Output
     public typealias Failure = P.Failure
@@ -279,7 +279,7 @@ extension Parsing.Debug.Profile: Parsing.Parser {
 
 // MARK: - Parser Extensions
 
-extension Parsing.Parser where Self: Sendable, Input: Parsing.Input {
+extension Parser.Parser where Self: Sendable, Input: Parser.Input {
     /// Wraps this parser with tracing.
     ///
     /// - Parameters:
@@ -290,31 +290,31 @@ extension Parsing.Parser where Self: Sendable, Input: Parsing.Input {
     public func trace(
         _ label: String,
         output: @escaping @Sendable (String) -> Void = { print($0) }
-    ) -> Parsing.Debug.Trace<Self> {
-        Parsing.Debug.Trace(self, label: label, output: output)
+    ) -> Parser.Debug.Trace<Self> {
+        Parser.Debug.Trace(self, label: label, output: output)
     }
 }
 
-extension Parsing.Parser where Self: Sendable {
+extension Parser.Parser where Self: Sendable {
     /// Wraps this parser with profiling.
     ///
     /// - Parameter label: Label for reports.
     /// - Returns: A profiling parser wrapper.
     @inlinable
-    public func profile(_ label: String) -> Parsing.Debug.Profile<Self> {
-        Parsing.Debug.Profile(self, label: label)
+    public func profile(_ label: String) -> Parser.Debug.Profile<Self> {
+        Parser.Debug.Profile(self, label: label)
     }
 }
 
 // MARK: - Convenience Accessors
 
-extension Parsing {
+extension Parsers {
     /// Access to debug types via nested accessor pattern.
     ///
     /// Usage:
     /// ```swift
-    /// Parsing.debug.Trace(parser, label: "myParser")
-    /// Parsing.debug.Profile(parser, label: "myParser")
+    /// Parser.debug.Trace(parser, label: "myParser")
+    /// Parser.debug.Profile(parser, label: "myParser")
     /// ```
     @inlinable
     public static var debug: Debug.Type { Debug.self }

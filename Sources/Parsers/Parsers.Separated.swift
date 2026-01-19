@@ -1,5 +1,5 @@
 //
-//  Parsing.Separated.swift
+//  Parser.Separated.swift
 //  swift-parsing
 //
 //  Combinator for parsing values separated by delimiters.
@@ -18,7 +18,7 @@
 //  - Allowing empty elements
 //
 
-extension Parsing {
+extension Parsers {
     /// A parser that matches values separated by a delimiter.
     ///
     /// Parses zero or more occurrences of `Element` separated by `Separator`.
@@ -33,9 +33,9 @@ extension Parsing {
     /// ## Examples
     ///
     /// ```swift
-    /// let csv = Parsing.Separated(
-    ///     element: Parsing.Prefix.While { $0 != UInt8(ascii: ",") && $0 != 0x0A },
-    ///     separator: Parsing.Literal(",")
+    /// let csv = Parser.Separated(
+    ///     element: Parser.Prefix.While { $0 != UInt8(ascii: ",") && $0 != 0x0A },
+    ///     separator: Parser.Literal(",")
     /// )
     ///
     /// var input = "a,b,c"[...].utf8
@@ -44,7 +44,7 @@ extension Parsing {
     public struct Separated<Element: Parser, Separator: Parser>: Sendable
     where Element: Sendable, Separator: Sendable,
           Element.Input == Separator.Input,
-          Element.Input: Parsing.Input {
+          Element.Input: Parser.Input {
 
         /// The element parser.
         @usableFromInline
@@ -88,11 +88,11 @@ extension Parsing {
     }
 }
 
-extension Parsing.Separated: Parsing.Parser {
+extension Parser.Separated: Parser.Parser {
     public typealias Input = Element.Input
     public typealias Output = [Element.Output]
-    public typealias Failure = Parsing.Error.Either<
-        Parsing.Constraint.Error,
+    public typealias Failure = Parser.Error.Either<
+        Parser.Constraint.Error,
         Element.Failure
     >
 
@@ -152,7 +152,7 @@ extension Parsing.Separated: Parsing.Parser {
 
 // MARK: - Parser Extension
 
-extension Parsing.Parser where Input: Parsing.Input {
+extension Parser.Parser where Input: Parser.Input {
     /// Creates a parser that matches this parser separated by a delimiter.
     ///
     /// - Parameters:
@@ -160,12 +160,12 @@ extension Parsing.Parser where Input: Parsing.Input {
     ///   - allowTrailing: Allow trailing separator. Default `false`.
     /// - Returns: A parser matching separated values.
     @inlinable
-    public func separated<S: Parsing.Parser>(
+    public func separated<S: Parser.Parser>(
         by separator: S,
         allowTrailing: Bool = false
-    ) -> Parsing.Separated<Self, S>
+    ) -> Parser.Separated<Self, S>
     where S.Input == Input, S: Sendable, Self: Sendable {
-        Parsing.Separated(
+        Parser.Separated(
             element: self,
             separator: separator,
             allowTrailing: allowTrailing
