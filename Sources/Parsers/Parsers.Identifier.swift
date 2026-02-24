@@ -21,7 +21,7 @@
 //  ```
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for identifier parsing types.
     public enum Identifier: Sendable {}
 }
@@ -57,13 +57,13 @@ extension Parser.Identifier {
     }
 }
 
-extension Parser.Identifier.CStyle: Parser.Parser {
+extension Parser.Identifier.CStyle: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Int
+    public typealias ParseOutput = Int
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Check for valid start character
         guard let first = input.first, Self.isStartChar(first) else {
             throw .predicateFailed(description: "identifier start character")
@@ -135,13 +135,13 @@ extension Parser.Identifier {
     }
 }
 
-extension Parser.Identifier.Custom: Parser.Parser {
+extension Parser.Identifier.Custom: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Int
+    public typealias ParseOutput = Int
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Check for valid start character
         guard let first = input.first, isStart(first) else {
             throw .predicateFailed(description: "identifier start character")
@@ -162,7 +162,7 @@ extension Parser.Identifier.Custom: Parser.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to identifier parsers via nested accessor pattern.
     ///
     /// Usage:

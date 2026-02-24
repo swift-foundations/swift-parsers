@@ -19,7 +19,7 @@
 //  - Doubling: "" for literal " (CSV/SQL style)
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for quoted string parsing types.
     public enum Quoted: Sendable {}
 }
@@ -105,13 +105,13 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Double: Parser.Parser {
+extension Parser.Quoted.Double: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = String
+    public typealias ParseOutput = String
     public typealias Failure = Parser.Quoted.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Expect opening quote
         guard input.first == UInt8(ascii: "\"") else {
             throw .missingOpenQuote
@@ -191,13 +191,13 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Single: Parser.Parser {
+extension Parser.Quoted.Single: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = String
+    public typealias ParseOutput = String
     public typealias Failure = Parser.Quoted.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Expect opening quote
         guard input.first == UInt8(ascii: "'") else {
             throw .missingOpenQuote
@@ -256,13 +256,13 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Doubling: Parser.Parser {
+extension Parser.Quoted.Doubling: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = String
+    public typealias ParseOutput = String
     public typealias Failure = Parser.Quoted.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Expect opening quote
         guard input.first == quote else {
             throw .missingOpenQuote
@@ -294,7 +294,7 @@ extension Parser.Quoted.Doubling: Parser.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to quoted string parsers via nested accessor pattern.
     ///
     /// Usage:

@@ -13,7 +13,7 @@
 //  These are fundamental for expression parsing.
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for chain parsing types.
     public enum Chain: Sendable {}
 }
@@ -44,10 +44,10 @@ extension Parser.Chain {
     /// var input = "1+2+3"[...].utf8
     /// let result = try expr.parse(&input)  // 6
     /// ```
-    public struct Left<Operand: Parser.Parser, Operator: Parser.Parser>: Sendable
+    public struct Left<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>: Sendable
     where Operand: Sendable, Operator: Sendable,
           Operand.Input == Operator.Input,
-          Operand.Output: Sendable {
+          Operand.ParseOutput: Sendable {
 
         /// The operand parser.
         @usableFromInline
@@ -59,7 +59,7 @@ extension Parser.Chain {
 
         /// Combines two operands using the parsed operator.
         @usableFromInline
-        let combine: @Sendable (Operand.Output, Operator.Output, Operand.Output) -> Operand.Output
+        let combine: @Sendable (Operand.ParseOutput, Operator.ParseOutput, Operand.ParseOutput) -> Operand.ParseOutput
 
         /// Creates a left-associative chain parser.
         ///
@@ -71,7 +71,7 @@ extension Parser.Chain {
         public init(
             operand: Operand,
             operator: Operator,
-            combine: @escaping @Sendable (Operand.Output, Operator.Output, Operand.Output) -> Operand.Output
+            combine: @escaping @Sendable (Operand.ParseOutput, Operator.ParseOutput, Operand.ParseOutput) -> Operand.ParseOutput
         ) {
             self.operand = operand
             self.operator = `operator`
@@ -80,23 +80,22 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.Chain.Left: Parser.Parser
-where Operand.Input: Parser.Input {
+extension Parser.Chain.Left: Parser.`Protocol` {
     public typealias Input = Operand.Input
-    public typealias Output = Operand.Output
+    public typealias ParseOutput = Operand.ParseOutput
     public typealias Failure = Operand.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Parse first operand
         var result = try operand.parse(&input)
 
         // Parse (operator operand)* with left folding
         while true {
-            let checkpoint = input.checkpoint
+            let saved = input
 
             // Try operator
-            let op: Operator.Output
+            let op: Operator.ParseOutput
             do {
                 op = try `operator`.parse(&input)
             } catch {
@@ -104,12 +103,12 @@ where Operand.Input: Parser.Input {
             }
 
             // Try next operand
-            let rhs: Operand.Output
+            let rhs: Operand.ParseOutput
             do {
                 rhs = try operand.parse(&input)
             } catch {
                 // Restore and break
-                input.restore(to: checkpoint)
+                input = saved
                 break
             }
 
@@ -147,11 +146,10 @@ extension Parser.Chain {
     /// var input = "2^3^4"[...].utf8
     /// let result = try power.parse(&input)  // 2^81 = 2417851639229258349412352
     /// ```
-    public struct Right<Operand: Parser.Parser, Operator: Parser.Parser>: Sendable
+    public struct Right<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>: Sendable
     where Operand: Sendable, Operator: Sendable,
           Operand.Input == Operator.Input,
-          Operand.Input: Parser.Input,
-          Operand.Output: Sendable {
+          Operand.ParseOutput: Sendable {
 
         /// The operand parser.
         @usableFromInline
@@ -163,7 +161,7 @@ extension Parser.Chain {
 
         /// Combines two operands using the parsed operator.
         @usableFromInline
-        let combine: @Sendable (Operand.Output, Operator.Output, Operand.Output) -> Operand.Output
+        let combine: @Sendable (Operand.ParseOutput, Operator.ParseOutput, Operand.ParseOutput) -> Operand.ParseOutput
 
         /// Creates a right-associative chain parser.
         ///
@@ -175,7 +173,7 @@ extension Parser.Chain {
         public init(
             operand: Operand,
             operator: Operator,
-            combine: @escaping @Sendable (Operand.Output, Operator.Output, Operand.Output) -> Operand.Output
+            combine: @escaping @Sendable (Operand.ParseOutput, Operator.ParseOutput, Operand.ParseOutput) -> Operand.ParseOutput
         ) {
             self.operand = operand
             self.operator = `operator`
@@ -184,20 +182,20 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.Chain.Right: Parser.Parser {
+extension Parser.Chain.Right: Parser.`Protocol` {
     public typealias Input = Operand.Input
-    public typealias Output = Operand.Output
+    public typealias ParseOutput = Operand.ParseOutput
     public typealias Failure = Operand.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Parse first operand
         let lhs = try operand.parse(&input)
 
-        let checkpoint = input.checkpoint
+        let saved = input
 
         // Try operator
-        let op: Operator.Output
+        let op: Operator.ParseOutput
         do {
             op = try `operator`.parse(&input)
         } catch {
@@ -206,12 +204,12 @@ extension Parser.Chain.Right: Parser.Parser {
         }
 
         // Recursively parse right side (for right associativity)
-        let rhs: Operand.Output
+        let rhs: Operand.ParseOutput
         do {
             rhs = try parse(&input)
         } catch {
             // Restore and return single operand
-            input.restore(to: checkpoint)
+            input = saved
             return lhs
         }
 
@@ -221,7 +219,7 @@ extension Parser.Chain.Right: Parser.Parser {
 
 // MARK: - Parser Extensions
 
-extension Parser.Parser where Self: Sendable, Output: Sendable {
+extension Parser.`Protocol` where Self: Sendable, ParseOutput: Sendable {
     /// Creates a left-associative chain of this operand with an operator.
     ///
     /// - Parameters:
@@ -229,9 +227,9 @@ extension Parser.Parser where Self: Sendable, Output: Sendable {
     ///   - combine: Function to combine operands.
     /// - Returns: A left-associative chain parser.
     @inlinable
-    public func chainLeft<Op: Parser.Parser>(
+    public func chainLeft<Op: Parser.`Protocol`>(
         _ op: Op,
-        combine: @escaping @Sendable (Output, Op.Output, Output) -> Output
+        combine: @escaping @Sendable (ParseOutput, Op.ParseOutput, ParseOutput) -> ParseOutput
     ) -> Parser.Chain.Left<Self, Op>
     where Op.Input == Input, Op: Sendable {
         Parser.Chain.Left<Self, Op>(operand: self, operator: op, combine: combine)
@@ -244,11 +242,11 @@ extension Parser.Parser where Self: Sendable, Output: Sendable {
     ///   - combine: Function to combine operands.
     /// - Returns: A right-associative chain parser.
     @inlinable
-    public func chainRight<Op: Parser.Parser>(
+    public func chainRight<Op: Parser.`Protocol`>(
         _ op: Op,
-        combine: @escaping @Sendable (Output, Op.Output, Output) -> Output
+        combine: @escaping @Sendable (ParseOutput, Op.ParseOutput, ParseOutput) -> ParseOutput
     ) -> Parser.Chain.Right<Self, Op>
-    where Op.Input == Input, Op: Sendable, Input: Parser.Input {
+    where Op.Input == Input, Op: Sendable {
         Parser.Chain.Right<Self, Op>(operand: self, operator: op, combine: combine)
     }
 }

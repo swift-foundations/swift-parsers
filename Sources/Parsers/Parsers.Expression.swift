@@ -28,7 +28,7 @@
 //  needing separate grammar rules for each level.
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for expression parsing types.
     public enum Expression: Sendable {}
 }
@@ -53,7 +53,7 @@ extension Parser.Expression {
     /// Defines an infix operator with precedence and associativity.
     ///
     /// All operators in a `Climbing` parser must use the same `Op` parser type.
-    public struct Operator<Operand: Sendable, Op: Parser.Parser & Sendable>: Sendable {
+    public struct Operator<Operand: Sendable, Op: Parser.`Protocol` & Sendable>: Sendable {
         /// The operator parser.
         public let parser: Op
 
@@ -92,7 +92,7 @@ extension Parser.Expression {
 
 extension Parser.Expression {
     /// Defines a prefix (unary) operator.
-    public struct PrefixOperator<Operand: Sendable, Op: Parser.Parser & Sendable>: Sendable {
+    public struct PrefixOperator<Operand: Sendable, Op: Parser.`Protocol` & Sendable>: Sendable {
         /// The operator parser.
         public let parser: Op
 
@@ -119,7 +119,7 @@ extension Parser.Expression {
 
 extension Parser.Expression {
     /// Defines a postfix (unary) operator.
-    public struct PostfixOperator<Operand: Sendable, Op: Parser.Parser & Sendable>: Sendable {
+    public struct PostfixOperator<Operand: Sendable, Op: Parser.`Protocol` & Sendable>: Sendable {
         /// The operator parser.
         public let parser: Op
 
@@ -163,12 +163,11 @@ extension Parser.Expression {
     ///     ]
     /// )
     /// ```
-    public struct Climbing<Atom: Parser.Parser & Sendable, Op: Parser.Parser & Sendable>: Sendable
-    where Atom.Input: Parser.Input,
-          Atom.Input == Op.Input,
-          Atom.Output: Sendable {
+    public struct Climbing<Atom: Parser.`Protocol` & Sendable, Op: Parser.`Protocol` & Sendable>: Sendable
+    where Atom.Input == Op.Input,
+          Atom.ParseOutput: Sendable {
 
-        public typealias Operand = Atom.Output
+        public typealias Operand = Atom.ParseOutput
 
         /// The atom parser.
         @usableFromInline
@@ -209,13 +208,13 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression.Climbing: Parser.Parser {
+extension Parser.Expression.Climbing: Parser.`Protocol` {
     public typealias Input = Atom.Input
-    public typealias Output = Atom.Output
+    public typealias ParseOutput = Atom.ParseOutput
     public typealias Failure = Atom.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         try parseExpression(&input, minPrecedence: 0)
     }
 
@@ -228,12 +227,12 @@ extension Parser.Expression.Climbing: Parser.Parser {
 
         // Apply postfix operators
         for postfix in postfixOps {
-            let checkpoint = input.checkpoint
+            let saved = input
             do {
                 _ = try postfix.parser.parse(&input)
                 lhs = postfix.apply(lhs)
             } catch {
-                input.restore(to: checkpoint)
+                input = saved
             }
         }
 
@@ -241,17 +240,17 @@ extension Parser.Expression.Climbing: Parser.Parser {
         while true {
             // Find matching operator at this precedence level
             var matchedOp: Parser.Expression.Operator<Operand, Op>?
-            var opCheckpoint = input.checkpoint
+            var opSaved = input
 
             for op in operators where op.precedence >= minPrecedence {
-                let checkpoint = input.checkpoint
+                let saved = input
                 do {
                     _ = try op.parser.parse(&input)
                     matchedOp = op
-                    opCheckpoint = checkpoint
+                    opSaved = saved
                     break
                 } catch {
-                    input.restore(to: checkpoint)
+                    input = saved
                 }
             }
 
@@ -276,7 +275,7 @@ extension Parser.Expression.Climbing: Parser.Parser {
                 rhs = try parseExpression(&input, minPrecedence: nextPrecedence)
             } catch {
                 // Restore to before operator
-                input.restore(to: opCheckpoint)
+                input = opSaved
                 break
             }
 
@@ -290,13 +289,13 @@ extension Parser.Expression.Climbing: Parser.Parser {
     func parsePrimary(_ input: inout Input) throws(Failure) -> Operand {
         // Try prefix operators
         for prefix in prefixOps {
-            let checkpoint = input.checkpoint
+            let saved = input
             do {
                 _ = try prefix.parser.parse(&input)
                 let operand = try parsePrimary(&input)
                 return prefix.apply(operand)
             } catch {
-                input.restore(to: checkpoint)
+                input = saved
             }
         }
 
@@ -307,7 +306,7 @@ extension Parser.Expression.Climbing: Parser.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to expression parsing types via nested accessor pattern.
     ///
     /// Usage:

@@ -25,7 +25,7 @@
 //  ```
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for integer parsing types.
     ///
     /// Provides parsers for decimal, hexadecimal, binary, and octal integers
@@ -112,7 +112,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Decimal: Parser.Parser {
+extension Parser.Integer.Decimal: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -209,7 +209,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Hexadecimal: Parser.Parser {
+extension Parser.Integer.Hexadecimal: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -302,7 +302,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Binary: Parser.Parser {
+extension Parser.Integer.Binary: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -383,7 +383,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Octal: Parser.Parser {
+extension Parser.Integer.Octal: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -438,7 +438,7 @@ extension Parser.Integer.Octal: Parser.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to integer parsers via nested accessor pattern.
     ///
     /// Usage:

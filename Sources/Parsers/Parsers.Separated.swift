@@ -18,7 +18,7 @@
 //  - Allowing empty elements
 //
 
-extension Parsers {
+extension Parser {
     /// A parser that matches values separated by a delimiter.
     ///
     /// Parses zero or more occurrences of `Element` separated by `Separator`.
@@ -41,10 +41,9 @@ extension Parsers {
     /// var input = "a,b,c"[...].utf8
     /// let values = try csv.parse(&input)  // ["a", "b", "c"]
     /// ```
-    public struct Separated<Element: Parser, Separator: Parser>: Sendable
+    public struct Separated<Element: Parser.`Protocol`, Separator: Parser.`Protocol`>: Sendable
     where Element: Sendable, Separator: Sendable,
-          Element.Input == Separator.Input,
-          Element.Input: Parser.Input {
+          Element.Input == Separator.Input {
 
         /// The element parser.
         @usableFromInline
@@ -88,17 +87,17 @@ extension Parsers {
     }
 }
 
-extension Parser.Separated: Parser.Parser {
+extension Parser.Separated: Parser.`Protocol` {
     public typealias Input = Element.Input
-    public typealias Output = [Element.Output]
+    public typealias ParseOutput = [Element.ParseOutput]
     public typealias Failure = Parser.Error.Either<
         Parser.Constraint.Error,
         Element.Failure
     >
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
-        var results: [Element.Output] = []
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+        var results: [Element.ParseOutput] = []
 
         // Try to parse first element
         do {
@@ -114,7 +113,7 @@ extension Parser.Separated: Parser.Parser {
 
         // Parse separator + element pairs
         while maxCount.map({ results.count < $0 }) ?? true {
-            let checkpoint = input.checkpoint
+            let saved = input
 
             // Try separator
             do {
@@ -135,7 +134,7 @@ extension Parser.Separated: Parser.Parser {
                     break
                 } else {
                     // Restore to before separator and fail
-                    input.restore(to: checkpoint)
+                    input = saved
                     break
                 }
             }
@@ -152,7 +151,7 @@ extension Parser.Separated: Parser.Parser {
 
 // MARK: - Parser Extension
 
-extension Parser.Parser where Input: Parser.Input {
+extension Parser.`Protocol` {
     /// Creates a parser that matches this parser separated by a delimiter.
     ///
     /// - Parameters:
@@ -160,7 +159,7 @@ extension Parser.Parser where Input: Parser.Input {
     ///   - allowTrailing: Allow trailing separator. Default `false`.
     /// - Returns: A parser matching separated values.
     @inlinable
-    public func separated<S: Parser.Parser>(
+    public func separated<S: Parser.`Protocol`>(
         by separator: S,
         allowTrailing: Bool = false
     ) -> Parser.Separated<Self, S>

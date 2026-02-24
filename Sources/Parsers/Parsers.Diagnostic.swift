@@ -26,7 +26,7 @@
 //  ```
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for diagnostic types.
     public enum Diagnostic: Sendable {}
 }
@@ -314,7 +314,7 @@ extension Parser.Diagnostic {
 
 // MARK: - Error Extension
 
-extension Parser.Error.LocatedError {
+extension Parser.Error.Located {
     /// Formats this located error with source context.
     ///
     /// - Parameters:
@@ -331,7 +331,7 @@ extension Parser.Error.LocatedError {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to diagnostic types via nested accessor pattern.
     ///
     /// Usage:

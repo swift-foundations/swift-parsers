@@ -16,7 +16,7 @@
 //  that allow /* /* nested */ */.
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for comment parsing types.
     public enum Comment: Sendable {}
 }
@@ -57,18 +57,18 @@ extension Parser.Comment {
         /// - Parameter prefix: The comment start prefix.
         @inlinable
         public init(prefix: StaticString = "//") {
-            self.prefixBytes = prefix.withUTF8Buffer { Array($0) }
+            self.prefixBytes = prefix.withUTF8Buffer { [UInt8]($0) }
         }
     }
 }
 
-extension Parser.Comment.Line: Parser.Parser {
+extension Parser.Comment.Line: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = String
+    public typealias ParseOutput = String
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Match prefix
         var inputCopy = input
         for expected in prefixBytes {
@@ -142,8 +142,8 @@ extension Parser.Comment {
             close: StaticString = "*/",
             nestable: Bool = false
         ) {
-            self.openBytes = open.withUTF8Buffer { Array($0) }
-            self.closeBytes = close.withUTF8Buffer { Array($0) }
+            self.openBytes = open.withUTF8Buffer { [UInt8]($0) }
+            self.closeBytes = close.withUTF8Buffer { [UInt8]($0) }
             self.nestable = nestable
         }
     }
@@ -160,13 +160,13 @@ extension Parser.Comment.Block {
     }
 }
 
-extension Parser.Comment.Block: Parser.Parser {
+extension Parser.Comment.Block: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = String
+    public typealias ParseOutput = String
     public typealias Failure = Parser.Comment.Block.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Match opening delimiter
         var inputCopy = input
         for expected in openBytes {
@@ -227,7 +227,7 @@ extension Parser.Comment.Block: Parser.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to comment parsers via nested accessor pattern.
     ///
     /// Usage:

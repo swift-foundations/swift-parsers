@@ -14,7 +14,7 @@
 //  This module provides parsers for each style and a universal parser.
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for newline parsing types.
     public enum Newline: Sendable {}
 }
@@ -31,9 +31,9 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.LF: Parser.Parser {
+extension Parser.Newline.LF: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Void
+    public typealias ParseOutput = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -58,9 +58,9 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.CR: Parser.Parser {
+extension Parser.Newline.CR: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Void
+    public typealias ParseOutput = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -84,9 +84,9 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.CRLF: Parser.Parser {
+extension Parser.Newline.CRLF: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Void
+    public typealias ParseOutput = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -127,9 +127,9 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.`Any`: Parser.Parser {
+extension Parser.Newline.`Any`: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Void
+    public typealias ParseOutput = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -174,14 +174,14 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.Line: Parser.Parser {
+extension Parser.Newline.Line: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias Output = Int
+    public typealias ParseOutput = Int
     public typealias Failure = Never
 
     /// Parses until a newline and returns the byte count consumed.
     @inlinable
-    public func parse(_ input: inout Input) -> Output {
+    public func parse(_ input: inout Input) -> ParseOutput {
         var count = 0
 
         while let byte = input.first, byte != 0x0A, byte != 0x0D {
@@ -195,7 +195,7 @@ extension Parser.Newline.Line: Parser.Parser {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to newline parsers via nested accessor pattern.
     ///
     /// Usage:

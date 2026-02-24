@@ -12,10 +12,10 @@ import Parsers_Test_Support
 struct ArithmeticTests {
 
     // Simple integer parser for atoms
-    struct IntAtom: Parsers.Parser, Sendable {
+    struct IntAtom: Parser.`Protocol`, Sendable {
         typealias Input = Substring.UTF8View
         typealias Output = Int
-        typealias Failure = Parsers.Match.Error
+        typealias Failure = Parser.Match.Error
 
         func parse(_ input: inout Input) throws(Failure) -> Int {
             var result = 0
@@ -38,10 +38,10 @@ struct ArithmeticTests {
     }
 
     // Simple operator parser
-    struct PlusOp: Parsers.Parser, Sendable {
+    struct PlusOp: Parser.`Protocol`, Sendable {
         typealias Input = Substring.UTF8View
         typealias Output = Void
-        typealias Failure = Parsers.Match.Error
+        typealias Failure = Parser.Match.Error
 
         func parse(_ input: inout Input) throws(Failure) -> Void {
             guard input.first == UInt8(ascii: "+") else {
@@ -51,10 +51,10 @@ struct ArithmeticTests {
         }
     }
 
-    struct MinusOp: Parsers.Parser, Sendable {
+    struct MinusOp: Parser.`Protocol`, Sendable {
         typealias Input = Substring.UTF8View
         typealias Output = Void
-        typealias Failure = Parsers.Match.Error
+        typealias Failure = Parser.Match.Error
 
         func parse(_ input: inout Input) throws(Failure) -> Void {
             guard input.first == UInt8(ascii: "-") else {
@@ -64,10 +64,10 @@ struct ArithmeticTests {
         }
     }
 
-    struct StarOp: Parsers.Parser, Sendable {
+    struct StarOp: Parser.`Protocol`, Sendable {
         typealias Input = Substring.UTF8View
         typealias Output = Void
-        typealias Failure = Parsers.Match.Error
+        typealias Failure = Parser.Match.Error
 
         func parse(_ input: inout Input) throws(Failure) -> Void {
             guard input.first == UInt8(ascii: "*") else {

@@ -14,7 +14,7 @@
 //  - XML/HTML tags: `<tag>content</tag>`
 //
 
-extension Parsers {
+extension Parser {
     /// A parser that matches content between open and close delimiters.
     ///
     /// Parses `open`, then `content`, then `close`, returning the content.
@@ -37,7 +37,7 @@ extension Parsers {
     /// var input = "(42)"[...].utf8
     /// let value = try parens.parse(&input)  // 42
     /// ```
-    public struct Between<Open: Parser, Content: Parser, Close: Parser>: Sendable
+    public struct Between<Open: Parser.`Protocol`, Content: Parser.`Protocol`, Close: Parser.`Protocol`>: Sendable
     where Open: Sendable, Content: Sendable, Close: Sendable,
           Open.Input == Content.Input, Content.Input == Close.Input {
 
@@ -72,16 +72,16 @@ extension Parsers {
     }
 }
 
-extension Parser.Between: Parser.Parser {
+extension Parser.Between: Parser.`Protocol` {
     public typealias Input = Content.Input
-    public typealias Output = Content.Output
+    public typealias ParseOutput = Content.ParseOutput
     public typealias Failure = Parser.Error.Either<
         Parser.Error.Either<Open.Failure, Content.Failure>,
         Close.Failure
     >
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Parse open
         do {
             _ = try open.parse(&input)
@@ -90,7 +90,7 @@ extension Parser.Between: Parser.Parser {
         }
 
         // Parse content
-        let result: Content.Output
+        let result: Content.ParseOutput
         do {
             result = try content.parse(&input)
         } catch let error {
@@ -110,7 +110,7 @@ extension Parser.Between: Parser.Parser {
 
 // MARK: - Parser Extension
 
-extension Parser.Parser {
+extension Parser.`Protocol` {
     /// Creates a parser that matches this parser between delimiters.
     ///
     /// - Parameters:
@@ -118,7 +118,7 @@ extension Parser.Parser {
     ///   - close: The closing delimiter parser.
     /// - Returns: A parser matching content between delimiters.
     @inlinable
-    public func between<Open: Parser.Parser, Close: Parser.Parser>(
+    public func between<Open: Parser.`Protocol`, Close: Parser.`Protocol`>(
         _ open: Open,
         _ close: Close
     ) -> Parser.Between<Open, Self, Close>
@@ -130,7 +130,7 @@ extension Parser.Parser {
 
 // MARK: - Surrounded (Same Delimiter)
 
-extension Parsers {
+extension Parser {
     /// A parser that matches content surrounded by the same delimiter.
     ///
     /// Convenience for when open and close delimiters are identical.
@@ -146,7 +146,7 @@ extension Parsers {
     /// var input = "`foo`"[...].utf8
     /// let value = try backticked.parse(&input)  // "foo"
     /// ```
-    public struct Surrounded<Delimiter: Parser, Content: Parser>: Sendable
+    public struct Surrounded<Delimiter: Parser.`Protocol`, Content: Parser.`Protocol`>: Sendable
     where Delimiter: Sendable, Content: Sendable,
           Delimiter.Input == Content.Input {
 
@@ -174,16 +174,16 @@ extension Parsers {
     }
 }
 
-extension Parser.Surrounded: Parser.Parser {
+extension Parser.Surrounded: Parser.`Protocol` {
     public typealias Input = Content.Input
-    public typealias Output = Content.Output
+    public typealias ParseOutput = Content.ParseOutput
     public typealias Failure = Parser.Error.Either<
         Parser.Error.Either<Delimiter.Failure, Content.Failure>,
         Delimiter.Failure
     >
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         // Parse open
         do {
             _ = try delimiter.parse(&input)
@@ -192,7 +192,7 @@ extension Parser.Surrounded: Parser.Parser {
         }
 
         // Parse content
-        let result: Content.Output
+        let result: Content.ParseOutput
         do {
             result = try content.parse(&input)
         } catch let error {
@@ -212,13 +212,13 @@ extension Parser.Surrounded: Parser.Parser {
 
 // MARK: - Parser Extension for Surrounded
 
-extension Parser.Parser {
+extension Parser.`Protocol` {
     /// Creates a parser that matches this parser surrounded by a delimiter.
     ///
     /// - Parameter delimiter: The delimiter parser (same for open and close).
     /// - Returns: A parser matching content between identical delimiters.
     @inlinable
-    public func surrounded<D: Parser.Parser>(
+    public func surrounded<D: Parser.`Protocol`>(
         by delimiter: D
     ) -> Parser.Surrounded<D, Self>
     where D.Input == Input, D: Sendable, Self: Sendable {

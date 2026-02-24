@@ -15,7 +15,7 @@
 //  changing parsing behavior.
 //
 
-extension Parsers {
+extension Parser {
     /// Namespace for debugging types.
     public enum Debug: Sendable {}
 }
@@ -36,8 +36,8 @@ extension Parser.Debug {
     /// // [myParser] entering at offset 0
     /// // [myParser] succeeded, consumed 5 bytes
     /// ```
-    public struct Trace<P: Parser.Parser>: Sendable
-    where P: Sendable, P.Input: Parser.Input {
+    public struct Trace<P: Parser.`Protocol`>: Sendable
+    where P: Sendable, P.Input: Swift.Collection {
         /// The wrapped parser.
         @usableFromInline
         let inner: P
@@ -68,13 +68,13 @@ extension Parser.Debug {
     }
 }
 
-extension Parser.Debug.Trace: Parser.Parser {
+extension Parser.Debug.Trace: Parser.`Protocol` {
     public typealias Input = P.Input
-    public typealias Output = P.Output
+    public typealias ParseOutput = P.ParseOutput
     public typealias Failure = P.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         let startCount = input.count
         output("[\(label)] entering at offset \(startCount)")
 
@@ -105,7 +105,7 @@ extension Parser.Debug {
     /// // ... use parser multiple times ...
     /// print(profiled.stats.report())
     /// ```
-    public struct Profile<P: Parser.Parser>: Sendable
+    public struct Profile<P: Parser.`Protocol`>: Sendable
     where P: Sendable {
         /// The wrapped parser.
         @usableFromInline
@@ -255,13 +255,13 @@ extension Parser.Debug.Profile {
     }
 }
 
-extension Parser.Debug.Profile: Parser.Parser {
+extension Parser.Debug.Profile: Parser.`Protocol` {
     public typealias Input = P.Input
-    public typealias Output = P.Output
+    public typealias ParseOutput = P.ParseOutput
     public typealias Failure = P.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Output {
+    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
         let start = ContinuousClock.now
 
         do {
@@ -279,7 +279,7 @@ extension Parser.Debug.Profile: Parser.Parser {
 
 // MARK: - Parser Extensions
 
-extension Parser.Parser where Self: Sendable, Input: Parser.Input {
+extension Parser.`Protocol` where Self: Sendable, Input: Swift.Collection {
     /// Wraps this parser with tracing.
     ///
     /// - Parameters:
@@ -295,7 +295,7 @@ extension Parser.Parser where Self: Sendable, Input: Parser.Input {
     }
 }
 
-extension Parser.Parser where Self: Sendable {
+extension Parser.`Protocol` where Self: Sendable {
     /// Wraps this parser with profiling.
     ///
     /// - Parameter label: Label for reports.
@@ -308,7 +308,7 @@ extension Parser.Parser where Self: Sendable {
 
 // MARK: - Convenience Accessors
 
-extension Parsers {
+extension Parser {
     /// Access to debug types via nested accessor pattern.
     ///
     /// Usage:
