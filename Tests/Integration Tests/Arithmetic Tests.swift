@@ -79,7 +79,7 @@ struct ArithmeticTests {
 
     @Test("ChainLeft - simple addition")
     func chainLeftAddition() throws {
-        let parser = IntAtom().chainLeft(PlusOp()) { lhs, _, rhs in
+        let parser = IntAtom().chain.left(PlusOp()) { lhs, _, rhs in
             lhs + rhs
         }
 
@@ -90,7 +90,7 @@ struct ArithmeticTests {
 
     @Test("ChainLeft - single operand")
     func chainLeftSingle() throws {
-        let parser = IntAtom().chainLeft(PlusOp()) { lhs, _, rhs in
+        let parser = IntAtom().chain.left(PlusOp()) { lhs, _, rhs in
             lhs + rhs
         }
 

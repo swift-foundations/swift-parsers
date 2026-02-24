@@ -43,7 +43,8 @@ extension Parser {
     /// ```
     public struct Separated<Element: Parser.`Protocol`, Separator: Parser.`Protocol`>: Sendable
     where Element: Sendable, Separator: Sendable,
-          Element.Input == Separator.Input {
+          Element.Input == Separator.Input,
+          Element.Input: Copyable {
 
         /// The element parser.
         @usableFromInline
@@ -163,7 +164,7 @@ extension Parser.`Protocol` {
         by separator: S,
         allowTrailing: Bool = false
     ) -> Parser.Separated<Self, S>
-    where S.Input == Input, S: Sendable, Self: Sendable {
+    where S.Input == Input, S: Sendable, Self: Sendable, Input: Copyable {
         Parser.Separated(
             element: self,
             separator: separator,

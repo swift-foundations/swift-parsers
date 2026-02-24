@@ -47,7 +47,8 @@ extension Parser.Chain {
     public struct Left<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>: Sendable
     where Operand: Sendable, Operator: Sendable,
           Operand.Input == Operator.Input,
-          Operand.ParseOutput: Sendable {
+          Operand.ParseOutput: Sendable,
+          Operand.Input: Copyable {
 
         /// The operand parser.
         @usableFromInline
@@ -149,7 +150,8 @@ extension Parser.Chain {
     public struct Right<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>: Sendable
     where Operand: Sendable, Operator: Sendable,
           Operand.Input == Operator.Input,
-          Operand.ParseOutput: Sendable {
+          Operand.ParseOutput: Sendable,
+          Operand.Input: Copyable {
 
         /// The operand parser.
         @usableFromInline
@@ -217,36 +219,59 @@ extension Parser.Chain.Right: Parser.`Protocol` {
     }
 }
 
-// MARK: - Parser Extensions
+// MARK: - Nested Accessor
+
+extension Parser.Chain {
+    /// Accessor for creating chain parsers from an operand.
+    ///
+    /// Obtained via `operand.chain.left(...)` or `operand.chain.right(...)`.
+    public struct Access<Operand: Parser.`Protocol` & Sendable>
+    where Operand.ParseOutput: Sendable {
+
+        @usableFromInline
+        let operand: Operand
+
+        @usableFromInline
+        init(operand: Operand) {
+            self.operand = operand
+        }
+
+        /// Creates a left-associative chain of the operand with an operator.
+        ///
+        /// - Parameters:
+        ///   - op: The operator parser.
+        ///   - combine: Function to combine operands.
+        /// - Returns: A left-associative chain parser.
+        @inlinable
+        public func left<Op: Parser.`Protocol`>(
+            _ op: Op,
+            combine: @escaping @Sendable (Operand.ParseOutput, Op.ParseOutput, Operand.ParseOutput) -> Operand.ParseOutput
+        ) -> Parser.Chain.Left<Operand, Op>
+        where Op.Input == Operand.Input, Op: Sendable, Operand.Input: Copyable {
+            Parser.Chain.Left(operand: operand, operator: op, combine: combine)
+        }
+
+        /// Creates a right-associative chain of the operand with an operator.
+        ///
+        /// - Parameters:
+        ///   - op: The operator parser.
+        ///   - combine: Function to combine operands.
+        /// - Returns: A right-associative chain parser.
+        @inlinable
+        public func right<Op: Parser.`Protocol`>(
+            _ op: Op,
+            combine: @escaping @Sendable (Operand.ParseOutput, Op.ParseOutput, Operand.ParseOutput) -> Operand.ParseOutput
+        ) -> Parser.Chain.Right<Operand, Op>
+        where Op.Input == Operand.Input, Op: Sendable, Operand.Input: Copyable {
+            Parser.Chain.Right(operand: operand, operator: op, combine: combine)
+        }
+    }
+}
 
 extension Parser.`Protocol` where Self: Sendable, ParseOutput: Sendable {
-    /// Creates a left-associative chain of this operand with an operator.
-    ///
-    /// - Parameters:
-    ///   - op: The operator parser.
-    ///   - combine: Function to combine operands.
-    /// - Returns: A left-associative chain parser.
+    /// Access chain parsing via `operand.chain.left(...)` or `operand.chain.right(...)`.
     @inlinable
-    public func chainLeft<Op: Parser.`Protocol`>(
-        _ op: Op,
-        combine: @escaping @Sendable (ParseOutput, Op.ParseOutput, ParseOutput) -> ParseOutput
-    ) -> Parser.Chain.Left<Self, Op>
-    where Op.Input == Input, Op: Sendable {
-        Parser.Chain.Left<Self, Op>(operand: self, operator: op, combine: combine)
-    }
-
-    /// Creates a right-associative chain of this operand with an operator.
-    ///
-    /// - Parameters:
-    ///   - op: The operator parser.
-    ///   - combine: Function to combine operands.
-    /// - Returns: A right-associative chain parser.
-    @inlinable
-    public func chainRight<Op: Parser.`Protocol`>(
-        _ op: Op,
-        combine: @escaping @Sendable (ParseOutput, Op.ParseOutput, ParseOutput) -> ParseOutput
-    ) -> Parser.Chain.Right<Self, Op>
-    where Op.Input == Input, Op: Sendable {
-        Parser.Chain.Right<Self, Op>(operand: self, operator: op, combine: combine)
+    public var chain: Parser.Chain.Access<Self> {
+        Parser.Chain.Access(operand: self)
     }
 }

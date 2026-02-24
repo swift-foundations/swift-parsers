@@ -165,7 +165,8 @@ extension Parser.Expression {
     /// ```
     public struct Climbing<Atom: Parser.`Protocol` & Sendable, Op: Parser.`Protocol` & Sendable>: Sendable
     where Atom.Input == Op.Input,
-          Atom.ParseOutput: Sendable {
+          Atom.ParseOutput: Sendable,
+          Atom.Input: Copyable {
 
         public typealias Operand = Atom.ParseOutput
 
