@@ -53,10 +53,6 @@ let package = Package(
             name: "Parsers Tests",
             dependencies: ["Parsers Test Support"]
         ),
-        .testTarget(
-            name: "Integration Tests",
-            dependencies: ["Parsers Test Support"]
-        ),
     ],
     swiftLanguageModes: [.v6]
 )
