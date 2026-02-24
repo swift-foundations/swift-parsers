@@ -22,29 +22,41 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../swift-primitives/swift-parser-primitives"),
-        .package(path: "../swift-primitives/swift-formatting-primitives"),
-        .package(path: "../swift-primitives/swift-time-primitives"),
-        .package(path: "../swift-foundations/swift-async")
+        .package(path: "../../swift-primitives/swift-parser-primitives"),
+        .package(path: "../../swift-primitives/swift-parser-machine-primitives"),
+        .package(path: "../../swift-primitives/swift-formatting-primitives"),
+        .package(path: "../../swift-primitives/swift-time-primitives"),
+        .package(path: "../swift-async"),
     ],
     targets: [
         .target(
             name: "Parsers",
             dependencies: [
                 .product(name: "Parser Primitives", package: "swift-parser-primitives"),
-                .product(name: "Parser Machine", package: "swift-parser-primitives"),
+                .product(name: "Parser Machine Primitives", package: "swift-parser-machine-primitives"),
                 .product(name: "Formatting Primitives", package: "swift-formatting-primitives"),
                 .product(name: "Time Primitives", package: "swift-time-primitives"),
-                .product(name: "Async", package: "swift-async")
+                .product(name: "Async", package: "swift-async"),
             ]
         ),
         .target(
             name: "Parsers Test Support",
             dependencies: [
                 "Parsers",
-                .product(name: "Test Primitives", package: "swift-test-primitives")
-            ]
-        )
+            ],
+            path: "Tests/Support"
+        ),
+
+        // MARK: - Tests
+
+        .testTarget(
+            name: "Parsers Tests",
+            dependencies: ["Parsers Test Support"]
+        ),
+        .testTarget(
+            name: "Integration Tests",
+            dependencies: ["Parsers Test Support"]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

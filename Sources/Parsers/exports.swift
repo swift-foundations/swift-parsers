@@ -10,7 +10,7 @@
 //
 
 @_exported public import Parser_Primitives
-@_exported public import Parser_Machine
+@_exported public import Parser_Machine_Primitives
 @_exported public import Formatting_Primitives
 @_exported public import Time_Primitives
 @_exported public import Async
