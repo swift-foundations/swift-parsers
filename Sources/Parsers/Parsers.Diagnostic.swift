@@ -70,35 +70,12 @@ extension Parser.Diagnostic {
     }
 }
 
-// MARK: - Location
-
-extension Parser.Diagnostic {
-    /// A location within source content.
-    public struct Location: Sendable, Equatable {
-        /// 1-indexed line number.
-        public let line: Int
-
-        /// 1-indexed column number.
-        public let column: Int
-
-        /// 0-indexed byte offset.
-        public let offset: Int
-
-        @inlinable
-        public init(line: Int, column: Int, offset: Int) {
-            self.line = line
-            self.column = column
-            self.offset = offset
-        }
-    }
-}
-
 extension Parser.Diagnostic.Source {
-    /// Computes the location for a byte offset.
+    /// Computes the source location for a byte offset.
     ///
     /// - Parameter offset: Byte offset (0-indexed).
-    /// - Returns: Location with line and column.
-    public func location(at offset: Int) -> Parser.Diagnostic.Location {
+    /// - Returns: Source location with file identity, line, and column.
+    public func location(at offset: Int) -> Source_Primitives.Source.Location {
         let targetIndex = content.utf8.index(content.utf8.startIndex, offsetBy: min(offset, content.utf8.count))
 
         // Binary search for line
@@ -118,7 +95,11 @@ extension Parser.Diagnostic.Source {
         let lineStart = lineStarts[lo]
         let column = content.distance(from: lineStart, to: targetIndex) + 1  // 1-indexed
 
-        return Parser.Diagnostic.Location(line: lineNumber, column: column, offset: offset)
+        return Source_Primitives.Source.Location(
+            fileID: filename ?? "",
+            line: lineNumber,
+            column: column
+        )
     }
 
     /// Returns the content of a specific line.
@@ -201,7 +182,7 @@ extension Parser.Diagnostic {
             return formatCaret(error: errorMessage, location: location, source: source)
 
         case .rich:
-            return formatRich(error: errorMessage, location: location, source: source)
+            return formatRich(error: errorMessage, location: location, offset: offset, source: source)
         }
     }
 
@@ -214,7 +195,7 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatCompact(error: String, location: Location, source: Source) -> String {
+    static func formatCompact(error: String, location: Source_Primitives.Source.Location, source: Source) -> String {
         if let filename = source.filename {
             return "\(filename):\(location.line):\(location.column): error: \(error)"
         } else {
@@ -223,7 +204,7 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatExpanded(error: String, location: Location, source: Source, contextLines: Int) -> String {
+    static func formatExpanded(error: String, location: Source_Primitives.Source.Location, source: Source, contextLines: Int) -> String {
         var lines: [String] = []
 
         // Header
@@ -260,7 +241,7 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatCaret(error: String, location: Location, source: Source) -> String {
+    static func formatCaret(error: String, location: Source_Primitives.Source.Location, source: Source) -> String {
         guard let lineContent = source.line(location.line) else {
             return formatCompact(error: error, location: location, source: source)
         }
@@ -274,7 +255,7 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatRich(error: String, location: Location, source: Source) -> String {
+    static func formatRich(error: String, location: Source_Primitives.Source.Location, offset: Int, source: Source) -> String {
         var lines: [String] = []
 
         // Header with filename
@@ -282,7 +263,7 @@ extension Parser.Diagnostic {
         if let filename = source.filename {
             lines.append("ERROR in \(filename) at line \(location.line), column \(location.column)")
         } else {
-            lines.append("ERROR at line \(location.line), column \(location.column), offset \(location.offset)")
+            lines.append("ERROR at line \(location.line), column \(location.column), offset \(offset)")
         }
         lines.append("================================================================================")
         lines.append("")

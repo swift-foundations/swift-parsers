@@ -26,6 +26,7 @@ let package = Package(
         .package(path: "../../swift-primitives/swift-parser-machine-primitives"),
         .package(path: "../../swift-primitives/swift-formatting-primitives"),
         .package(path: "../../swift-primitives/swift-time-primitives"),
+        .package(path: "../../swift-primitives/swift-source-primitives"),
         .package(path: "../swift-async"),
     ],
     targets: [
@@ -36,6 +37,7 @@ let package = Package(
                 .product(name: "Parser Machine Primitives", package: "swift-parser-machine-primitives"),
                 .product(name: "Formatting Primitives", package: "swift-formatting-primitives"),
                 .product(name: "Time Primitives", package: "swift-time-primitives"),
+                .product(name: "Source Primitives", package: "swift-source-primitives"),
                 .product(name: "Async", package: "swift-async"),
             ]
         ),
@@ -63,6 +65,7 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
         .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
         .enableExperimentalFeature("Lifetimes"),
         .enableExperimentalFeature("SuppressedAssociatedTypes"),
         .enableExperimentalFeature("SuppressedAssociatedTypesWithDefaults"),
