@@ -262,15 +262,15 @@ extension Parser.Debug.Profile: Parser.`Protocol` {
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
-        let start = ContinuousClock.now
+        let start = Clock.Continuous.now
 
         do {
             let result = try inner.parse(&input)
-            let elapsed = ContinuousClock.now - start
+            let elapsed = Clock.Continuous.now - start
             stats.recordSuccess(elapsed: elapsed)
             return result
         } catch {
-            let elapsed = ContinuousClock.now - start
+            let elapsed = Clock.Continuous.now - start
             stats.recordFailure(elapsed: elapsed)
             throw error
         }
