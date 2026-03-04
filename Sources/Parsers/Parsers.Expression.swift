@@ -165,10 +165,10 @@ extension Parser.Expression {
     /// ```
     public struct Climbing<Atom: Parser.`Protocol` & Sendable, Op: Parser.`Protocol` & Sendable>: Sendable
     where Atom.Input == Op.Input,
-          Atom.ParseOutput: Sendable,
+          Atom.Output: Sendable,
           Atom.Input: Copyable {
 
-        public typealias Operand = Atom.ParseOutput
+        public typealias Operand = Atom.Output
 
         /// The atom parser.
         @usableFromInline
@@ -211,11 +211,11 @@ extension Parser.Expression {
 
 extension Parser.Expression.Climbing: Parser.`Protocol` {
     public typealias Input = Atom.Input
-    public typealias ParseOutput = Atom.ParseOutput
+    public typealias Output = Atom.Output
     public typealias Failure = Atom.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         try parseExpression(&input, minPrecedence: 0)
     }
 

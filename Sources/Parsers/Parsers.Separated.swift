@@ -90,15 +90,15 @@ extension Parser {
 
 extension Parser.Separated: Parser.`Protocol` {
     public typealias Input = Element.Input
-    public typealias ParseOutput = [Element.ParseOutput]
+    public typealias Output = [Element.Output]
     public typealias Failure = Parser.Error.Either<
         Parser.Constraint.Error,
         Element.Failure
     >
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
-        var results: [Element.ParseOutput] = []
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
+        var results: [Element.Output] = []
 
         // Try to parse first element
         do {

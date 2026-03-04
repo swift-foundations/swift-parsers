@@ -107,11 +107,11 @@ extension Parser.Quoted {
 
 extension Parser.Quoted.Double: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = String
+    public typealias Output = String
     public typealias Failure = Parser.Quoted.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Expect opening quote
         guard input.first == UInt8(ascii: "\"") else {
             throw .missingOpenQuote
@@ -193,11 +193,11 @@ extension Parser.Quoted {
 
 extension Parser.Quoted.Single: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = String
+    public typealias Output = String
     public typealias Failure = Parser.Quoted.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Expect opening quote
         guard input.first == UInt8(ascii: "'") else {
             throw .missingOpenQuote
@@ -258,11 +258,11 @@ extension Parser.Quoted {
 
 extension Parser.Quoted.Doubling: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = String
+    public typealias Output = String
     public typealias Failure = Parser.Quoted.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Expect opening quote
         guard input.first == quote else {
             throw .missingOpenQuote

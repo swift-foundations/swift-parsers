@@ -59,11 +59,11 @@ extension Parser.Identifier {
 
 extension Parser.Identifier.CStyle: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Int
+    public typealias Output = Int
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Check for valid start character
         guard let first = input.first, Self.isStartChar(first) else {
             throw .predicateFailed(description: "identifier start character")
@@ -137,11 +137,11 @@ extension Parser.Identifier {
 
 extension Parser.Identifier.Custom: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Int
+    public typealias Output = Int
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Check for valid start character
         guard let first = input.first, isStart(first) else {
             throw .predicateFailed(description: "identifier start character")

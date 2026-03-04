@@ -11,7 +11,7 @@ struct ParserExpressionTests {
 
 private struct IntAtom: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Int
+    typealias Output = Int
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
@@ -37,7 +37,7 @@ private struct OpParser: Parser.`Protocol`, Sendable {
     let byte: UInt8
 
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = UInt8
+    typealias Output = UInt8
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> UInt8 {

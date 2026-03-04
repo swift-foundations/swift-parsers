@@ -70,11 +70,11 @@ extension Parser.Debug {
 
 extension Parser.Debug.Trace: Parser.`Protocol` {
     public typealias Input = P.Input
-    public typealias ParseOutput = P.ParseOutput
+    public typealias Output = P.Output
     public typealias Failure = P.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         let startCount = input.count
         output("[\(label)] entering at offset \(startCount)")
 
@@ -257,11 +257,11 @@ extension Parser.Debug.Profile {
 
 extension Parser.Debug.Profile: Parser.`Protocol` {
     public typealias Input = P.Input
-    public typealias ParseOutput = P.ParseOutput
+    public typealias Output = P.Output
     public typealias Failure = P.Failure
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         let start = Clock.Continuous.now
 
         do {

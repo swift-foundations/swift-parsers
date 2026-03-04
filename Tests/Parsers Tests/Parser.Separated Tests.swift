@@ -11,7 +11,7 @@ struct ParserSeparatedTests {
 
 private struct DigitParser: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Int
+    typealias Output = Int
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
@@ -27,7 +27,7 @@ private struct DigitParser: Parser.`Protocol`, Sendable {
 
 private struct CommaParser: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Void
+    typealias Output = Void
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Void {

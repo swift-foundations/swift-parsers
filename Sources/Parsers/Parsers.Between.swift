@@ -74,14 +74,14 @@ extension Parser {
 
 extension Parser.Between: Parser.`Protocol` {
     public typealias Input = Content.Input
-    public typealias ParseOutput = Content.ParseOutput
+    public typealias Output = Content.Output
     public typealias Failure = Parser.Error.Either<
         Parser.Error.Either<Open.Failure, Content.Failure>,
         Close.Failure
     >
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Parse open
         do {
             _ = try open.parse(&input)
@@ -90,7 +90,7 @@ extension Parser.Between: Parser.`Protocol` {
         }
 
         // Parse content
-        let result: Content.ParseOutput
+        let result: Content.Output
         do {
             result = try content.parse(&input)
         } catch let error {
@@ -176,14 +176,14 @@ extension Parser {
 
 extension Parser.Surrounded: Parser.`Protocol` {
     public typealias Input = Content.Input
-    public typealias ParseOutput = Content.ParseOutput
+    public typealias Output = Content.Output
     public typealias Failure = Parser.Error.Either<
         Parser.Error.Either<Delimiter.Failure, Content.Failure>,
         Delimiter.Failure
     >
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Parse open
         do {
             _ = try delimiter.parse(&input)
@@ -192,7 +192,7 @@ extension Parser.Surrounded: Parser.`Protocol` {
         }
 
         // Parse content
-        let result: Content.ParseOutput
+        let result: Content.Output
         do {
             result = try content.parse(&input)
         } catch let error {

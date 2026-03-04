@@ -64,11 +64,11 @@ extension Parser.Comment {
 
 extension Parser.Comment.Line: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = String
+    public typealias Output = String
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Match prefix
         var inputCopy = input
         for expected in prefixBytes {
@@ -162,11 +162,11 @@ extension Parser.Comment.Block {
 
 extension Parser.Comment.Block: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = String
+    public typealias Output = String
     public typealias Failure = Parser.Comment.Block.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Match opening delimiter
         var inputCopy = input
         for expected in openBytes {

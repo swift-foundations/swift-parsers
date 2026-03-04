@@ -63,12 +63,12 @@ extension Parser.Whitespace {
 
 extension Parser.Whitespace.Horizontal: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Int
+    public typealias Output = Int
     public typealias Failure = Parser.Constraint.Error
 
     /// Parses horizontal whitespace and returns the count of bytes consumed.
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         var count = 0
 
         while let byte = input.first,
@@ -106,12 +106,12 @@ extension Parser.Whitespace {
 
 extension Parser.Whitespace.Vertical: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Int
+    public typealias Output = Int
     public typealias Failure = Parser.Constraint.Error
 
     /// Parses vertical whitespace and returns the count of newlines consumed.
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         var count = 0
 
         while let byte = input.first {
@@ -158,12 +158,12 @@ extension Parser.Whitespace {
 
 extension Parser.Whitespace.`Any`: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Int
+    public typealias Output = Int
     public typealias Failure = Parser.Constraint.Error
 
     /// Parses any whitespace and returns the count of bytes consumed.
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> ParseOutput {
+    public func parse(_ input: inout Input) throws(Failure) -> Output {
         var count = 0
 
         while let byte = input.first, Parser.Whitespace.isWhitespace(byte) {
@@ -222,7 +222,7 @@ extension Parser.Whitespace {
 
 extension Parser.Whitespace.Skip: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Void
+    public typealias Output = Void
     public typealias Failure = Never
 
     @inlinable

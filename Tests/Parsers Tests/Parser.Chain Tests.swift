@@ -11,7 +11,7 @@ struct ParserChainTests {
 
 private struct IntAtom: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Int
+    typealias Output = Int
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
@@ -35,7 +35,7 @@ private struct IntAtom: Parser.`Protocol`, Sendable {
 
 private struct PlusOp: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Void
+    typealias Output = Void
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Void {
@@ -48,7 +48,7 @@ private struct PlusOp: Parser.`Protocol`, Sendable {
 
 private struct MinusOp: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Void
+    typealias Output = Void
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Void {
@@ -61,7 +61,7 @@ private struct MinusOp: Parser.`Protocol`, Sendable {
 
 private struct CaretOp: Parser.`Protocol`, Sendable {
     typealias Input = Substring.UTF8View
-    typealias ParseOutput = Void
+    typealias Output = Void
     typealias Failure = Parser.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Void {

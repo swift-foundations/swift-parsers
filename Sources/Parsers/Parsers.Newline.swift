@@ -33,7 +33,7 @@ extension Parser.Newline {
 
 extension Parser.Newline.LF: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Void
+    public typealias Output = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -60,7 +60,7 @@ extension Parser.Newline {
 
 extension Parser.Newline.CR: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Void
+    public typealias Output = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -86,7 +86,7 @@ extension Parser.Newline {
 
 extension Parser.Newline.CRLF: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Void
+    public typealias Output = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -129,7 +129,7 @@ extension Parser.Newline {
 
 extension Parser.Newline.`Any`: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Void
+    public typealias Output = Void
     public typealias Failure = Parser.Match.Error
 
     @inlinable
@@ -176,12 +176,12 @@ extension Parser.Newline {
 
 extension Parser.Newline.Line: Parser.`Protocol` {
     public typealias Input = Substring.UTF8View
-    public typealias ParseOutput = Int
+    public typealias Output = Int
     public typealias Failure = Never
 
     /// Parses until a newline and returns the byte count consumed.
     @inlinable
-    public func parse(_ input: inout Input) -> ParseOutput {
+    public func parse(_ input: inout Input) -> Output {
         var count = 0
 
         while let byte = input.first, byte != 0x0A, byte != 0x0D {
