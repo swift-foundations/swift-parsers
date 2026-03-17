@@ -3,8 +3,8 @@
 <!--
 ---
 version: 1.0.0
-last_updated: 2026-02-24
-status: IN_PROGRESS
+last_updated: 2026-03-16
+status: DECISION
 ---
 -->
 
@@ -186,9 +186,9 @@ where Upstream.Input: Input.`Protocol` {
 
 ## Outcome
 
-**Status**: RECOMMENDATION
+**Status**: DECISION
 
-**Recommendation**: **Option B — SuppressedAssociatedTypes, ~Copyable primary, single tier** with a phased rollout.
+**Decision** (2026-03-16): **Option B — SuppressedAssociatedTypes, ~Copyable primary, single tier** chosen, with a phased rollout.
 
 ### Rationale
 
