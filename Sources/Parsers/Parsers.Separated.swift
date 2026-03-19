@@ -91,7 +91,7 @@ extension Parser {
 extension Parser.Separated: Parser.`Protocol` {
     public typealias Input = Element.Input
     public typealias Output = [Element.Output]
-    public typealias Failure = Parser.Error.Either<
+    public typealias Failure = Either<
         Parser.Constraint.Error,
         Element.Failure
     >

@@ -75,8 +75,8 @@ extension Parser {
 extension Parser.Between: Parser.`Protocol` {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
-    public typealias Failure = Parser.Error.Either<
-        Parser.Error.Either<Open.Failure, Content.Failure>,
+    public typealias Failure = Either<
+        Either<Open.Failure, Content.Failure>,
         Close.Failure
     >
 
@@ -177,8 +177,8 @@ extension Parser {
 extension Parser.Surrounded: Parser.`Protocol` {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
-    public typealias Failure = Parser.Error.Either<
-        Parser.Error.Either<Delimiter.Failure, Content.Failure>,
+    public typealias Failure = Either<
+        Either<Delimiter.Failure, Content.Failure>,
         Delimiter.Failure
     >
 
