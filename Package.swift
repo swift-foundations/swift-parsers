@@ -28,6 +28,7 @@ let package = Package(
         .package(path: "../../swift-primitives/swift-time-primitives"),
         .package(path: "../../swift-primitives/swift-source-primitives"),
         .package(path: "../swift-async"),
+        .package(path: "../swift-clocks"),
     ],
     targets: [
         .target(
@@ -39,6 +40,7 @@ let package = Package(
                 .product(name: "Time Primitives", package: "swift-time-primitives"),
                 .product(name: "Source Primitives", package: "swift-source-primitives"),
                 .product(name: "Async", package: "swift-async"),
+                .product(name: "Clocks", package: "swift-clocks"),
             ]
         ),
         .target(

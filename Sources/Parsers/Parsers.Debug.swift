@@ -15,6 +15,8 @@
 //  changing parsing behavior.
 //
 
+public import Clocks
+
 extension Parser {
     /// Namespace for debugging types.
     public enum Debug: Sendable {}
