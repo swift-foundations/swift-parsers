@@ -107,7 +107,7 @@ extension ParserSeparatedTests.EdgeCase {
         )
         var input = "1,2"[...].utf8
 
-        #expect(throws: (any Error).self) {
+        #expect(throws: (any Swift.Error).self) {
             try parser.parse(&input)
         }
     }

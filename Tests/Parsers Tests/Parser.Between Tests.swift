@@ -85,7 +85,7 @@ extension ParserBetweenTests.EdgeCase {
         let parser = content.between(open, close)
         var input = "abc)"[...].utf8
 
-        #expect(throws: (any Error).self) {
+        #expect(throws: (any Swift.Error).self) {
             try parser.parse(&input)
         }
     }
@@ -98,7 +98,7 @@ extension ParserBetweenTests.EdgeCase {
         let parser = content.between(open, close)
         var input = "(abc"[...].utf8
 
-        #expect(throws: (any Error).self) {
+        #expect(throws: (any Swift.Error).self) {
             try parser.parse(&input)
         }
     }

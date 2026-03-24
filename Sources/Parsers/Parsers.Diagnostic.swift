@@ -71,12 +71,13 @@ extension Parser.Diagnostic {
 }
 
 extension Parser.Diagnostic.Source {
-    /// Computes the source location for a byte offset.
+    /// Computes the source location for a text position.
     ///
-    /// - Parameter offset: Byte offset (0-indexed).
+    /// - Parameter offset: Text position (0-indexed).
     /// - Returns: Source location with file identity, line, and column.
-    public func location(at offset: Int) -> Source_Primitives.Source.Location {
-        let targetIndex = content.utf8.index(content.utf8.startIndex, offsetBy: min(offset, content.utf8.count))
+    public func location(at offset: Text.Position) -> Source_Primitives.Source.Location {
+        let rawOffset = Int(bitPattern: offset)
+        let targetIndex = content.utf8.index(content.utf8.startIndex, offsetBy: min(rawOffset, content.utf8.count))
 
         // Binary search for line
         var lo = 0
@@ -162,9 +163,9 @@ extension Parser.Diagnostic {
     ///   - source: Source content for context.
     ///   - style: Formatting style.
     /// - Returns: Formatted diagnostic string.
-    public static func format<E: Error>(
+    public static func format<E: Swift.Error>(
         _ error: E,
-        at offset: Int,
+        at offset: Text.Position,
         in source: Source,
         style: Style = .expanded()
     ) -> String {
@@ -255,7 +256,7 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatRich(error: String, location: Source_Primitives.Source.Location, offset: Int, source: Source) -> String {
+    static func formatRich(error: String, location: Source_Primitives.Source.Location, offset: Text.Position, source: Source) -> String {
         var lines: [String] = []
 
         // Header with filename
