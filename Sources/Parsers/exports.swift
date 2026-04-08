@@ -9,6 +9,7 @@
 //  need to import a single module.
 //
 
+@_exported public import ASCII_Primitives
 @_exported public import Parser_Primitives
 @_exported public import Parser_Machine_Primitives
 @_exported public import Formatting_Primitives

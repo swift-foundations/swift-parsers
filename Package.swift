@@ -22,6 +22,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../../swift-primitives/swift-ascii-primitives"),
         .package(path: "../../swift-primitives/swift-parser-primitives"),
         .package(path: "../../swift-primitives/swift-parser-machine-primitives"),
         .package(path: "../../swift-primitives/swift-formatting-primitives"),
@@ -34,6 +35,7 @@ let package = Package(
         .target(
             name: "Parsers",
             dependencies: [
+                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
                 .product(name: "Parser Primitives", package: "swift-parser-primitives"),
                 .product(name: "Parser Machine Primitives", package: "swift-parser-machine-primitives"),
                 .product(name: "Formatting Primitives", package: "swift-formatting-primitives"),

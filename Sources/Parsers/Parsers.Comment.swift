@@ -81,7 +81,7 @@ extension Parser.Comment.Line: Parser.`Protocol` {
 
         // Consume until newline or EOF
         var content: [UInt8] = []
-        while let byte = input.first, byte != 0x0A, byte != 0x0D {
+        while let byte = input.first, byte != .ascii.lf, byte != .ascii.cr {
             content.append(byte)
             input.removeFirst()
         }

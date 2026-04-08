@@ -21,27 +21,6 @@ extension Parser {
     public enum Whitespace: Sendable {}
 }
 
-// MARK: - ASCII Constants
-
-extension Parser.Whitespace {
-    @usableFromInline
-    static let space: UInt8 = 0x20       // ' '
-
-    @usableFromInline
-    static let tab: UInt8 = 0x09         // '\t'
-
-    @usableFromInline
-    static let lf: UInt8 = 0x0A          // '\n'
-
-    @usableFromInline
-    static let cr: UInt8 = 0x0D          // '\r'
-
-    @usableFromInline
-    static let formFeed: UInt8 = 0x0C    // '\f'
-
-    @usableFromInline
-    static let verticalTab: UInt8 = 0x0B // '\v'
-}
 
 // MARK: - Horizontal Whitespace
 
@@ -72,7 +51,7 @@ extension Parser.Whitespace.Horizontal: Parser.`Protocol` {
         var count = 0
 
         while let byte = input.first,
-              byte == Parser.Whitespace.space || byte == Parser.Whitespace.tab {
+              byte == .ascii.space || byte == .ascii.tab {
             input.removeFirst()
             count += 1
         }
@@ -115,14 +94,14 @@ extension Parser.Whitespace.Vertical: Parser.`Protocol` {
         var count = 0
 
         while let byte = input.first {
-            if byte == Parser.Whitespace.lf {
+            if byte == .ascii.lf {
                 input.removeFirst()
                 count += 1
-            } else if byte == Parser.Whitespace.cr {
+            } else if byte == .ascii.cr {
                 input.removeFirst()
                 count += 1
                 // Consume following LF if present (CRLF)
-                if input.first == Parser.Whitespace.lf {
+                if input.first == .ascii.lf {
                     input.removeFirst()
                 }
             } else {
@@ -230,17 +209,17 @@ extension Parser.Whitespace.Skip: Parser.`Protocol` {
         switch kind {
         case .horizontal:
             while let byte = input.first,
-                  byte == Parser.Whitespace.space || byte == Parser.Whitespace.tab {
+                  byte == .ascii.space || byte == .ascii.tab {
                 input.removeFirst()
             }
 
         case .vertical:
             while let byte = input.first {
-                if byte == Parser.Whitespace.lf {
+                if byte == .ascii.lf {
                     input.removeFirst()
-                } else if byte == Parser.Whitespace.cr {
+                } else if byte == .ascii.cr {
                     input.removeFirst()
-                    if input.first == Parser.Whitespace.lf {
+                    if input.first == .ascii.lf {
                         input.removeFirst()
                     }
                 } else {
@@ -260,14 +239,10 @@ extension Parser.Whitespace.Skip: Parser.`Protocol` {
 
 extension Parser.Whitespace {
     /// Checks if a byte is ASCII whitespace.
+    /// Delegates to ``ASCII/Classification/isWhitespace(_:)`` per [IMPL-060].
     @inlinable
     static func isWhitespace(_ byte: UInt8) -> Bool {
-        byte == space ||
-        byte == tab ||
-        byte == lf ||
-        byte == cr ||
-        byte == formFeed ||
-        byte == verticalTab
+        ASCII.Classification.isWhitespace(byte)
     }
 }
 

@@ -113,7 +113,7 @@ extension Parser.Quoted.Double: Parser.`Protocol` {
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Expect opening quote
-        guard input.first == UInt8(ascii: "\"") else {
+        guard input.first == .ascii.doubleQuote else {
             throw .missingOpenQuote
         }
         input.removeFirst()
@@ -121,11 +121,11 @@ extension Parser.Quoted.Double: Parser.`Protocol` {
         var result: [UInt8] = []
 
         while let byte = input.first {
-            if byte == UInt8(ascii: "\"") {
+            if byte == .ascii.doubleQuote {
                 // Closing quote
                 input.removeFirst()
                 return String(decoding: result, as: UTF8.self)
-            } else if byte == UInt8(ascii: "\\") {
+            } else if byte == .ascii.backslash {
                 // Escape sequence
                 input.removeFirst()
                 guard let escaped = input.first else {
@@ -134,18 +134,18 @@ extension Parser.Quoted.Double: Parser.`Protocol` {
                 input.removeFirst()
 
                 switch escaped {
-                case UInt8(ascii: "\\"): result.append(UInt8(ascii: "\\"))
-                case UInt8(ascii: "\""): result.append(UInt8(ascii: "\""))
-                case UInt8(ascii: "n"):  result.append(0x0A) // LF
-                case UInt8(ascii: "r"):  result.append(0x0D) // CR
-                case UInt8(ascii: "t"):  result.append(0x09) // Tab
-                case UInt8(ascii: "0"):  result.append(0x00) // Null
-                case UInt8(ascii: "b"):  result.append(0x08) // Backspace
-                case UInt8(ascii: "f"):  result.append(0x0C) // Form feed
+                case .ascii.backslash: result.append(.ascii.backslash)
+                case .ascii.doubleQuote: result.append(.ascii.doubleQuote)
+                case .ascii.n:  result.append(.ascii.lf) // LF
+                case .ascii.r:  result.append(.ascii.cr) // CR
+                case .ascii.t:  result.append(.ascii.tab) // Tab
+                case .ascii.0:  result.append(.ascii.nul) // Null
+                case .ascii.b:  result.append(.ascii.bs) // Backspace
+                case .ascii.f:  result.append(.ascii.ff) // Form feed
                 default:
                     throw .invalidEscape(sequence: "\\" + String(UnicodeScalar(escaped)))
                 }
-            } else if byte == 0x0A || byte == 0x0D {
+            } else if byte == .ascii.lf || byte == .ascii.cr {
                 // Newline
                 if allowNewlines {
                     result.append(byte)
@@ -199,7 +199,7 @@ extension Parser.Quoted.Single: Parser.`Protocol` {
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Expect opening quote
-        guard input.first == UInt8(ascii: "'") else {
+        guard input.first == .ascii.apostrophe else {
             throw .missingOpenQuote
         }
         input.removeFirst()
@@ -207,11 +207,11 @@ extension Parser.Quoted.Single: Parser.`Protocol` {
         var result: [UInt8] = []
 
         while let byte = input.first {
-            if byte == UInt8(ascii: "'") {
+            if byte == .ascii.apostrophe {
                 // Closing quote
                 input.removeFirst()
                 return String(decoding: result, as: UTF8.self)
-            } else if byte == 0x0A || byte == 0x0D {
+            } else if byte == .ascii.lf || byte == .ascii.cr {
                 // Newline
                 if allowNewlines {
                     result.append(byte)
@@ -250,7 +250,7 @@ extension Parser.Quoted {
         ///
         /// - Parameter quote: The quote character. Default `"`.
         @inlinable
-        public init(quote: UInt8 = UInt8(ascii: "\"")) {
+        public init(quote: UInt8 = .ascii.doubleQuote) {
             self.quote = quote
         }
     }

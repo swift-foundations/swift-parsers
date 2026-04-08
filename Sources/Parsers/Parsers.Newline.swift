@@ -38,7 +38,7 @@ extension Parser.Newline.LF: Parser.`Protocol` {
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
-        guard input.first == 0x0A else {
+        guard input.first == .ascii.lf else {
             throw .predicateFailed(description: "LF (\\n)")
         }
         input.removeFirst()
@@ -65,7 +65,7 @@ extension Parser.Newline.CR: Parser.`Protocol` {
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
-        guard input.first == 0x0D else {
+        guard input.first == .ascii.cr else {
             throw .predicateFailed(description: "CR (\\r)")
         }
         input.removeFirst()
@@ -91,14 +91,14 @@ extension Parser.Newline.CRLF: Parser.`Protocol` {
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Void {
-        guard input.first == 0x0D else {
+        guard input.first == .ascii.cr else {
             throw .predicateFailed(description: "CRLF (\\r\\n)")
         }
 
         var copy = input
         copy.removeFirst()
 
-        guard copy.first == 0x0A else {
+        guard copy.first == .ascii.lf else {
             throw .predicateFailed(description: "CRLF (\\r\\n)")
         }
 
@@ -138,14 +138,14 @@ extension Parser.Newline.`Any`: Parser.`Protocol` {
             throw .predicateFailed(description: "newline")
         }
 
-        if first == 0x0D {
+        if first == .ascii.cr {
             // Could be CR or CRLF
             input.removeFirst()
-            if input.first == 0x0A {
+            if input.first == .ascii.lf {
                 input.removeFirst()  // CRLF
             }
             // else just CR
-        } else if first == 0x0A {
+        } else if first == .ascii.lf {
             input.removeFirst()  // LF
         } else {
             throw .predicateFailed(description: "newline")
@@ -184,7 +184,7 @@ extension Parser.Newline.Line: Parser.`Protocol` {
     public func parse(_ input: inout Input) -> Output {
         var count = 0
 
-        while let byte = input.first, byte != 0x0A, byte != 0x0D {
+        while let byte = input.first, byte != .ascii.lf, byte != .ascii.cr {
             input.removeFirst()
             count += 1
         }

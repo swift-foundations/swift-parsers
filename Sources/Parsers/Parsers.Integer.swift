@@ -123,10 +123,10 @@ extension Parser.Integer.Decimal: Parser.`Protocol` {
         // Parse optional sign
         if allowSign {
             if let first = input.first {
-                if first == UInt8(ascii: "-") {
+                if first == .ascii.hyphen {
                     isNegative = true
                     input.removeFirst()
-                } else if first == UInt8(ascii: "+") {
+                } else if first == .ascii.plus {
                     input.removeFirst()
                 }
             }
@@ -139,10 +139,10 @@ extension Parser.Integer.Decimal: Parser.`Protocol` {
 
         // Skip leading zeros if not allowed (but keep at least one)
         if !allowLeadingZeros {
-            while input.first == UInt8(ascii: "0") {
+            while input.first == .ascii.0 {
                 hasDigits = true
                 input.removeFirst()
-                if input.first.map({ $0 < UInt8(ascii: "0") || $0 > UInt8(ascii: "9") }) ?? true {
+                if input.first.map({ $0 < .ascii.0 || $0 > .ascii.9 }) ?? true {
                     // This was the only digit or next char is not a digit
                     return 0
                 }
@@ -150,9 +150,9 @@ extension Parser.Integer.Decimal: Parser.`Protocol` {
         }
 
         // Parse digits
-        while let byte = input.first, byte >= UInt8(ascii: "0"), byte <= UInt8(ascii: "9") {
+        while let byte = input.first, byte >= .ascii.0, byte <= .ascii.9 {
             hasDigits = true
-            let digit = Output(byte - UInt8(ascii: "0"))
+            let digit = Output(byte - .ascii.0)
             digitString.append(Character(UnicodeScalar(byte)))
 
             // Check for overflow before multiplication
@@ -217,10 +217,10 @@ extension Parser.Integer.Hexadecimal: Parser.`Protocol` {
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Check for prefix
         var hasPrefix = false
-        if input.first == UInt8(ascii: "0") {
+        if input.first == .ascii.0 {
             var copy = input
             copy.removeFirst()
-            if let second = copy.first, second == UInt8(ascii: "x") || second == UInt8(ascii: "X") {
+            if let second = copy.first, second == .ascii.x || second == .ascii.X {
                 hasPrefix = true
                 input = copy
                 input.removeFirst()
@@ -238,12 +238,12 @@ extension Parser.Integer.Hexadecimal: Parser.`Protocol` {
 
         while let byte = input.first {
             let digit: Output
-            if byte >= UInt8(ascii: "0") && byte <= UInt8(ascii: "9") {
-                digit = Output(byte - UInt8(ascii: "0"))
-            } else if byte >= UInt8(ascii: "a") && byte <= UInt8(ascii: "f") {
-                digit = Output(byte - UInt8(ascii: "a") + 10)
-            } else if byte >= UInt8(ascii: "A") && byte <= UInt8(ascii: "F") {
-                digit = Output(byte - UInt8(ascii: "A") + 10)
+            if byte >= .ascii.0 && byte <= .ascii.9 {
+                digit = Output(byte - .ascii.0)
+            } else if byte >= .ascii.a && byte <= .ascii.f {
+                digit = Output(byte - .ascii.a + 10)
+            } else if byte >= .ascii.A && byte <= .ascii.F {
+                digit = Output(byte - .ascii.A + 10)
             } else {
                 break
             }
@@ -310,10 +310,10 @@ extension Parser.Integer.Binary: Parser.`Protocol` {
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Check for prefix
         var hasPrefix = false
-        if input.first == UInt8(ascii: "0") {
+        if input.first == .ascii.0 {
             var copy = input
             copy.removeFirst()
-            if let second = copy.first, second == UInt8(ascii: "b") || second == UInt8(ascii: "B") {
+            if let second = copy.first, second == .ascii.b || second == .ascii.B {
                 hasPrefix = true
                 input = copy
                 input.removeFirst()
@@ -328,9 +328,9 @@ extension Parser.Integer.Binary: Parser.`Protocol` {
         var hasDigits = false
         var result: Output = 0
 
-        while let byte = input.first, byte == UInt8(ascii: "0") || byte == UInt8(ascii: "1") {
+        while let byte = input.first, byte == .ascii.0 || byte == .ascii.1 {
             hasDigits = true
-            let digit = Output(byte - UInt8(ascii: "0"))
+            let digit = Output(byte - .ascii.0)
 
             // Check for overflow
             let (shifted, overflow1) = result.multipliedReportingOverflow(by: 2)
@@ -391,10 +391,10 @@ extension Parser.Integer.Octal: Parser.`Protocol` {
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Check for prefix
         var hasPrefix = false
-        if input.first == UInt8(ascii: "0") {
+        if input.first == .ascii.0 {
             var copy = input
             copy.removeFirst()
-            if let second = copy.first, second == UInt8(ascii: "o") || second == UInt8(ascii: "O") {
+            if let second = copy.first, second == .ascii.o || second == .ascii.O {
                 hasPrefix = true
                 input = copy
                 input.removeFirst()
@@ -409,9 +409,9 @@ extension Parser.Integer.Octal: Parser.`Protocol` {
         var hasDigits = false
         var result: Output = 0
 
-        while let byte = input.first, byte >= UInt8(ascii: "0"), byte <= UInt8(ascii: "7") {
+        while let byte = input.first, byte >= .ascii.0, byte <= .ascii.7 {
             hasDigits = true
-            let digit = Output(byte - UInt8(ascii: "0"))
+            let digit = Output(byte - .ascii.0)
 
             // Check for overflow
             let (multiplied, overflow1) = result.multipliedReportingOverflow(by: 8)

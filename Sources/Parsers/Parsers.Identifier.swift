@@ -83,15 +83,12 @@ extension Parser.Identifier.CStyle: Parser.`Protocol` {
 
     @inlinable
     static func isStartChar(_ byte: UInt8) -> Bool {
-        (byte >= UInt8(ascii: "a") && byte <= UInt8(ascii: "z")) ||
-        (byte >= UInt8(ascii: "A") && byte <= UInt8(ascii: "Z")) ||
-        byte == UInt8(ascii: "_")
+        ASCII.Classification.isLetter(byte) || byte == .ascii.underline
     }
 
     @inlinable
     static func isContinueChar(_ byte: UInt8) -> Bool {
-        isStartChar(byte) ||
-        (byte >= UInt8(ascii: "0") && byte <= UInt8(ascii: "9"))
+        ASCII.Classification.isAlphanumeric(byte) || byte == .ascii.underline
     }
 }
 
