@@ -137,6 +137,13 @@ extension Parser.Debug {
 
 extension Parser.Debug.Profile {
     /// Statistics collected from parser execution.
+    // WHY: Category D — structural Sendable workaround.
+    // WHY: No explicit synchronization. Mutable fields accessed across debug
+    // WHY: instrumentation paths but no concurrent access documented.
+    // WHY: No caller invariant to uphold — data is structurally safe.
+    // WHEN TO REMOVE: When the type gains explicit synchronization (making it Cat A)
+    // WHEN TO REMOVE: or when compiler gains structural Sendable inference.
+    // TRACKING: unsafe-audit-findings.md Category D; SP-7.
     public final class Stats: @unchecked Sendable {
         /// Total number of invocations.
         @usableFromInline
