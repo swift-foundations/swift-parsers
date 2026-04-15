@@ -16,6 +16,7 @@
 //
 
 public import Clocks
+public import ISO_9945_Kernel_Clock
 
 extension Parser {
     /// Namespace for debugging types.

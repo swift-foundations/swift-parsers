@@ -55,15 +55,20 @@ extension Parser.Diagnostic {
             self.content = content
             self.filename = filename
 
-            // Pre-compute line start indices
+            // Pre-compute line start indices via UTF-8 byte scan.
+            // Newline (0x0A) is a single-byte scalar, so every recorded
+            // index is both a UTF-8 boundary and a Character boundary.
             var starts: [String.Index] = [content.startIndex]
-            for (index, char) in content.enumerated() {
-                if char == "\n" {
-                    let idx = content.index(content.startIndex, offsetBy: index + 1)
-                    if idx < content.endIndex {
-                        starts.append(idx)
+            let utf8 = content.utf8
+            var pos = utf8.startIndex
+            while pos < utf8.endIndex {
+                if utf8[pos] == 0x0A {
+                    let next = utf8.index(after: pos)
+                    if next < utf8.endIndex {
+                        starts.append(next)
                     }
                 }
+                pos = utf8.index(after: pos)
             }
             self.lineStarts = starts
         }
@@ -94,7 +99,7 @@ extension Parser.Diagnostic.Source {
 
         let lineNumber = lo + 1  // 1-indexed
         let lineStart = lineStarts[lo]
-        let column = content.distance(from: lineStart, to: targetIndex) + 1  // 1-indexed
+        let column = content.utf8.distance(from: lineStart, to: targetIndex) + 1  // 1-indexed, byte offset
 
         return Source_Primitives.Source.Location(
             fileID: filename ?? "",
