@@ -1,28 +1,53 @@
 # Audit: swift-parsers
 
+## Code Surface — 2026-04-16
+
+### Scope
+
+- **Target**: swift-parsers
+- **Skill**: code-surface — [API-NAME-001], [API-NAME-002], [API-IMPL-005], [API-IMPL-006]
+- **Files**: 6 modified source files (Parsers.Identifier, Parsers.Integer, Parsers.Whitespace, Parsers.Newline, Parsers.Comment, Parsers.Quoted)
+
+### Findings
+
+| # | Severity | Rule | Location | Finding | Status |
+|---|----------|------|----------|---------|--------|
+| — | — | — | — | No violations found | — |
+
+### Summary
+
+0 findings. Classification refactor (2026-04-08) replaced all inline `UInt8(ascii:)` and hex literals with `.ascii.*` constants per [IMPL-060]. No compound name violations introduced. Existing API surfaces unchanged.
+
+---
+
+## Implementation — 2026-04-16
+
+### Scope
+
+- **Target**: swift-parsers
+- **Skill**: implementation — [IMPL-060], [IMPL-INTENT], [IMPL-002]
+- **Files**: 6 modified source files + Package.swift + exports.swift
+
+### Findings
+
+| # | Severity | Rule | Location | Finding | Status |
+|---|----------|------|----------|---------|--------|
+| 1 | — | [IMPL-060] | Parsers.Identifier.swift:85-94 | `isStartChar`/`isContinueChar` now delegate to `ASCII.Classification.isLetter`, `.isAlphanumeric` + `.ascii.underline`. | RESOLVED 2026-04-08 — was inline range checks |
+| 2 | — | [IMPL-060] | Parsers.Whitespace.swift:264 | `isWhitespace` now delegates to `ASCII.Classification.isWhitespace`. Reimplemented constants deleted (-25 lines net). | RESOLVED 2026-04-08 — was 6 reimplemented constants + 6-way OR chain |
+| 3 | — | [IMPL-060] | Parsers.Integer.swift | All `UInt8(ascii:)` patterns replaced with `.ascii.*` constants (22 occurrences). | RESOLVED 2026-04-08 |
+| 4 | — | [IMPL-060] | Parsers.Quoted.swift | All `UInt8(ascii:)` and hex escape literals replaced with `.ascii.*` constants (16 occurrences). | RESOLVED 2026-04-08 |
+| 5 | — | [IMPL-060] | Parsers.Newline.swift, Parsers.Comment.swift | Hex literals `0x0A`/`0x0D` replaced with `.ascii.lf`/`.ascii.cr`. | RESOLVED 2026-04-08 |
+
+### Summary
+
+0 open findings, 5 resolved. `swift-ascii-primitives` added as dependency; re-exported via `exports.swift`. All character classification and byte constants now use ecosystem primitives. Build blocked by pre-existing transitive `ISO_9945_Kernel` → `Binary_Primitives` issue (unrelated to these changes); individual targets compile cleanly.
+
+---
+
 ## Legacy — Consolidated 2026-04-08
 
 ### From: swift-institute/Research/modularization-audit-foundations-batch-B.md (2026-03-20)
 
 **Modularization audit — MOD-001 through MOD-014**
 
-2 products: Parsers, Parsers Test Support.
-
-| Rule | Status | Notes |
-|------|--------|-------|
-| MOD-001 | N/A | Main + Test Support pattern |
-| MOD-002 | N/A | Single main target |
-| MOD-003 | N/A | No variant targets |
-| MOD-004 | N/A | No ~Copyable concerns |
-| MOD-005 | N/A | Single main product |
-| MOD-006 | PASS | 7 deps — includes parser primitives, machine primitives, formatting, time, source, async, clocks — all justified for a parser infrastructure module |
-| MOD-007 | PASS | Depth 1 |
-| MOD-008 | PASS | 13 files |
-| MOD-009 | N/A | No inline variants |
-| MOD-010 | N/A | No stdlib extensions observed |
-| MOD-011 | PASS | Parsers Test Support published as library product |
-| MOD-012 | PASS | `Parsers`, `Parsers Test Support` — correct L3 naming |
-| MOD-013 | N/A | 3 targets, threshold is 5 |
-| MOD-014 | N/A | No cross-package optional integration |
-
-**Findings**: 0 FAIL. Clean compliance.
+0 FAIL. Clean compliance. 7 deps justified for parser infrastructure module.
