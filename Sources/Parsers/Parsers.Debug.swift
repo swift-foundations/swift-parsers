@@ -39,8 +39,8 @@ extension Parser.Debug {
     /// // [myParser] entering at offset 0
     /// // [myParser] succeeded, consumed 5 bytes
     /// ```
-    public struct Trace<P: Parser.`Protocol`>: Sendable
-    where P: Sendable, P.Input: Swift.Collection {
+    public struct Trace<P: Parser.`Protocol`>
+    where P.Input: Swift.Collection {
         /// The wrapped parser.
         @usableFromInline
         let inner: P
@@ -50,7 +50,7 @@ extension Parser.Debug {
 
         /// Output function for log messages.
         @usableFromInline
-        let output: @Sendable (String) -> Void
+        let output: (String) -> Void
 
         /// Creates a tracing wrapper.
         ///
@@ -62,7 +62,7 @@ extension Parser.Debug {
         public init(
             _ inner: P,
             label: String,
-            output: @escaping @Sendable (String) -> Void = { print($0) }
+            output: @escaping (String) -> Void = { print($0) }
         ) {
             self.inner = inner
             self.label = label
@@ -108,8 +108,7 @@ extension Parser.Debug {
     /// // ... use parser multiple times ...
     /// print(profiled.stats.report())
     /// ```
-    public struct Profile<P: Parser.`Protocol`>: Sendable
-    where P: Sendable {
+    public struct Profile<P: Parser.`Protocol`> {
         /// The wrapped parser.
         @usableFromInline
         let inner: P
@@ -289,7 +288,7 @@ extension Parser.Debug.Profile: Parser.`Protocol` {
 
 // MARK: - Parser Extensions
 
-extension Parser.`Protocol` where Self: Sendable, Input: Swift.Collection {
+extension Parser.`Protocol` where Input: Swift.Collection {
     /// Wraps this parser with tracing.
     ///
     /// - Parameters:
@@ -299,13 +298,13 @@ extension Parser.`Protocol` where Self: Sendable, Input: Swift.Collection {
     @inlinable
     public func trace(
         _ label: String,
-        output: @escaping @Sendable (String) -> Void = { print($0) }
+        output: @escaping (String) -> Void = { print($0) }
     ) -> Parser.Debug.Trace<Self> {
         Parser.Debug.Trace(self, label: label, output: output)
     }
 }
 
-extension Parser.`Protocol` where Self: Sendable {
+extension Parser.`Protocol` {
     /// Wraps this parser with profiling.
     ///
     /// - Parameter label: Label for reports.
