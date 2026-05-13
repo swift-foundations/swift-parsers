@@ -41,9 +41,8 @@ extension Parser {
     /// var input = "a,b,c"[...].utf8
     /// let values = try csv.parse(&input)  // ["a", "b", "c"]
     /// ```
-    public struct Separated<Element: Parser.`Protocol`, Separator: Parser.`Protocol`>: Sendable
-    where Element: Sendable, Separator: Sendable,
-          Element.Input == Separator.Input,
+    public struct Separated<Element: Parser.`Protocol`, Separator: Parser.`Protocol`>
+    where Element.Input == Separator.Input,
           Element.Input: Copyable {
 
         /// The element parser.
@@ -164,7 +163,7 @@ extension Parser.`Protocol` {
         by separator: S,
         allowTrailing: Bool = false
     ) -> Parser.Separated<Self, S>
-    where S.Input == Input, S: Sendable, Self: Sendable, Input: Copyable {
+    where S.Input == Input, Input: Copyable {
         Parser.Separated(
             element: self,
             separator: separator,
