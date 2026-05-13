@@ -53,7 +53,7 @@ extension Parser.Expression {
     /// Defines an infix operator with precedence and associativity.
     ///
     /// All operators in a `Climbing` parser must use the same `Op` parser type.
-    public struct Operator<Operand: Sendable, Op: Parser.`Protocol` & Sendable>: Sendable {
+    public struct Operator<Operand, Op: Parser.`Protocol`> {
         /// The operator parser.
         public let parser: Op
 
@@ -64,7 +64,7 @@ extension Parser.Expression {
         public let associativity: Associativity
 
         /// Combines two operands.
-        public let apply: @Sendable (Operand, Operand) -> Operand
+        public let apply: (Operand, Operand) -> Operand
 
         /// Creates an operator definition.
         ///
@@ -78,7 +78,7 @@ extension Parser.Expression {
             parser: Op,
             precedence: Int,
             associativity: Associativity,
-            apply: @escaping @Sendable (Operand, Operand) -> Operand
+            apply: @escaping (Operand, Operand) -> Operand
         ) {
             self.parser = parser
             self.precedence = precedence
@@ -92,12 +92,12 @@ extension Parser.Expression {
 
 extension Parser.Expression {
     /// Defines a prefix (unary) operator.
-    public struct PrefixOperator<Operand: Sendable, Op: Parser.`Protocol` & Sendable>: Sendable {
+    public struct PrefixOperator<Operand, Op: Parser.`Protocol`> {
         /// The operator parser.
         public let parser: Op
 
         /// Applies the operator to an operand.
-        public let apply: @Sendable (Operand) -> Operand
+        public let apply: (Operand) -> Operand
 
         /// Creates a prefix operator definition.
         ///
@@ -107,7 +107,7 @@ extension Parser.Expression {
         @inlinable
         public init(
             parser: Op,
-            apply: @escaping @Sendable (Operand) -> Operand
+            apply: @escaping (Operand) -> Operand
         ) {
             self.parser = parser
             self.apply = apply
@@ -119,12 +119,12 @@ extension Parser.Expression {
 
 extension Parser.Expression {
     /// Defines a postfix (unary) operator.
-    public struct PostfixOperator<Operand: Sendable, Op: Parser.`Protocol` & Sendable>: Sendable {
+    public struct PostfixOperator<Operand, Op: Parser.`Protocol`> {
         /// The operator parser.
         public let parser: Op
 
         /// Applies the operator to an operand.
-        public let apply: @Sendable (Operand) -> Operand
+        public let apply: (Operand) -> Operand
 
         /// Creates a postfix operator definition.
         ///
@@ -134,7 +134,7 @@ extension Parser.Expression {
         @inlinable
         public init(
             parser: Op,
-            apply: @escaping @Sendable (Operand) -> Operand
+            apply: @escaping (Operand) -> Operand
         ) {
             self.parser = parser
             self.apply = apply
@@ -163,9 +163,8 @@ extension Parser.Expression {
     ///     ]
     /// )
     /// ```
-    public struct Climbing<Atom: Parser.`Protocol` & Sendable, Op: Parser.`Protocol` & Sendable>: Sendable
+    public struct Climbing<Atom: Parser.`Protocol`, Op: Parser.`Protocol`>
     where Atom.Input == Op.Input,
-          Atom.Output: Sendable,
           Atom.Input: Copyable {
 
         public typealias Operand = Atom.Output
