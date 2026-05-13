@@ -211,6 +211,11 @@ extension Parser.Diagnostic {
 
     @usableFromInline
     static func formatExpanded(error: String, location: Source_Primitives.Source.Location, source: Source, contextLines: Int) -> String {
+        // `Source.Location.line` is typed `Text.Line.Number`; arithmetic
+        // with `Int`-typed offsets / lookups in `source.lineStarts` go
+        // through `.underlying` once at the formatter boundary per
+        // H.4 cascade guidance.
+        let lineInt: Int = Int(location.line.underlying)
         var lines: [String] = []
 
         // Header
@@ -224,15 +229,15 @@ extension Parser.Diagnostic {
         lines.append("   |")
 
         // Context lines before
-        let startLine = max(1, location.line - contextLines)
-        let endLine = min(source.lineStarts.count, location.line + contextLines)
+        let startLine = max(1, lineInt - contextLines)
+        let endLine = min(source.lineStarts.count, lineInt + contextLines)
 
         for lineNum in startLine...endLine {
             guard let lineContent = source.line(lineNum) else { continue }
 
             let lineNumStr = padLeft(String(lineNum), toLength: 3)
 
-            if lineNum == location.line {
+            if lineNum == lineInt {
                 lines.append(" \(lineNumStr)| \(lineContent)")
                 // Caret line
                 let spaces = String(repeating: " ", count: location.column - 1)
@@ -248,7 +253,9 @@ extension Parser.Diagnostic {
 
     @usableFromInline
     static func formatCaret(error: String, location: Source_Primitives.Source.Location, source: Source) -> String {
-        guard let lineContent = source.line(location.line) else {
+        // Convert at the `Source.line(_:)` boundary per H.4 cascade
+        // guidance — `Source` is the stdlib-Int-shaped consumer here.
+        guard let lineContent = source.line(Int(location.line.underlying)) else {
             return formatCompact(error: error, location: location, source: source)
         }
 
@@ -262,6 +269,9 @@ extension Parser.Diagnostic {
 
     @usableFromInline
     static func formatRich(error: String, location: Source_Primitives.Source.Location, offset: Text.Position, source: Source) -> String {
+        // See `formatExpanded` — `.underlying` conversion at formatter boundary
+        // per H.4 cascade guidance.
+        let lineInt: Int = Int(location.line.underlying)
         var lines: [String] = []
 
         // Header with filename
@@ -277,16 +287,16 @@ extension Parser.Diagnostic {
         lines.append("")
 
         // Context with 3 lines
-        let startLine = max(1, location.line - 3)
-        let endLine = min(source.lineStarts.count, location.line + 3)
+        let startLine = max(1, lineInt - 3)
+        let endLine = min(source.lineStarts.count, lineInt + 3)
 
         for lineNum in startLine...endLine {
             guard let lineContent = source.line(lineNum) else { continue }
 
-            let marker = lineNum == location.line ? ">>>" : "   "
+            let marker = lineNum == lineInt ? ">>>" : "   "
             lines.append("\(marker) \(lineNum): \(lineContent)")
 
-            if lineNum == location.line {
+            if lineNum == lineInt {
                 let spaces = String(repeating: " ", count: String(lineNum).count + 5 + location.column)
                 lines.append("\(spaces)^^^")
             }
