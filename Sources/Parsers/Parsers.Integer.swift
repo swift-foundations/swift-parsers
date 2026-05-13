@@ -30,7 +30,7 @@ extension Parser {
     ///
     /// Provides parsers for decimal, hexadecimal, binary, and octal integers
     /// with configurable options for signs, prefixes, and leading zeros.
-    public enum Integer<Output: FixedWidthInteger & Sendable>: Sendable {}
+    public enum Integer<Output: FixedWidthInteger> {}
 }
 
 // MARK: - Error Type
@@ -447,7 +447,7 @@ extension Parser {
     /// Parser.integer(UInt32.self).Hexadecimal(requirePrefix: true)
     /// ```
     @inlinable
-    public static func integer<T: FixedWidthInteger & Sendable>(
+    public static func integer<T: FixedWidthInteger>(
         _ type: T.Type = Int.self
     ) -> Integer<T>.Type {
         Integer<T>.self
