@@ -239,8 +239,12 @@ extension Parser.Diagnostic {
 
             if lineNum == lineInt {
                 lines.append(" \(lineNumStr)| \(lineContent)")
-                // Caret line
-                let spaces = String(repeating: " ", count: location.column - 1)
+                // Caret line — `location.column` is typed `Text.Line.Column`
+                // (Tagged<Text, Cardinal>); `String(repeating:count:)` is
+                // Int-based stdlib, so the bridge happens at the call site
+                // via `Int.init<Tag>(bitPattern: Tagged<Tag, Cardinal>)`
+                // from Cardinal Primitives ([INFRA-002] / [INFRA-101]).
+                let spaces = String(repeating: " ", count: Int(bitPattern: location.column) - 1)
                 lines.append("   | \(spaces)^")
             } else {
                 lines.append(" \(lineNumStr)| \(lineContent)")
@@ -259,7 +263,10 @@ extension Parser.Diagnostic {
             return formatCompact(error: error, location: location, source: source)
         }
 
-        let spaces = String(repeating: " ", count: location.column - 1)
+        // `location.column` is typed `Text.Line.Column` (Tagged<Text, Cardinal>);
+        // `String(repeating:count:)` is Int-based stdlib — convert at boundary
+        // via the typed `Int(bitPattern:)` overload from Cardinal Primitives.
+        let spaces = String(repeating: " ", count: Int(bitPattern: location.column) - 1)
 
         return """
         \(lineContent)
@@ -297,7 +304,12 @@ extension Parser.Diagnostic {
             lines.append("\(marker) \(lineNum): \(lineContent)")
 
             if lineNum == lineInt {
-                let spaces = String(repeating: " ", count: String(lineNum).count + 5 + location.column)
+                // Column bridge at the `String(repeating:count:)` Int boundary
+                // — same shape as the other formatter caret lines.
+                let spaces = String(
+                    repeating: " ",
+                    count: String(lineNum).count + 5 + Int(bitPattern: location.column)
+                )
                 lines.append("\(spaces)^^^")
             }
         }
