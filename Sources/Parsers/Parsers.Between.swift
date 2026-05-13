@@ -37,9 +37,8 @@ extension Parser {
     /// var input = "(42)"[...].utf8
     /// let value = try parens.parse(&input)  // 42
     /// ```
-    public struct Between<Open: Parser.`Protocol`, Content: Parser.`Protocol`, Close: Parser.`Protocol`>: Sendable
-    where Open: Sendable, Content: Sendable, Close: Sendable,
-          Open.Input == Content.Input, Content.Input == Close.Input {
+    public struct Between<Open: Parser.`Protocol`, Content: Parser.`Protocol`, Close: Parser.`Protocol`>
+    where Open.Input == Content.Input, Content.Input == Close.Input {
 
         /// The opening delimiter parser.
         @usableFromInline
@@ -122,8 +121,7 @@ extension Parser.`Protocol` {
         _ open: Open,
         _ close: Close
     ) -> Parser.Between<Open, Self, Close>
-    where Open.Input == Input, Close.Input == Input,
-          Open: Sendable, Close: Sendable, Self: Sendable {
+    where Open.Input == Input, Close.Input == Input {
         Parser.Between(open: open, content: self, close: close)
     }
 }
@@ -146,9 +144,8 @@ extension Parser {
     /// var input = "`foo`"[...].utf8
     /// let value = try backticked.parse(&input)  // "foo"
     /// ```
-    public struct Surrounded<Delimiter: Parser.`Protocol`, Content: Parser.`Protocol`>: Sendable
-    where Delimiter: Sendable, Content: Sendable,
-          Delimiter.Input == Content.Input {
+    public struct Surrounded<Delimiter: Parser.`Protocol`, Content: Parser.`Protocol`>
+    where Delimiter.Input == Content.Input {
 
         /// The delimiter parser (used for both open and close).
         @usableFromInline
@@ -221,7 +218,7 @@ extension Parser.`Protocol` {
     public func surrounded<D: Parser.`Protocol`>(
         by delimiter: D
     ) -> Parser.Surrounded<D, Self>
-    where D.Input == Input, D: Sendable, Self: Sendable {
+    where D.Input == Input {
         Parser.Surrounded(delimiter: delimiter, content: self)
     }
 }
