@@ -22,14 +22,14 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../../swift-primitives/swift-ascii-primitives"),
-        .package(path: "../../swift-primitives/swift-parser-primitives"),
-        .package(path: "../../swift-primitives/swift-parser-machine-primitives"),
-        .package(path: "../../swift-primitives/swift-format-primitives"),
-        .package(path: "../../swift-primitives/swift-time-primitives"),
-        .package(path: "../../swift-primitives/swift-source-primitives"),
-        .package(path: "../swift-async"),
-        .package(path: "../swift-clocks"),
+        .package(url: "https://github.com/swift-primitives/swift-ascii-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-parser-machine-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-format-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-time-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-source-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-foundations/swift-async.git", branch: "main"),
+        .package(url: "https://github.com/swift-foundations/swift-clocks.git", branch: "main"),
     ],
     targets: [
         .target(
