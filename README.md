@@ -185,7 +185,7 @@ Combinators propagate their constituent parsers' typed errors — for example, `
 ## Community
 
 <!-- BEGIN: discussion -->
-*Discussion thread will be created at first public flip.*
+*Discussion thread will be created at first public release.*
 <!-- END: discussion -->
 
 ## License
