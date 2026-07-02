@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Parsers for Swift."
+description: "Batteries-included parsers for integers, quoted strings, identifiers, comments, and precedence-climbing expression parsing in Swift."
 topics:
   - foundations
   - parsers
