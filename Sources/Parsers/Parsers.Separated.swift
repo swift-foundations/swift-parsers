@@ -42,8 +42,10 @@ extension Parser {
     /// let values = try csv.parse(&input)  // ["a", "b", "c"]
     /// ```
     public struct Separated<Element: Parser.`Protocol`, Separator: Parser.`Protocol`>
-    where Element.Input == Separator.Input,
-          Element.Input: Copyable {
+    where
+        Element.Input == Separator.Input,
+        Element.Input: Copyable
+    {
 
         /// The element parser.
         @usableFromInline

@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Diagnostic.Source")
 struct ParserDiagnosticSourceTests {
@@ -47,7 +47,7 @@ extension ParserDiagnosticSourceTests.LineStarts {
     @Test
     func `Empty content has one line`() {
         let source = Parser.Diagnostic.Source(content: "")
-        #expect(source.line(1) == "")
+        #expect(source.line(1)?.isEmpty == true)
         #expect(source.line(2) == nil)
     }
 
@@ -55,7 +55,7 @@ extension ParserDiagnosticSourceTests.LineStarts {
     func `Consecutive newlines create empty lines`() {
         let source = Parser.Diagnostic.Source(content: "a\n\nb")
         #expect(source.line(1) == "a")
-        #expect(source.line(2) == "")
+        #expect(source.line(2)?.isEmpty == true)
         #expect(source.line(3) == "b")
     }
 }

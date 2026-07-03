@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Between")
 struct ParserBetweenTests {
@@ -16,7 +16,7 @@ private struct CharParser: Parser.`Protocol`, Sendable {
     typealias Output = Void
     typealias Failure = Parser.Match.Error
 
-    func parse(_ input: inout Input) throws(Failure) -> Void {
+    func parse(_ input: inout Input) throws(Failure) {
         guard input.first == byte else {
             throw .predicateFailed(description: "\(byte)")
         }

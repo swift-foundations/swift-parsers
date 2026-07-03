@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Quoted")
 struct ParserQuotedTests {
@@ -83,6 +83,6 @@ extension ParserQuotedTests.EdgeCase {
 
         let result = try parser.parse(&input)
 
-        #expect(result == "")
+        #expect(result.isEmpty)
     }
 }

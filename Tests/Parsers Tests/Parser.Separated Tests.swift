@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Separated")
 struct ParserSeparatedTests {
@@ -16,8 +16,9 @@ private struct DigitParser: Parser.`Protocol`, Sendable {
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
         guard let byte = input.first,
-              byte >= UInt8(ascii: "0"),
-              byte <= UInt8(ascii: "9") else {
+            byte >= UInt8(ascii: "0"),
+            byte <= UInt8(ascii: "9")
+        else {
             throw .predicateFailed(description: "digit")
         }
         input.removeFirst()
@@ -30,7 +31,7 @@ private struct CommaParser: Parser.`Protocol`, Sendable {
     typealias Output = Void
     typealias Failure = Parser.Match.Error
 
-    func parse(_ input: inout Input) throws(Failure) -> Void {
+    func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: ",") else {
             throw .predicateFailed(description: ",")
         }

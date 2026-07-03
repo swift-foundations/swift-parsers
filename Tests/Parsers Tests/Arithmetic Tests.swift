@@ -5,8 +5,8 @@
 //  Integration tests for arithmetic expression parsing.
 //
 
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Arithmetic Expression Parsing")
 struct ArithmeticTests {
@@ -22,8 +22,9 @@ struct ArithmeticTests {
             var hasDigit = false
 
             while let byte = input.first,
-                  byte >= UInt8(ascii: "0"),
-                  byte <= UInt8(ascii: "9") {
+                byte >= UInt8(ascii: "0"),
+                byte <= UInt8(ascii: "9")
+            {
                 result = result * 10 + Int(byte - UInt8(ascii: "0"))
                 input.removeFirst()
                 hasDigit = true
@@ -43,7 +44,7 @@ struct ArithmeticTests {
         typealias Output = Void
         typealias Failure = Parser.Match.Error
 
-        func parse(_ input: inout Input) throws(Failure) -> Void {
+        func parse(_ input: inout Input) throws(Failure) {
             guard input.first == UInt8(ascii: "+") else {
                 throw .predicateFailed(description: "+")
             }
@@ -56,7 +57,7 @@ struct ArithmeticTests {
         typealias Output = Void
         typealias Failure = Parser.Match.Error
 
-        func parse(_ input: inout Input) throws(Failure) -> Void {
+        func parse(_ input: inout Input) throws(Failure) {
             guard input.first == UInt8(ascii: "-") else {
                 throw .predicateFailed(description: "-")
             }
@@ -69,7 +70,7 @@ struct ArithmeticTests {
         typealias Output = Void
         typealias Failure = Parser.Match.Error
 
-        func parse(_ input: inout Input) throws(Failure) -> Void {
+        func parse(_ input: inout Input) throws(Failure) {
             guard input.first == UInt8(ascii: "*") else {
                 throw .predicateFailed(description: "*")
             }

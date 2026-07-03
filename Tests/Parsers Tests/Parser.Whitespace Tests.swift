@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Whitespace")
 struct ParserWhitespaceTests {

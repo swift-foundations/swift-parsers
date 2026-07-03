@@ -37,7 +37,7 @@ extension Parser.Newline.LF: Parser.`Protocol` {
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Void {
+    public func parse(_ input: inout Input) throws(Failure) {
         guard input.first == .ascii.lf else {
             throw .predicateFailed(description: "LF (\\n)")
         }
@@ -64,7 +64,7 @@ extension Parser.Newline.CR: Parser.`Protocol` {
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Void {
+    public func parse(_ input: inout Input) throws(Failure) {
         guard input.first == .ascii.cr else {
             throw .predicateFailed(description: "CR (\\r)")
         }
@@ -90,7 +90,7 @@ extension Parser.Newline.CRLF: Parser.`Protocol` {
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Void {
+    public func parse(_ input: inout Input) throws(Failure) {
         guard input.first == .ascii.cr else {
             throw .predicateFailed(description: "CRLF (\\r\\n)")
         }
@@ -133,7 +133,7 @@ extension Parser.Newline.`Any`: Parser.`Protocol` {
     public typealias Failure = Parser.Match.Error
 
     @inlinable
-    public func parse(_ input: inout Input) throws(Failure) -> Void {
+    public func parse(_ input: inout Input) throws(Failure) {
         guard let first = input.first else {
             throw .predicateFailed(description: "newline")
         }

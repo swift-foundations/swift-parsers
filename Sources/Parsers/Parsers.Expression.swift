@@ -164,8 +164,10 @@ extension Parser.Expression {
     /// )
     /// ```
     public struct Climbing<Atom: Parser.`Protocol`, Op: Parser.`Protocol`>
-    where Atom.Input == Op.Input,
-          Atom.Input: Copyable {
+    where
+        Atom.Input == Op.Input,
+        Atom.Input: Copyable
+    {
 
         public typealias Operand = Atom.Output
 
@@ -263,8 +265,10 @@ extension Parser.Expression.Climbing: Parser.`Protocol` {
             switch op.associativity {
             case .left:
                 nextPrecedence = op.precedence + 1
+
             case .right:
                 nextPrecedence = op.precedence
+
             case .none:
                 nextPrecedence = op.precedence + 1
             }

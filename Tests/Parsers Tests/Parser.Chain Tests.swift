@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Chain")
 struct ParserChainTests {
@@ -19,8 +19,9 @@ private struct IntAtom: Parser.`Protocol`, Sendable {
         var hasDigit = false
 
         while let byte = input.first,
-              byte >= UInt8(ascii: "0"),
-              byte <= UInt8(ascii: "9") {
+            byte >= UInt8(ascii: "0"),
+            byte <= UInt8(ascii: "9")
+        {
             result = result * 10 + Int(byte - UInt8(ascii: "0"))
             input.removeFirst()
             hasDigit = true
@@ -38,7 +39,7 @@ private struct PlusOp: Parser.`Protocol`, Sendable {
     typealias Output = Void
     typealias Failure = Parser.Match.Error
 
-    func parse(_ input: inout Input) throws(Failure) -> Void {
+    func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "+") else {
             throw .predicateFailed(description: "+")
         }
@@ -51,7 +52,7 @@ private struct MinusOp: Parser.`Protocol`, Sendable {
     typealias Output = Void
     typealias Failure = Parser.Match.Error
 
-    func parse(_ input: inout Input) throws(Failure) -> Void {
+    func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "-") else {
             throw .predicateFailed(description: "-")
         }
@@ -64,7 +65,7 @@ private struct CaretOp: Parser.`Protocol`, Sendable {
     typealias Output = Void
     typealias Failure = Parser.Match.Error
 
-    func parse(_ input: inout Input) throws(Failure) -> Void {
+    func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "^") else {
             throw .predicateFailed(description: "^")
         }
@@ -84,7 +85,7 @@ extension ParserChainTests.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 6) // (1+2)+3
+        #expect(result == 6)  // (1+2)+3
     }
 
     @Test
@@ -96,7 +97,7 @@ extension ParserChainTests.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 5) // (10-3)-2
+        #expect(result == 5)  // (10-3)-2
     }
 
     @Test

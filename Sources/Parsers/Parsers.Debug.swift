@@ -136,7 +136,6 @@ extension Parser.Debug {
 // MARK: - Stats
 
 extension Parser.Debug.Profile {
-    /// Statistics collected from parser execution.
     // WHY: Category D — structural Sendable workaround.
     // WHY: No explicit synchronization. Mutable fields accessed across debug
     // WHY: instrumentation paths but no concurrent access documented.
@@ -144,6 +143,7 @@ extension Parser.Debug.Profile {
     // WHEN TO REMOVE: When the type gains explicit synchronization (making it Cat A)
     // WHEN TO REMOVE: or when compiler gains structural Sendable inference.
     // TRACKING: unsafe-audit-findings.md Category D; SP-7.
+    /// Statistics collected from parser execution.
     public final class Stats: @unchecked Sendable {
         /// Total number of invocations.
         @usableFromInline
@@ -241,15 +241,15 @@ extension Parser.Debug.Profile {
             let minStr = _minDuration?.formatted(.duration) ?? "N/A"
 
             return """
-            \(label) Statistics:
-              Invocations: \(_invocations)
-              Successes:   \(_successes) (\(successPercent)%)
-              Failures:    \(_failures)
-              Total time:  \(_totalDuration.formatted(.duration))
-              Average:     \(averageDuration.formatted(.duration))
-              Min:         \(minStr)
-              Max:         \(_maxDuration.formatted(.duration))
-            """
+                \(label) Statistics:
+                  Invocations: \(_invocations)
+                  Successes:   \(_successes) (\(successPercent)%)
+                  Failures:    \(_failures)
+                  Total time:  \(_totalDuration.formatted(.duration))
+                  Average:     \(averageDuration.formatted(.duration))
+                  Min:         \(minStr)
+                  Max:         \(_maxDuration.formatted(.duration))
+                """
         }
 
         /// Resets all statistics.

@@ -244,7 +244,10 @@ extension Parser.Diagnostic {
                 // Int-based stdlib, so the bridge happens at the call site
                 // via `Int.init<Tag>(bitPattern: Tagged<Tag, Cardinal>)`
                 // from Cardinal Primitives ([INFRA-002] / [INFRA-101]).
-                let spaces = String(repeating: " ", count: Int(bitPattern: location.column) - 1)
+                // Convert at the boundary, then do the `- 1` arithmetic on
+                // the resulting Int in a separate statement ([CONV-010]).
+                let columnInt = Int(bitPattern: location.column)
+                let spaces = String(repeating: " ", count: columnInt - 1)
                 lines.append("   | \(spaces)^")
             } else {
                 lines.append(" \(lineNumStr)| \(lineContent)")
@@ -266,12 +269,15 @@ extension Parser.Diagnostic {
         // `location.column` is typed `Text.Line.Column` (Tagged<Text, Cardinal>);
         // `String(repeating:count:)` is Int-based stdlib — convert at boundary
         // via the typed `Int(bitPattern:)` overload from Cardinal Primitives.
-        let spaces = String(repeating: " ", count: Int(bitPattern: location.column) - 1)
+        // The `- 1` arithmetic runs on the resulting Int in a separate
+        // statement, not chained onto the conversion call ([CONV-010]).
+        let columnInt = Int(bitPattern: location.column)
+        let spaces = String(repeating: " ", count: columnInt - 1)
 
         return """
-        \(lineContent)
-        \(spaces)^ error: \(error)
-        """
+            \(lineContent)
+            \(spaces)^ error: \(error)
+            """
     }
 
     @usableFromInline

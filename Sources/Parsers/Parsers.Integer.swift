@@ -162,7 +162,8 @@ extension Parser.Integer.Decimal: Parser.`Protocol` {
             }
 
             // Check for overflow before addition
-            let (added, overflow2) = isNegative
+            let (added, overflow2) =
+                isNegative
                 ? multiplied.subtractingReportingOverflow(digit)
                 : multiplied.addingReportingOverflow(digit)
             guard !overflow2 else {

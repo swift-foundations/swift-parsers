@@ -21,7 +21,6 @@ extension Parser {
     public enum Whitespace: Sendable {}
 }
 
-
 // MARK: - Horizontal Whitespace
 
 extension Parser.Whitespace {
@@ -51,7 +50,8 @@ extension Parser.Whitespace.Horizontal: Parser.`Protocol` {
         var count = 0
 
         while let byte = input.first,
-              byte == .ascii.space || byte == .ascii.tab {
+            byte == .ascii.space || byte == .ascii.tab
+        {
             input.removeFirst()
             count += 1
         }
@@ -205,11 +205,12 @@ extension Parser.Whitespace.Skip: Parser.`Protocol` {
     public typealias Failure = Never
 
     @inlinable
-    public func parse(_ input: inout Input) -> Void {
+    public func parse(_ input: inout Input) {
         switch kind {
         case .horizontal:
             while let byte = input.first,
-                  byte == .ascii.space || byte == .ascii.tab {
+                byte == .ascii.space || byte == .ascii.tab
+            {
                 input.removeFirst()
             }
 

@@ -5,8 +5,8 @@
 //  Tests for integer parsers.
 //
 
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Integer Parsers")
 struct IntegerTests {

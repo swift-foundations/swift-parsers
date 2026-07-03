@@ -1,5 +1,5 @@
-import Testing
 import Parsers_Test_Support
+import Testing
 
 @Suite("Parser.Expression")
 struct ParserExpressionTests {
@@ -19,8 +19,9 @@ private struct IntAtom: Parser.`Protocol`, Sendable {
         var hasDigit = false
 
         while let byte = input.first,
-              byte >= UInt8(ascii: "0"),
-              byte <= UInt8(ascii: "9") {
+            byte >= UInt8(ascii: "0"),
+            byte <= UInt8(ascii: "9")
+        {
             result = result * 10 + Int(byte - UInt8(ascii: "0"))
             input.removeFirst()
             hasDigit = true
@@ -70,7 +71,7 @@ extension ParserExpressionTests.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 14) // 2+(3*4)
+        #expect(result == 14)  // 2+(3*4)
     }
 
     @Test
@@ -80,7 +81,7 @@ extension ParserExpressionTests.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 4) // 10-(2*3)
+        #expect(result == 4)  // 10-(2*3)
     }
 
     @Test
@@ -90,7 +91,7 @@ extension ParserExpressionTests.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 5) // (10-3)-2
+        #expect(result == 5)  // (10-3)-2
     }
 
     @Test
@@ -100,7 +101,7 @@ extension ParserExpressionTests.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 11) // 1+(2*3)+4
+        #expect(result == 11)  // 1+(2*3)+4
     }
 }
 
@@ -144,10 +145,10 @@ extension ParserExpressionTests.EdgeCase {
         let parser = Parser.Expression.Climbing(
             atom: IntAtom(),
             operators: [
-                .init(parser: OpParser(byte: UInt8(ascii: "+")), precedence: 1, associativity: .left) { $0 + $1 },
+                .init(parser: OpParser(byte: UInt8(ascii: "+")), precedence: 1, associativity: .left) { $0 + $1 }
             ],
             prefix: [
-                .init(parser: negParser) { -$0 },
+                .init(parser: negParser) { -$0 }
             ]
         )
         var input = "-3+5"[...].utf8

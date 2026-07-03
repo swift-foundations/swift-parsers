@@ -136,12 +136,13 @@ extension Parser.Quoted.Double: Parser.`Protocol` {
                 switch escaped {
                 case .ascii.backslash: result.append(.ascii.backslash)
                 case .ascii.doubleQuote: result.append(.ascii.doubleQuote)
-                case .ascii.n:  result.append(.ascii.lf) // LF
-                case .ascii.r:  result.append(.ascii.cr) // CR
-                case .ascii.t:  result.append(.ascii.tab) // Tab
-                case .ascii.0:  result.append(.ascii.nul) // Null
-                case .ascii.b:  result.append(.ascii.bs) // Backspace
-                case .ascii.f:  result.append(.ascii.ff) // Form feed
+                case .ascii.n: result.append(.ascii.lf)  // LF
+                case .ascii.r: result.append(.ascii.cr)  // CR
+                case .ascii.t: result.append(.ascii.tab)  // Tab
+                case .ascii.0: result.append(.ascii.nul)  // Null
+                case .ascii.b: result.append(.ascii.bs)  // Backspace
+                case .ascii.f: result.append(.ascii.ff)  // Form feed
+
                 default:
                     throw .invalidEscape(sequence: "\\" + String(UnicodeScalar(escaped)))
                 }

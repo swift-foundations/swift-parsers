@@ -45,8 +45,10 @@ extension Parser.Chain {
     /// let result = try expr.parse(&input)  // 6
     /// ```
     public struct Left<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>
-    where Operand.Input == Operator.Input,
-          Operand.Input: Copyable {
+    where
+        Operand.Input == Operator.Input,
+        Operand.Input: Copyable
+    {
 
         /// The operand parser.
         @usableFromInline
@@ -146,8 +148,10 @@ extension Parser.Chain {
     /// let result = try power.parse(&input)  // 2^81 = 2417851639229258349412352
     /// ```
     public struct Right<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>
-    where Operand.Input == Operator.Input,
-          Operand.Input: Copyable {
+    where
+        Operand.Input == Operator.Input,
+        Operand.Input: Copyable
+    {
 
         /// The operand parser.
         @usableFromInline
