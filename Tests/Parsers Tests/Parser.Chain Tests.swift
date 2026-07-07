@@ -1,15 +1,17 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Parser.Chain")
-struct ParserChainTests {
+@Suite
+struct `Parser.Chain` {
     @Suite struct Unit {}
-    @Suite struct EdgeCase {}
+    @Suite struct `Edge Case` {}
 }
 
 // MARK: - Helpers
 
-private struct IntAtom: Parser.`Protocol`, Sendable {
+private struct IntAtom: Parser.`Protocol`, Sendable {}
+
+extension IntAtom {
     typealias Input = Substring.UTF8View
     typealias Output = Int
     typealias Failure = Parser.Match.Error
@@ -34,7 +36,9 @@ private struct IntAtom: Parser.`Protocol`, Sendable {
     }
 }
 
-private struct PlusOp: Parser.`Protocol`, Sendable {
+private struct PlusOp: Parser.`Protocol`, Sendable {}
+
+extension PlusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
     typealias Failure = Parser.Match.Error
@@ -47,7 +51,9 @@ private struct PlusOp: Parser.`Protocol`, Sendable {
     }
 }
 
-private struct MinusOp: Parser.`Protocol`, Sendable {
+private struct MinusOp: Parser.`Protocol`, Sendable {}
+
+extension MinusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
     typealias Failure = Parser.Match.Error
@@ -60,7 +66,9 @@ private struct MinusOp: Parser.`Protocol`, Sendable {
     }
 }
 
-private struct CaretOp: Parser.`Protocol`, Sendable {
+private struct CaretOp: Parser.`Protocol`, Sendable {}
+
+extension CaretOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
     typealias Failure = Parser.Match.Error
@@ -75,7 +83,7 @@ private struct CaretOp: Parser.`Protocol`, Sendable {
 
 // MARK: - Unit Tests
 
-extension ParserChainTests.Unit {
+extension `Parser.Chain`.Unit {
     @Test
     func `Left - left-associative addition`() throws {
         let parser = IntAtom().chain.left(PlusOp()) { lhs, _, rhs in
@@ -116,7 +124,7 @@ extension ParserChainTests.Unit {
 
 // MARK: - Edge Case Tests
 
-extension ParserChainTests.EdgeCase {
+extension `Parser.Chain`.`Edge Case` {
     @Test
     func `Left - single operand`() throws {
         let parser = IntAtom().chain.left(PlusOp()) { lhs, _, rhs in

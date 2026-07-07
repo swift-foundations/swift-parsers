@@ -82,24 +82,24 @@ extension Parser.Between: Parser.`Protocol` {
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Parse open
-        do {
+        do throws(Open.Failure) {
             _ = try open.parse(&input)
-        } catch let error {
+        } catch {
             throw .left(.left(error))
         }
 
         // Parse content
         let result: Content.Output
-        do {
+        do throws(Content.Failure) {
             result = try content.parse(&input)
-        } catch let error {
+        } catch {
             throw .left(.right(error))
         }
 
         // Parse close
-        do {
+        do throws(Close.Failure) {
             _ = try close.parse(&input)
-        } catch let error {
+        } catch {
             throw .right(error)
         }
 
@@ -185,24 +185,24 @@ extension Parser.Surrounded: Parser.`Protocol` {
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         // Parse open
-        do {
+        do throws(Delimiter.Failure) {
             _ = try delimiter.parse(&input)
-        } catch let error {
+        } catch {
             throw .left(.left(error))
         }
 
         // Parse content
         let result: Content.Output
-        do {
+        do throws(Content.Failure) {
             result = try content.parse(&input)
-        } catch let error {
+        } catch {
             throw .left(.right(error))
         }
 
         // Parse close
-        do {
+        do throws(Delimiter.Failure) {
             _ = try delimiter.parse(&input)
-        } catch let error {
+        } catch {
             throw .right(error)
         }
 

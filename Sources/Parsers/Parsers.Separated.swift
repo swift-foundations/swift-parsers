@@ -102,7 +102,7 @@ extension Parser.Separated: Parser.`Protocol` {
         var results: [Element.Output] = []
 
         // Try to parse first element
-        do {
+        do throws(Element.Failure) {
             let first = try element.parse(&input)
             results.append(first)
         } catch {
@@ -118,7 +118,7 @@ extension Parser.Separated: Parser.`Protocol` {
             let saved = input
 
             // Try separator
-            do {
+            do throws(Separator.Failure) {
                 _ = try separator.parse(&input)
             } catch {
                 // No separator, done
@@ -126,7 +126,7 @@ extension Parser.Separated: Parser.`Protocol` {
             }
 
             // Try element after separator
-            do {
+            do throws(Element.Failure) {
                 let next = try element.parse(&input)
                 results.append(next)
             } catch {

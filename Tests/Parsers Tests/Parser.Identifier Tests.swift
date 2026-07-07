@@ -1,15 +1,15 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Parser.Identifier")
-struct ParserIdentifierTests {
+@Suite
+struct `Parser.Identifier` {
     @Suite struct Unit {}
-    @Suite struct EdgeCase {}
+    @Suite struct `Edge Case` {}
 }
 
 // MARK: - Unit Tests
 
-extension ParserIdentifierTests.Unit {
+extension `Parser.Identifier`.Unit {
     @Test
     func `CStyle matches simple identifier`() throws {
         let parser = Parser.Identifier.CStyle()
@@ -53,7 +53,7 @@ extension ParserIdentifierTests.Unit {
 
 // MARK: - Edge Case Tests
 
-extension ParserIdentifierTests.EdgeCase {
+extension `Parser.Identifier`.`Edge Case` {
     @Test
     func `CStyle fails when starting with digit`() {
         let parser = Parser.Identifier.CStyle()

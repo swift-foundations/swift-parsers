@@ -8,8 +8,8 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Integer Parsers")
-struct IntegerTests {
+@Suite
+struct `Integer Parsers` {
 
     @Test
     func `Decimal - basic parsing`() throws {

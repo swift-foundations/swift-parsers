@@ -1,15 +1,15 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Parser.Whitespace")
-struct ParserWhitespaceTests {
+@Suite
+struct `Parser.Whitespace` {
     @Suite struct Unit {}
-    @Suite struct EdgeCase {}
+    @Suite struct `Edge Case` {}
 }
 
 // MARK: - Unit Tests
 
-extension ParserWhitespaceTests.Unit {
+extension `Parser.Whitespace`.Unit {
     @Test
     func `Horizontal consumes spaces`() throws {
         let parser = Parser.Whitespace.Horizontal()
@@ -53,7 +53,7 @@ extension ParserWhitespaceTests.Unit {
 
 // MARK: - Edge Case Tests
 
-extension ParserWhitespaceTests.EdgeCase {
+extension `Parser.Whitespace`.`Edge Case` {
     @Test
     func `Horizontal fails with no whitespace`() {
         let parser = Parser.Whitespace.Horizontal()

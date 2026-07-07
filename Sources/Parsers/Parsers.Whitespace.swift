@@ -179,16 +179,6 @@ extension Parser.Whitespace {
         /// The kind of whitespace to skip.
         public let kind: Kind
 
-        /// The kind of whitespace to match.
-        public enum Kind: Sendable {
-            /// Space and tab only.
-            case horizontal
-            /// Newlines only.
-            case vertical
-            /// All whitespace.
-            case any
-        }
-
         /// Creates a whitespace skipper.
         ///
         /// - Parameter kind: The kind of whitespace to skip. Default `.any`.
@@ -196,6 +186,18 @@ extension Parser.Whitespace {
         public init(kind: Kind = .any) {
             self.kind = kind
         }
+    }
+}
+
+extension Parser.Whitespace.Skip {
+    /// The kind of whitespace to match.
+    public enum Kind: Sendable {
+        /// Space and tab only.
+        case horizontal
+        /// Newlines only.
+        case vertical
+        /// All whitespace.
+        case any
     }
 }
 

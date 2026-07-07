@@ -1,15 +1,15 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Parser.Comment")
-struct ParserCommentTests {
+@Suite
+struct `Parser.Comment` {
     @Suite struct Unit {}
-    @Suite struct EdgeCase {}
+    @Suite struct `Edge Case` {}
 }
 
 // MARK: - Unit Tests
 
-extension ParserCommentTests.Unit {
+extension `Parser.Comment`.Unit {
     @Test
     func `Line parses C-style comment`() throws {
         let parser = Parser.Comment.Line()
@@ -56,7 +56,7 @@ extension ParserCommentTests.Unit {
 
 // MARK: - Edge Case Tests
 
-extension ParserCommentTests.EdgeCase {
+extension `Parser.Comment`.`Edge Case` {
     @Test
     func `Line fails without prefix`() {
         let parser = Parser.Comment.Line()

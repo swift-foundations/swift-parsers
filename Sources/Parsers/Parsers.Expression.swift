@@ -230,7 +230,7 @@ extension Parser.Expression.Climbing: Parser.`Protocol` {
         // Apply postfix operators
         for postfix in postfixOps {
             let saved = input
-            do {
+            do throws(Op.Failure) {
                 _ = try postfix.parser.parse(&input)
                 lhs = postfix.apply(lhs)
             } catch {
@@ -246,7 +246,7 @@ extension Parser.Expression.Climbing: Parser.`Protocol` {
 
             for op in operators where op.precedence >= minPrecedence {
                 let saved = input
-                do {
+                do throws(Op.Failure) {
                     _ = try op.parser.parse(&input)
                     matchedOp = op
                     opSaved = saved
@@ -275,7 +275,7 @@ extension Parser.Expression.Climbing: Parser.`Protocol` {
 
             // Parse right-hand side
             let rhs: Operand
-            do {
+            do throws(Failure) {
                 rhs = try parseExpression(&input, minPrecedence: nextPrecedence)
             } catch {
                 // Restore to before operator

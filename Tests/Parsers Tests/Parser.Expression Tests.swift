@@ -1,15 +1,17 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Parser.Expression")
-struct ParserExpressionTests {
+@Suite
+struct `Parser.Expression` {
     @Suite struct Unit {}
-    @Suite struct EdgeCase {}
+    @Suite struct `Edge Case` {}
 }
 
 // MARK: - Helpers
 
-private struct IntAtom: Parser.`Protocol`, Sendable {
+private struct IntAtom: Parser.`Protocol`, Sendable {}
+
+extension IntAtom {
     typealias Input = Substring.UTF8View
     typealias Output = Int
     typealias Failure = Parser.Match.Error
@@ -36,7 +38,9 @@ private struct IntAtom: Parser.`Protocol`, Sendable {
 
 private struct OpParser: Parser.`Protocol`, Sendable {
     let byte: UInt8
+}
 
+extension OpParser {
     typealias Input = Substring.UTF8View
     typealias Output = UInt8
     typealias Failure = Parser.Match.Error
@@ -63,7 +67,7 @@ private func makeArithmeticParser() -> Parser.Expression.Climbing<IntAtom, OpPar
 
 // MARK: - Unit Tests
 
-extension ParserExpressionTests.Unit {
+extension `Parser.Expression`.Unit {
     @Test
     func `precedence - multiply before add`() throws {
         let parser = makeArithmeticParser()
@@ -107,7 +111,7 @@ extension ParserExpressionTests.Unit {
 
 // MARK: - Edge Case Tests
 
-extension ParserExpressionTests.EdgeCase {
+extension `Parser.Expression`.`Edge Case` {
     @Test
     func `single atom`() throws {
         let parser = makeArithmeticParser()

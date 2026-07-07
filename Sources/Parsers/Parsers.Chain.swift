@@ -97,7 +97,7 @@ extension Parser.Chain.Left: Parser.`Protocol` {
 
             // Try operator
             let op: Operator.Output
-            do {
+            do throws(Operator.Failure) {
                 op = try `operator`.parse(&input)
             } catch {
                 break
@@ -105,7 +105,7 @@ extension Parser.Chain.Left: Parser.`Protocol` {
 
             // Try next operand
             let rhs: Operand.Output
-            do {
+            do throws(Operand.Failure) {
                 rhs = try operand.parse(&input)
             } catch {
                 // Restore and break
@@ -198,7 +198,7 @@ extension Parser.Chain.Right: Parser.`Protocol` {
 
         // Try operator
         let op: Operator.Output
-        do {
+        do throws(Operator.Failure) {
             op = try `operator`.parse(&input)
         } catch {
             // No operator, return single operand
@@ -207,7 +207,7 @@ extension Parser.Chain.Right: Parser.`Protocol` {
 
         // Recursively parse right side (for right associativity)
         let rhs: Operand.Output
-        do {
+        do throws(Operand.Failure) {
             rhs = try parse(&input)
         } catch {
             // Restore and return single operand

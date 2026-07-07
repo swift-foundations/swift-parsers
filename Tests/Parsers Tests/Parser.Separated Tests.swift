@@ -1,15 +1,17 @@
 import Parsers_Test_Support
 import Testing
 
-@Suite("Parser.Separated")
-struct ParserSeparatedTests {
+@Suite
+struct `Parser.Separated` {
     @Suite struct Unit {}
-    @Suite struct EdgeCase {}
+    @Suite struct `Edge Case` {}
 }
 
 // MARK: - Helpers
 
-private struct DigitParser: Parser.`Protocol`, Sendable {
+private struct DigitParser: Parser.`Protocol`, Sendable {}
+
+extension DigitParser {
     typealias Input = Substring.UTF8View
     typealias Output = Int
     typealias Failure = Parser.Match.Error
@@ -26,7 +28,9 @@ private struct DigitParser: Parser.`Protocol`, Sendable {
     }
 }
 
-private struct CommaParser: Parser.`Protocol`, Sendable {
+private struct CommaParser: Parser.`Protocol`, Sendable {}
+
+extension CommaParser {
     typealias Input = Substring.UTF8View
     typealias Output = Void
     typealias Failure = Parser.Match.Error
@@ -41,7 +45,7 @@ private struct CommaParser: Parser.`Protocol`, Sendable {
 
 // MARK: - Unit Tests
 
-extension ParserSeparatedTests.Unit {
+extension `Parser.Separated`.Unit {
     @Test
     func `basic CSV-like separation`() throws {
         let parser = DigitParser().separated(by: CommaParser())
@@ -88,7 +92,7 @@ extension ParserSeparatedTests.Unit {
 
 // MARK: - Edge Case Tests
 
-extension ParserSeparatedTests.EdgeCase {
+extension `Parser.Separated`.`Edge Case` {
     @Test
     func `empty input returns empty array`() throws {
         let parser = DigitParser().separated(by: CommaParser())

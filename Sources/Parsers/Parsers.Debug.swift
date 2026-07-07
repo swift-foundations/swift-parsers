@@ -81,7 +81,7 @@ extension Parser.Debug.Trace: Parser.`Protocol` {
         let startCount = input.count
         output("[\(label)] entering at offset \(startCount)")
 
-        do {
+        do throws(P.Failure) {
             let result = try inner.parse(&input)
             let consumed = startCount - input.count
             output("[\(label)] succeeded, consumed \(consumed) bytes")
@@ -169,98 +169,100 @@ extension Parser.Debug.Profile {
         @usableFromInline
         var _maxDuration: Duration = .zero
 
-        /// Total number of invocations.
-        public var invocations: Int { _invocations }
-
-        /// Number of successful parses.
-        public var successes: Int { _successes }
-
-        /// Number of failed parses.
-        public var failures: Int { _failures }
-
-        /// Total time spent parsing.
-        public var totalDuration: Duration { _totalDuration }
-
-        /// Minimum parse time.
-        public var minDuration: Duration? { _minDuration }
-
-        /// Maximum parse time.
-        public var maxDuration: Duration { _maxDuration }
-
         /// Creates empty stats.
         @inlinable
         public init() {}
+    }
+}
 
-        /// Records a successful parse.
-        @inlinable
-        func recordSuccess(elapsed: Duration) {
-            _invocations += 1
-            _successes += 1
-            _totalDuration += elapsed
-            if let min = _minDuration {
-                _minDuration = Swift.min(min, elapsed)
-            } else {
-                _minDuration = elapsed
-            }
-            _maxDuration = Swift.max(_maxDuration, elapsed)
+extension Parser.Debug.Profile.Stats {
+    /// Total number of invocations.
+    public var invocations: Int { _invocations }
+
+    /// Number of successful parses.
+    public var successes: Int { _successes }
+
+    /// Number of failed parses.
+    public var failures: Int { _failures }
+
+    /// Total time spent parsing.
+    public var totalDuration: Duration { _totalDuration }
+
+    /// Minimum parse time.
+    public var minDuration: Duration? { _minDuration }
+
+    /// Maximum parse time.
+    public var maxDuration: Duration { _maxDuration }
+
+    /// Records a successful parse.
+    @inlinable
+    func recordSuccess(elapsed: Duration) {
+        _invocations += 1
+        _successes += 1
+        _totalDuration += elapsed
+        if let min = _minDuration {
+            _minDuration = Swift.min(min, elapsed)
+        } else {
+            _minDuration = elapsed
+        }
+        _maxDuration = Swift.max(_maxDuration, elapsed)
+    }
+
+    /// Records a failed parse.
+    @inlinable
+    func recordFailure(elapsed: Duration) {
+        _invocations += 1
+        _failures += 1
+        _totalDuration += elapsed
+        if let min = _minDuration {
+            _minDuration = Swift.min(min, elapsed)
+        } else {
+            _minDuration = elapsed
+        }
+        _maxDuration = Swift.max(_maxDuration, elapsed)
+    }
+
+    /// Success rate (0.0 to 1.0).
+    public var successRate: Double {
+        guard _invocations > 0 else { return 0 }
+        return Double(_successes) / Double(_invocations)
+    }
+
+    /// Average parse time.
+    public var averageDuration: Duration {
+        guard _invocations > 0 else { return .zero }
+        return _totalDuration / _invocations
+    }
+
+    /// Generates a human-readable report.
+    public func report(label: String = "Parser") -> String {
+        guard _invocations > 0 else {
+            return "\(label): no invocations"
         }
 
-        /// Records a failed parse.
-        @inlinable
-        func recordFailure(elapsed: Duration) {
-            _invocations += 1
-            _failures += 1
-            _totalDuration += elapsed
-            if let min = _minDuration {
-                _minDuration = Swift.min(min, elapsed)
-            } else {
-                _minDuration = elapsed
-            }
-            _maxDuration = Swift.max(_maxDuration, elapsed)
-        }
+        let successPercent = Int(successRate * 100)
+        let minStr = _minDuration?.formatted(.duration) ?? "N/A"
 
-        /// Success rate (0.0 to 1.0).
-        public var successRate: Double {
-            guard _invocations > 0 else { return 0 }
-            return Double(_successes) / Double(_invocations)
-        }
+        return """
+            \(label) Statistics:
+              Invocations: \(_invocations)
+              Successes:   \(_successes) (\(successPercent)%)
+              Failures:    \(_failures)
+              Total time:  \(_totalDuration.formatted(.duration))
+              Average:     \(averageDuration.formatted(.duration))
+              Min:         \(minStr)
+              Max:         \(_maxDuration.formatted(.duration))
+            """
+    }
 
-        /// Average parse time.
-        public var averageDuration: Duration {
-            guard _invocations > 0 else { return .zero }
-            return _totalDuration / _invocations
-        }
-
-        /// Generates a human-readable report.
-        public func report(label: String = "Parser") -> String {
-            guard _invocations > 0 else {
-                return "\(label): no invocations"
-            }
-
-            let successPercent = Int(successRate * 100)
-            let minStr = _minDuration?.formatted(.duration) ?? "N/A"
-
-            return """
-                \(label) Statistics:
-                  Invocations: \(_invocations)
-                  Successes:   \(_successes) (\(successPercent)%)
-                  Failures:    \(_failures)
-                  Total time:  \(_totalDuration.formatted(.duration))
-                  Average:     \(averageDuration.formatted(.duration))
-                  Min:         \(minStr)
-                  Max:         \(_maxDuration.formatted(.duration))
-                """
-        }
-
-        /// Resets all statistics.
-        public func reset() {
-            _invocations = 0
-            _successes = 0
-            _failures = 0
-            _totalDuration = .zero
-            _minDuration = nil
-            _maxDuration = .zero
-        }
+    /// Resets all statistics.
+    public func reset() {
+        _invocations = 0
+        _successes = 0
+        _failures = 0
+        _totalDuration = .zero
+        _minDuration = nil
+        _maxDuration = .zero
     }
 }
 
@@ -273,7 +275,7 @@ extension Parser.Debug.Profile: Parser.`Protocol` {
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         let start = Clock.Continuous.now
 
-        do {
+        do throws(P.Failure) {
             let result = try inner.parse(&input)
             let elapsed = Clock.Continuous.now - start
             stats.recordSuccess(elapsed: elapsed)
