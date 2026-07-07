@@ -161,6 +161,9 @@ extension Parser.`Protocol` {
     ///   - allowTrailing: Allow trailing separator. Default `false`.
     /// - Returns: A parser matching separated values.
     @inlinable
+    // Generic-parameter constraint: `Self` would demand identity, not
+    // conformance to `Parser.Protocol` for any S.
+    // swiftlint:disable:next prefer_self_in_static_references
     public func separated<S: Parser.`Protocol`>(
         by separator: S,
         allowTrailing: Bool = false

@@ -29,7 +29,7 @@ extension Parser {
 extension Parser.Quoted {
     /// Escape sequence handling styles.
     public enum EscapeStyle: Sendable {
-        /// Backslash escapes: \n, \t, \\, \", etc.
+        /// Backslash escapes, such as \n, \t, \\, and \".
         case backslash
 
         /// Character doubling: "" for literal "

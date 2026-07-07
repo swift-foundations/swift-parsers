@@ -117,6 +117,9 @@ extension Parser.`Protocol` {
     ///   - close: The closing delimiter parser.
     /// - Returns: A parser matching content between delimiters.
     @inlinable
+    // Generic-parameter constraints: `Self` would demand identity, not
+    // conformance to `Parser.Protocol` for any Open/Close type.
+    // swiftlint:disable:next prefer_self_in_static_references
     public func between<Open: Parser.`Protocol`, Close: Parser.`Protocol`>(
         _ open: Open,
         _ close: Close
@@ -215,6 +218,9 @@ extension Parser.`Protocol` {
     /// - Parameter delimiter: The delimiter parser (same for open and close).
     /// - Returns: A parser matching content between identical delimiters.
     @inlinable
+    // Generic-parameter constraint: `Self` would demand identity, not
+    // conformance to `Parser.Protocol` for any D.
+    // swiftlint:disable:next prefer_self_in_static_references
     public func surrounded<D: Parser.`Protocol`>(
         by delimiter: D
     ) -> Parser.Surrounded<D, Self>

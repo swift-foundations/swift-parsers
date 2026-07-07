@@ -55,7 +55,7 @@ extension Parser.Integer {
 
         /// Required prefix was missing.
         ///
-        /// - Parameter expected: The expected prefix (e.g., "0x", "0b")
+        /// - Parameter expected: The expected prefix, such as "0x" or "0b"
         case missingPrefix(expected: String)
     }
 }
@@ -93,7 +93,7 @@ extension Parser.Integer {
         /// Whether to parse optional +/- prefix.
         public let allowSign: Bool
 
-        /// Whether to allow leading zeros (e.g., "007").
+        /// Whether to allow leading zeros, such as "007".
         public let allowLeadingZeros: Bool
 
         /// Creates a decimal integer parser.

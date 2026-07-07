@@ -26,7 +26,7 @@ extension Parser {
 extension Parser.Comment {
     /// Parses line comments from prefix to end of line.
     ///
-    /// Line comments start with a prefix (e.g., //, #) and continue
+    /// Line comments start with a prefix, such as // or #, and continue
     /// to the end of the line. The newline itself is NOT consumed.
     ///
     /// ## Grammar
@@ -48,7 +48,7 @@ extension Parser.Comment {
     /// let sql = Parser.Comment.Line(prefix: "--")
     /// ```
     public struct Line: Sendable {
-        /// The comment prefix (e.g., "//", "#").
+        /// The comment prefix, such as "//" or "#".
         @usableFromInline
         let prefixBytes: [UInt8]
 

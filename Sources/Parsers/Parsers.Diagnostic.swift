@@ -142,14 +142,17 @@ extension Parser.Diagnostic {
     /// Formatting style for diagnostics.
     public enum Style: Sendable {
         /// Compact single-line format.
+        ///
         /// Example: `error at offset 42: unexpected character`
         case compact
 
         /// Expanded format with source context.
+        ///
         /// Shows surrounding lines with line numbers.
         case expanded(contextLines: Int = 2)
 
         /// Caret format pointing to error location.
+        ///
         /// Shows single line with ^ marker.
         case caret
 

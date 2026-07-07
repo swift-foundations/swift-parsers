@@ -240,6 +240,7 @@ extension Parser.Whitespace.Skip: Parser.`Protocol` {
 
 extension Parser.Whitespace {
     /// Checks if a byte is ASCII whitespace.
+    ///
     /// Delegates to ``ASCII/Classification/isWhitespace(_:)`` per [IMPL-060].
     @inlinable
     static func isWhitespace(_ byte: UInt8) -> Bool {
