@@ -221,7 +221,7 @@ extension Parser.Expression.Climbing: Parser.`Protocol` {
     }
 
     @inlinable
-    func parseExpression(
+    package func parseExpression(
         _ input: inout Input,
         minPrecedence: Int
     ) throws(Failure) -> Operand {
@@ -290,7 +290,7 @@ extension Parser.Expression.Climbing: Parser.`Protocol` {
     }
 
     @inlinable
-    func parsePrimary(_ input: inout Input) throws(Failure) -> Operand {
+    package func parsePrimary(_ input: inout Input) throws(Failure) -> Operand {
         // Try prefix operators
         for prefix in prefixOps {
             let saved = input

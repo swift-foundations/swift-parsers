@@ -82,12 +82,12 @@ extension Parser.Identifier.CStyle: Parser.`Protocol` {
     }
 
     @inlinable
-    static func isStartChar(_ byte: UInt8) -> Bool {
+    package static func isStartChar(_ byte: UInt8) -> Bool {
         ASCII.Classification.isLetter(byte) || byte == .ascii.underline
     }
 
     @inlinable
-    static func isContinueChar(_ byte: UInt8) -> Bool {
+    package static func isContinueChar(_ byte: UInt8) -> Bool {
         ASCII.Classification.isAlphanumeric(byte) || byte == .ascii.underline
     }
 }

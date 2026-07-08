@@ -196,7 +196,7 @@ extension Parser.Debug.Profile.Stats {
 
     /// Records a successful parse.
     @inlinable
-    func recordSuccess(elapsed: Duration) {
+    package func recordSuccess(elapsed: Duration) {
         _invocations += 1
         _successes += 1
         _totalDuration += elapsed
@@ -210,7 +210,7 @@ extension Parser.Debug.Profile.Stats {
 
     /// Records a failed parse.
     @inlinable
-    func recordFailure(elapsed: Duration) {
+    package func recordFailure(elapsed: Duration) {
         _invocations += 1
         _failures += 1
         _totalDuration += elapsed

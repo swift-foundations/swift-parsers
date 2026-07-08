@@ -215,7 +215,7 @@ extension Parser.Comment.Block: Parser.`Protocol` {
     }
 
     @inlinable
-    func matches(_ bytes: [UInt8], in input: Input) -> Bool {
+    package func matches(_ bytes: [UInt8], in input: Input) -> Bool {
         var check = input
         for expected in bytes {
             guard check.first == expected else { return false }

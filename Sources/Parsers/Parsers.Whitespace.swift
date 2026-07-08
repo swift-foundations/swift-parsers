@@ -245,7 +245,7 @@ extension Parser.Whitespace {
     ///
     /// Delegates to ``ASCII/Classification/isWhitespace(_:)`` per [IMPL-060].
     @inlinable
-    static func isWhitespace(_ byte: UInt8) -> Bool {
+    package static func isWhitespace(_ byte: UInt8) -> Bool {
         ASCII.Classification.isWhitespace(byte)
     }
 }
