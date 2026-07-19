@@ -121,7 +121,10 @@ extension Parser.Separated: Parser.`Protocol` {
             do throws(Separator.Failure) {
                 _ = try separator.parse(&input)
             } catch {
-                // No separator, done
+                // No separator, done. Restore: the separator may have
+                // partially consumed input before failing (e.g. a
+                // multi-byte separator).
+                input = saved
                 break
             }
 

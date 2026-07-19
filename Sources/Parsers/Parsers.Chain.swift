@@ -100,6 +100,9 @@ extension Parser.Chain.Left: Parser.`Protocol` {
             do throws(Operator.Failure) {
                 op = try `operator`.parse(&input)
             } catch {
+                // Restore: the operator may have partially consumed input
+                // before failing (e.g. a multi-byte operator).
+                input = saved
                 break
             }
 
@@ -201,7 +204,10 @@ extension Parser.Chain.Right: Parser.`Protocol` {
         do throws(Operator.Failure) {
             op = try `operator`.parse(&input)
         } catch {
-            // No operator, return single operand
+            // No operator, return single operand. Restore: the operator may
+            // have partially consumed input before failing (e.g. a
+            // multi-byte operator).
+            input = saved
             return lhs
         }
 

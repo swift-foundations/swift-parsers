@@ -43,6 +43,28 @@ extension CommaParser {
     }
 }
 
+/// A two-byte separator ("::") that consumes its first byte before it can
+/// discover the match fails — simulating a multi-byte separator that
+/// partially matches before failing.
+private struct DoubleColonParser: Parser.`Protocol`, Sendable {}
+
+extension DoubleColonParser {
+    typealias Input = Substring.UTF8View
+    typealias Output = Void
+    typealias Failure = Parser.Match.Error
+
+    func parse(_ input: inout Input) throws(Failure) {
+        guard input.first == UInt8(ascii: ":") else {
+            throw .predicateFailed(description: "::")
+        }
+        input.removeFirst()
+        guard input.first == UInt8(ascii: ":") else {
+            throw .predicateFailed(description: "::")
+        }
+        input.removeFirst()
+    }
+}
+
 // MARK: - Unit Tests
 
 extension `Parser.Separated`.Unit {
@@ -140,5 +162,20 @@ extension `Parser.Separated`.`Edge Case` {
         let result = try parser.parse(&input)
 
         #expect(result.isEmpty)
+    }
+
+    // Regression test for F-001: when a multi-byte separator consumes part
+    // of its match before failing, `Separated` must restore `input` to the
+    // position saved before the separator attempt — not leave the partial
+    // consumption visible to the caller.
+    @Test
+    func `separator partially consumes before failing, input is restored`() throws {
+        let parser = DigitParser().separated(by: DoubleColonParser())
+        var input = "1:2"[...].utf8
+
+        let result = try parser.parse(&input)
+
+        #expect(result == [1])
+        #expect(String(decoding: input, as: UTF8.self) == ":2")
     }
 }

@@ -81,6 +81,28 @@ extension CaretOp {
     }
 }
 
+/// A two-byte operator ("++") that consumes its first byte before it can
+/// discover the match fails — simulating a multi-byte operator that
+/// partially matches before failing.
+private struct DoublePlusOp: Parser.`Protocol`, Sendable {}
+
+extension DoublePlusOp {
+    typealias Input = Substring.UTF8View
+    typealias Output = Void
+    typealias Failure = Parser.Match.Error
+
+    func parse(_ input: inout Input) throws(Failure) {
+        guard input.first == UInt8(ascii: "+") else {
+            throw .predicateFailed(description: "++")
+        }
+        input.removeFirst()
+        guard input.first == UInt8(ascii: "+") else {
+            throw .predicateFailed(description: "++")
+        }
+        input.removeFirst()
+    }
+}
+
 // MARK: - Unit Tests
 
 extension `Parser.Chain`.Unit {
@@ -160,5 +182,36 @@ extension `Parser.Chain`.`Edge Case` {
 
         #expect(result == 7)
         #expect(input.first == UInt8(ascii: "*"))
+    }
+
+    // Regression test for F-001: when a multi-byte operator consumes part of
+    // its match before failing, `Chain.Left` must restore `input` to the
+    // position saved before the operator attempt — not leave the partial
+    // consumption visible to the caller.
+    @Test
+    func `Left - operator partially consumes before failing, input is restored`() throws {
+        let parser = IntAtom().chain.left(DoublePlusOp()) { lhs, _, rhs in
+            lhs + rhs
+        }
+        var input = "5+3"[...].utf8
+
+        let result = try parser.parse(&input)
+
+        #expect(result == 5)
+        #expect(String(decoding: input, as: UTF8.self) == "+3")
+    }
+
+    // Regression test for F-001: same as above, for `Chain.Right`.
+    @Test
+    func `Right - operator partially consumes before failing, input is restored`() throws {
+        let parser = IntAtom().chain.right(DoublePlusOp()) { lhs, _, rhs in
+            lhs + rhs
+        }
+        var input = "5+3"[...].utf8
+
+        let result = try parser.parse(&input)
+
+        #expect(result == 5)
+        #expect(String(decoding: input, as: UTF8.self) == "+3")
     }
 }
