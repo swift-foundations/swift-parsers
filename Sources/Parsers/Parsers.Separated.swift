@@ -102,6 +102,7 @@ extension Parser.Separated: Parser.`Protocol` {
         var results: [Element.Output] = []
 
         // Try to parse first element
+        let firstSaved = input
         do throws(Element.Failure) {
             let first = try element.parse(&input)
             results.append(first)
@@ -110,6 +111,10 @@ extension Parser.Separated: Parser.`Protocol` {
             if minCount > 0 {
                 throw .left(.countTooLow(expected: minCount, got: 0))
             }
+            // Empty result is a SUCCESS. Restore: the element may have
+            // partially consumed input before failing (e.g. a multi-byte
+            // element).
+            input = firstSaved
             return results
         }
 
@@ -129,13 +134,18 @@ extension Parser.Separated: Parser.`Protocol` {
             }
 
             // Try element after separator
+            let elementSaved = input
             do throws(Element.Failure) {
                 let next = try element.parse(&input)
                 results.append(next)
             } catch {
                 // Separator but no element
                 if allowTrailing {
-                    // Trailing separator is OK
+                    // Trailing separator is OK. Restore to just after the
+                    // separator: the element may have partially consumed
+                    // input before failing (e.g. a multi-byte element), and
+                    // only the trailing separator should stay consumed.
+                    input = elementSaved
                     break
                 } else {
                     // Restore to before separator and fail

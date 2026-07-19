@@ -178,4 +178,37 @@ extension `Parser.Separated`.`Edge Case` {
         #expect(result == [1])
         #expect(String(decoding: input, as: UTF8.self) == ":2")
     }
+
+    // [INST-TEST-013] Regression test for F-001 rev-1 (GAP 1, pre-review
+    // finding): when the FIRST element fails with the default
+    // `minCount == 0`, `Separated` returns an empty array as a SUCCESS but
+    // must still restore `input` to the position saved before the
+    // first-element attempt — not leave the element sub-parser's partial
+    // consumption visible to the caller.
+    @Test
+    func `first element partially consumes before failing, input is restored`() throws {
+        let parser = DoubleColonParser().separated(by: CommaParser())
+        var input = ":x"[...].utf8
+
+        let result = try parser.parse(&input)
+
+        #expect(result.isEmpty)
+        #expect(String(decoding: input, as: UTF8.self) == ":x")
+    }
+
+    // [INST-TEST-013] Regression test for F-001 rev-1 (GAP 2, pre-review
+    // finding): when `allowTrailing` swallows an element failure after a
+    // separator has already been consumed, `Separated` must restore `input`
+    // to the position immediately after the separator — not leave the
+    // element sub-parser's partial consumption visible to the caller.
+    @Test
+    func `allowTrailing element partially consumes before failing, input is restored`() throws {
+        let parser = DoubleColonParser().separated(by: CommaParser(), allowTrailing: true)
+        var input = "::,:x"[...].utf8
+
+        let result = try parser.parse(&input)
+
+        #expect(result.count == 1)
+        #expect(String(decoding: input, as: UTF8.self) == ":x")
+    }
 }
