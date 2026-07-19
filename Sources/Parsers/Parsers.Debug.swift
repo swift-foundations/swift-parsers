@@ -17,6 +17,7 @@
 
 public import Clocks
 public import ISO_9945_Kernel_Clock
+public import Synchronization
 
 extension Parser {
     /// Namespace for debugging types.
@@ -136,133 +137,141 @@ extension Parser.Debug {
 // MARK: - Stats
 
 extension Parser.Debug.Profile {
-    // WHY: Category D — structural Sendable workaround.
-    // WHY: No explicit synchronization. Mutable fields accessed across debug
-    // WHY: instrumentation paths but no concurrent access documented.
-    // WHY: No caller invariant to uphold — data is structurally safe.
-    // WHEN TO REMOVE: When the type gains explicit synchronization (making it Cat A)
-    // WHEN TO REMOVE: or when compiler gains structural Sendable inference.
-    // TRACKING: unsafe-audit-findings.md Category D; SP-7.
     /// Statistics collected from parser execution.
+    ///
+    /// ## Safety Invariant
+    ///
+    /// All mutable counters live in `_state` and are guarded by an internal
+    /// `Mutex<State>`. Every read and mutation (`recordSuccess`,
+    /// `recordFailure`, `reset`, and every accessor) routes through
+    /// `_state.withLock`, so concurrent recording from multiple tasks/threads
+    /// is safe without external synchronization. See [MEM-SAFE-024] Category A.
     public final class Stats: @unchecked Sendable {
-        /// Total number of invocations.
         @usableFromInline
-        var _invocations: Int = 0
-
-        /// Number of successful parses.
-        @usableFromInline
-        var _successes: Int = 0
-
-        /// Number of failed parses.
-        @usableFromInline
-        var _failures: Int = 0
-
-        /// Total time spent parsing.
-        @usableFromInline
-        var _totalDuration: Duration = .zero
-
-        /// Minimum parse time.
-        @usableFromInline
-        var _minDuration: Duration? = nil
-
-        /// Maximum parse time.
-        @usableFromInline
-        var _maxDuration: Duration = .zero
+        let _state: Mutex<State>
 
         /// Creates empty stats.
         @inlinable
-        public init() {}
+        public init() {
+            _state = Mutex(State())
+        }
+    }
+}
+
+extension Parser.Debug.Profile.Stats {
+    /// The mutable counters, always accessed through `_state`'s `Mutex`.
+    @usableFromInline
+    struct State: Sendable {
+        @usableFromInline var invocations: Int = 0
+        @usableFromInline var successes: Int = 0
+        @usableFromInline var failures: Int = 0
+        @usableFromInline var totalDuration: Duration = .zero
+        @usableFromInline var minDuration: Duration? = nil
+        @usableFromInline var maxDuration: Duration = .zero
+
+        @usableFromInline
+        init() {}
     }
 }
 
 extension Parser.Debug.Profile.Stats {
     /// Total number of invocations.
-    public var invocations: Int { _invocations }
+    public var invocations: Int { _state.withLock { $0.invocations } }
 
     /// Number of successful parses.
-    public var successes: Int { _successes }
+    public var successes: Int { _state.withLock { $0.successes } }
 
     /// Number of failed parses.
-    public var failures: Int { _failures }
+    public var failures: Int { _state.withLock { $0.failures } }
 
     /// Total time spent parsing.
-    public var totalDuration: Duration { _totalDuration }
+    public var totalDuration: Duration { _state.withLock { $0.totalDuration } }
 
     /// Minimum parse time.
-    public var minDuration: Duration? { _minDuration }
+    public var minDuration: Duration? { _state.withLock { $0.minDuration } }
 
     /// Maximum parse time.
-    public var maxDuration: Duration { _maxDuration }
+    public var maxDuration: Duration { _state.withLock { $0.maxDuration } }
 
     /// Records a successful parse.
     @inlinable
     package func recordSuccess(elapsed: Duration) {
-        _invocations += 1
-        _successes += 1
-        _totalDuration += elapsed
-        if let min = _minDuration {
-            _minDuration = Swift.min(min, elapsed)
-        } else {
-            _minDuration = elapsed
+        _state.withLock { state in
+            state.invocations += 1
+            state.successes += 1
+            state.totalDuration += elapsed
+            if let min = state.minDuration {
+                state.minDuration = Swift.min(min, elapsed)
+            } else {
+                state.minDuration = elapsed
+            }
+            state.maxDuration = Swift.max(state.maxDuration, elapsed)
         }
-        _maxDuration = Swift.max(_maxDuration, elapsed)
     }
 
     /// Records a failed parse.
     @inlinable
     package func recordFailure(elapsed: Duration) {
-        _invocations += 1
-        _failures += 1
-        _totalDuration += elapsed
-        if let min = _minDuration {
-            _minDuration = Swift.min(min, elapsed)
-        } else {
-            _minDuration = elapsed
+        _state.withLock { state in
+            state.invocations += 1
+            state.failures += 1
+            state.totalDuration += elapsed
+            if let min = state.minDuration {
+                state.minDuration = Swift.min(min, elapsed)
+            } else {
+                state.minDuration = elapsed
+            }
+            state.maxDuration = Swift.max(state.maxDuration, elapsed)
         }
-        _maxDuration = Swift.max(_maxDuration, elapsed)
     }
 
     /// Success rate (0.0 to 1.0).
     public var successRate: Double {
-        guard _invocations > 0 else { return 0 }
-        return Double(_successes) / Double(_invocations)
+        _state.withLock { state in
+            guard state.invocations > 0 else { return 0 }
+            return Double(state.successes) / Double(state.invocations)
+        }
     }
 
     /// Average parse time.
     public var averageDuration: Duration {
-        guard _invocations > 0 else { return .zero }
-        return _totalDuration / _invocations
+        _state.withLock { state in
+            guard state.invocations > 0 else { return .zero }
+            return state.totalDuration / state.invocations
+        }
     }
 
     /// Generates a human-readable report.
     public func report(label: String = "Parser") -> String {
-        guard _invocations > 0 else {
+        // Snapshot under a single lock acquisition so the report is internally
+        // consistent even under concurrent recording.
+        let snapshot = _state.withLock { $0 }
+
+        guard snapshot.invocations > 0 else {
             return "\(label): no invocations"
         }
 
-        let successPercent = Int(successRate * 100)
-        let minStr = _minDuration?.formatted(.duration) ?? "N/A"
+        let successPercent = Int(Double(snapshot.successes) / Double(snapshot.invocations) * 100)
+        let average = snapshot.totalDuration / snapshot.invocations
+        let minStr = snapshot.minDuration?.formatted(.duration) ?? "N/A"
 
         return """
             \(label) Statistics:
-              Invocations: \(_invocations)
-              Successes:   \(_successes) (\(successPercent)%)
-              Failures:    \(_failures)
-              Total time:  \(_totalDuration.formatted(.duration))
-              Average:     \(averageDuration.formatted(.duration))
+              Invocations: \(snapshot.invocations)
+              Successes:   \(snapshot.successes) (\(successPercent)%)
+              Failures:    \(snapshot.failures)
+              Total time:  \(snapshot.totalDuration.formatted(.duration))
+              Average:     \(average.formatted(.duration))
               Min:         \(minStr)
-              Max:         \(_maxDuration.formatted(.duration))
+              Max:         \(snapshot.maxDuration.formatted(.duration))
             """
     }
 
     /// Resets all statistics.
     public func reset() {
-        _invocations = 0
-        _successes = 0
-        _failures = 0
-        _totalDuration = .zero
-        _minDuration = nil
-        _maxDuration = .zero
+        _state.withLock { state in
+            state = State()
+        }
     }
 }
 
