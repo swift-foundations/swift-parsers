@@ -37,7 +37,11 @@ extension Parser {
     /// var input = "(42)"[...].utf8
     /// let value = try parens.parse(&input)  // 42
     /// ```
-    public struct Between<Open: Parser.`Protocol`, Content: Parser.`Protocol`, Close: Parser.`Protocol`>
+    public struct Between<
+        Open: Parser.`Protocol`,
+        Content: Parser.`Protocol`,
+        Close: Parser.`Protocol`
+    >
     where Open.Input == Content.Input, Content.Input == Close.Input {
 
         /// The opening delimiter parser.

@@ -58,9 +58,15 @@ private func makeArithmeticParser() -> Parser.Expression.Climbing<IntAtom, OpPar
     Parser.Expression.Climbing(
         atom: IntAtom(),
         operators: [
-            .init(parser: OpParser(byte: UInt8(ascii: "+")), precedence: 1, associativity: .left) { $0 + $1 },
-            .init(parser: OpParser(byte: UInt8(ascii: "-")), precedence: 1, associativity: .left) { $0 - $1 },
-            .init(parser: OpParser(byte: UInt8(ascii: "*")), precedence: 2, associativity: .left) { $0 * $1 },
+            .init(parser: OpParser(byte: UInt8(ascii: "+")), precedence: 1, associativity: .left) {
+                $0 + $1
+            },
+            .init(parser: OpParser(byte: UInt8(ascii: "-")), precedence: 1, associativity: .left) {
+                $0 - $1
+            },
+            .init(parser: OpParser(byte: UInt8(ascii: "*")), precedence: 2, associativity: .left) {
+                $0 * $1
+            },
         ]
     )
 }
@@ -149,7 +155,11 @@ extension `Parser.Expression`.`Edge Case` {
         let parser = Parser.Expression.Climbing(
             atom: IntAtom(),
             operators: [
-                .init(parser: OpParser(byte: UInt8(ascii: "+")), precedence: 1, associativity: .left) { $0 + $1 }
+                .init(
+                    parser: OpParser(byte: UInt8(ascii: "+")),
+                    precedence: 1,
+                    associativity: .left
+                ) { $0 + $1 }
             ],
             prefix: [
                 .init(parser: negParser) { -$0 }
