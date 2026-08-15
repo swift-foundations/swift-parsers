@@ -82,7 +82,10 @@ extension Parser.Diagnostic.Source {
     /// - Returns: Source location with file identity, line, and column.
     public func location(at offset: Text.Position) -> Source_Primitives.Source.Location {
         let rawOffset = Int(bitPattern: offset)
-        let targetIndex = content.utf8.index(content.utf8.startIndex, offsetBy: min(rawOffset, content.utf8.count))
+        let targetIndex = content.utf8.index(
+            content.utf8.startIndex,
+            offsetBy: min(rawOffset, content.utf8.count)
+        )
 
         // Binary search for line
         var lo = 0
@@ -99,7 +102,8 @@ extension Parser.Diagnostic.Source {
 
         let lineNumber = lo + 1  // 1-indexed
         let lineStart = lineStarts[lo]
-        let column = content.utf8.distance(from: lineStart, to: targetIndex) + 1  // 1-indexed, byte offset
+        // 1-indexed, byte offset
+        let column = content.utf8.distance(from: lineStart, to: targetIndex) + 1
 
         return Source_Primitives.Source.Location(
             fileID: filename ?? "",
@@ -185,13 +189,23 @@ extension Parser.Diagnostic {
             return formatCompact(error: errorMessage, location: location, source: source)
 
         case .expanded(let contextLines):
-            return formatExpanded(error: errorMessage, location: location, source: source, contextLines: contextLines)
+            return formatExpanded(
+                error: errorMessage,
+                location: location,
+                source: source,
+                contextLines: contextLines
+            )
 
         case .caret:
             return formatCaret(error: errorMessage, location: location, source: source)
 
         case .rich:
-            return formatRich(error: errorMessage, location: location, offset: offset, source: source)
+            return formatRich(
+                error: errorMessage,
+                location: location,
+                offset: offset,
+                source: source
+            )
         }
     }
 
@@ -204,7 +218,11 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatCompact(error: String, location: Source_Primitives.Source.Location, source: Source) -> String {
+    static func formatCompact(
+        error: String,
+        location: Source_Primitives.Source.Location,
+        source: Source
+    ) -> String {
         if let filename = source.filename {
             return "\(filename):\(location.line):\(location.column): error: \(error)"
         } else {
@@ -213,7 +231,12 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatExpanded(error: String, location: Source_Primitives.Source.Location, source: Source, contextLines: Int) -> String {
+    static func formatExpanded(
+        error: String,
+        location: Source_Primitives.Source.Location,
+        source: Source,
+        contextLines: Int
+    ) -> String {
         // `Source.Location.line` is typed `Text.Line.Number`; arithmetic
         // with `Int`-typed offsets / lookups in `source.lineStarts` go
         // through `.underlying` once at the formatter boundary per
@@ -262,7 +285,11 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatCaret(error: String, location: Source_Primitives.Source.Location, source: Source) -> String {
+    static func formatCaret(
+        error: String,
+        location: Source_Primitives.Source.Location,
+        source: Source
+    ) -> String {
         // Convert at the `Source.line(_:)` boundary per H.4 cascade
         // guidance — `Source` is the stdlib-Int-shaped consumer here.
         guard let lineContent = source.line(Int(location.line.underlying)) else {
@@ -284,20 +311,31 @@ extension Parser.Diagnostic {
     }
 
     @usableFromInline
-    static func formatRich(error: String, location: Source_Primitives.Source.Location, offset: Text.Position, source: Source) -> String {
+    static func formatRich(
+        error: String,
+        location: Source_Primitives.Source.Location,
+        offset: Text.Position,
+        source: Source
+    ) -> String {
         // See `formatExpanded` — `.underlying` conversion at formatter boundary
         // per H.4 cascade guidance.
         let lineInt: Int = Int(location.line.underlying)
         var lines: [String] = []
 
         // Header with filename
-        lines.append("================================================================================")
+        lines.append(
+            "================================================================================"
+        )
         if let filename = source.filename {
             lines.append("ERROR in \(filename) at line \(location.line), column \(location.column)")
         } else {
-            lines.append("ERROR at line \(location.line), column \(location.column), offset \(offset)")
+            lines.append(
+                "ERROR at line \(location.line), column \(location.column), offset \(offset)"
+            )
         }
-        lines.append("================================================================================")
+        lines.append(
+            "================================================================================"
+        )
         lines.append("")
         lines.append(error)
         lines.append("")
@@ -324,7 +362,9 @@ extension Parser.Diagnostic {
         }
 
         lines.append("")
-        lines.append("================================================================================")
+        lines.append(
+            "================================================================================"
+        )
 
         return lines.joined(separator: "\n")
     }
