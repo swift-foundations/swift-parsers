@@ -16,7 +16,6 @@
 //
 
 public import Clocks
-public import ISO_9945_Kernel_Clock
 public import Synchronization
 
 extension Parser {
