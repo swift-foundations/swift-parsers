@@ -1,15 +1,15 @@
-// swift-tools-version: 6.3.3
+// swift-tools-version: 6.4
 
 import PackageDescription
 
 let package = Package(
     name: "swift-parsers",
     platforms: [
-        .macOS("27"),
-        .iOS("27"),
-        .tvOS("27"),
-        .watchOS("27"),
-        .visionOS("27")
+        .macOS(.v27),
+        .iOS(.v27),
+        .tvOS(.v27),
+        .watchOS(.v27),
+        .visionOS(.v27),
     ],
     products: [
         .library(
@@ -19,15 +19,33 @@ let package = Package(
         .library(
             name: "Parsers Test Support",
             targets: ["Parsers Test Support"]
-        )
+        ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-primitives/swift-ascii-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-parser-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-parser-machine-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-format-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-time-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-source-primitives.git", branch: "main"),
+        .package(
+            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-parser-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-parser-machine-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-format-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-time-primitives.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-source-primitives.git",
+            branch: "main"
+        ),
         .package(url: "https://github.com/swift-foundations/swift-async.git", branch: "main"),
         .package(url: "https://github.com/swift-foundations/swift-clocks.git", branch: "main"),
     ],
@@ -37,7 +55,10 @@ let package = Package(
             dependencies: [
                 .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
                 .product(name: "Parser Primitives", package: "swift-parser-primitives"),
-                .product(name: "Parser Machine Primitives", package: "swift-parser-machine-primitives"),
+                .product(
+                    name: "Parser Machine Primitives",
+                    package: "swift-parser-machine-primitives"
+                ),
                 .product(name: "Format Primitives", package: "swift-format-primitives"),
                 .product(name: "Time Primitives", package: "swift-time-primitives"),
                 .product(name: "Source Primitives", package: "swift-source-primitives"),
@@ -48,7 +69,7 @@ let package = Package(
         .target(
             name: "Parsers Test Support",
             dependencies: [
-                "Parsers",
+                "Parsers"
             ],
             path: "Tests/Support"
         ),
