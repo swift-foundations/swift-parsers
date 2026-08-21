@@ -57,7 +57,7 @@ extension Parser.Comment {
         /// - Parameter prefix: The comment start prefix.
         @inlinable
         public init(prefix: StaticString = "//") {
-            self.prefixBytes = prefix.withUTF8Buffer { [UInt8]($0) }
+            self.prefixBytes = prefix.withUTF8Buffer { unsafe [UInt8]($0) }
         }
     }
 }
@@ -142,8 +142,8 @@ extension Parser.Comment {
             close: StaticString = "*/",
             nestable: Bool = false
         ) {
-            self.openBytes = open.withUTF8Buffer { [UInt8]($0) }
-            self.closeBytes = close.withUTF8Buffer { [UInt8]($0) }
+            self.openBytes = open.withUTF8Buffer { unsafe [UInt8]($0) }
+            self.closeBytes = close.withUTF8Buffer { unsafe [UInt8]($0) }
             self.nestable = nestable
         }
     }
