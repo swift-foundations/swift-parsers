@@ -7,8 +7,6 @@ struct `Parser.Quoted` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Quoted`.Unit {
     @Test
     func `Double parses simple string`() throws {
@@ -52,8 +50,6 @@ extension `Parser.Quoted`.Unit {
         #expect(result == "say \"hi\"")
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Quoted`.`Edge Case` {
     @Test

@@ -1,30 +1,10 @@
-//
-//  Parser.Newline.swift
-//  swift-parsing
-//
-//  Newline parsers for line-oriented parsing.
-//
-//  ## Design
-//
-//  Newlines are surprisingly complex due to platform differences:
-//  - Unix/Linux/macOS: LF (\n)
-//  - Classic Mac: CR (\r)
-//  - Windows: CRLF (\r\n)
-//
-//  This module provides parsers for each style and a universal parser.
-//
-
 extension Parser {
-    /// Namespace for newline parsing types.
+
     public enum Newline: Sendable {}
 }
 
-// MARK: - LF (Unix)
-
 extension Parser.Newline {
-    /// Parses Unix-style newline: LF (\n).
-    ///
-    /// This is the standard for Unix, Linux, and modern macOS.
+
     public struct LF: Sendable {
         @inlinable
         public init() {}
@@ -45,13 +25,8 @@ extension Parser.Newline.LF: Parser.`Protocol` {
     }
 }
 
-// MARK: - CR (Classic Mac)
-
 extension Parser.Newline {
-    /// Parses Classic Mac newline: CR (\r).
-    ///
-    /// Note: This is rarely used in modern systems but may appear in
-    /// legacy files or specific protocols.
+
     public struct CR: Sendable {
         @inlinable
         public init() {}
@@ -72,12 +47,8 @@ extension Parser.Newline.CR: Parser.`Protocol` {
     }
 }
 
-// MARK: - CRLF (Windows)
-
 extension Parser.Newline {
-    /// Parses Windows-style newline: CRLF (\r\n).
-    ///
-    /// This is the standard for Windows and many network protocols (HTTP, SMTP).
+
     public struct CRLF: Sendable {
         @inlinable
         public init() {}
@@ -107,20 +78,8 @@ extension Parser.Newline.CRLF: Parser.`Protocol` {
     }
 }
 
-// MARK: - `Any` Newline
-
 extension Parser.Newline {
-    /// Parses any newline style: CRLF, LF, or CR.
-    ///
-    /// Attempts to match in order: CRLF, LF, CR.
-    /// This ensures CRLF is not partially matched as CR.
-    ///
-    /// ## Usage
-    ///
-    /// ```swift
-    /// let nl = Parser.Newline.`Any`()
-    /// // Matches "\r\n", "\n", or "\r"
-    /// ```
+
     public struct `Any`: Sendable {
         @inlinable
         public init() {}
@@ -139,35 +98,22 @@ extension Parser.Newline.`Any`: Parser.`Protocol` {
         }
 
         if first == .ascii.cr {
-            // Could be CR or CRLF
+
             input.removeFirst()
             if input.first == .ascii.lf {
-                input.removeFirst()  // CRLF
+                input.removeFirst()
             }
-            // else just CR
+
         } else if first == .ascii.lf {
-            input.removeFirst()  // LF
+            input.removeFirst()
         } else {
             throw .predicateFailed(description: "newline")
         }
     }
 }
 
-// MARK: - Line (Until Newline)
-
 extension Parser.Newline {
-    /// Parses content up to (but not including) a newline.
-    ///
-    /// Does NOT consume the newline itself. Use `Any` after if needed.
-    ///
-    /// ## Usage
-    ///
-    /// ```swift
-    /// let line = Parser.Newline.Line()
-    /// var input = "hello world\nmore"[...].utf8
-    /// let content = try line.parse(&input)  // "hello world"
-    /// // input is now "\nmore"
-    /// ```
+
     public struct Line: Sendable {
         @inlinable
         public init() {}
@@ -179,7 +125,6 @@ extension Parser.Newline.Line: Parser.`Protocol` {
     public typealias Output = Int
     public typealias Failure = Never
 
-    /// Parses until a newline and returns the byte count consumed.
     @inlinable
     public func parse(_ input: inout Input) -> Output {
         var count = 0
@@ -193,17 +138,8 @@ extension Parser.Newline.Line: Parser.`Protocol` {
     }
 }
 
-// MARK: - Convenience Accessors
-
 extension Parser {
-    /// Access to newline parsers via nested accessor pattern.
-    ///
-    /// Usage:
-    /// ```swift
-    /// Parser.newline.`Any`()
-    /// Parser.newline.CRLF()
-    /// Parser.newline.Line()
-    /// ```
+
     @inlinable
     public static var newline: Newline.Type { Newline.self }
 }

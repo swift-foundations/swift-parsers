@@ -1,63 +1,23 @@
-//
-//  Parser.Diagnostic.swift
-//  swift-parsing
-//
-//  Error formatting and diagnostic generation.
-//
-//  ## Design
-//
-//  Diagnostics transform raw parse errors into human-readable messages
-//  with source context. This module provides:
-//
-//  - Source location tracking (line, column)
-//  - Multiple formatting styles (compact, expanded, caret)
-//  - Rich error messages with source snippets
-//
-//  ## Usage
-//
-//  ```swift
-//  let source = Parser.Diagnostic.Source(content: sourceCode, filename: "input.txt")
-//
-//  do {
-//      _ = try parser.parse(input)
-//  } catch let error as Parser.Error.Located<_> {
-//      print(error.formatted(in: source, style: .expanded()))
-//  }
-//  ```
-//
-
 extension Parser {
-    /// Namespace for diagnostic types.
+
     public enum Diagnostic: Sendable {}
 }
 
-// MARK: - Source
-
 extension Parser.Diagnostic {
-    /// Represents source content for error reporting.
+
     public struct Source: Sendable {
-        /// The original source content.
+
         public let content: String
 
-        /// Optional filename for error messages.
         public let filename: String?
 
-        /// Line start indices for fast line lookup.
         @usableFromInline
         let lineStarts: [String.Index]
 
-        /// Creates a source from content.
-        ///
-        /// - Parameters:
-        ///   - content: The source text.
-        ///   - filename: Optional filename.
         public init(content: String, filename: String? = nil) {
             self.content = content
             self.filename = filename
 
-            // Pre-compute line start indices via UTF-8 byte scan.
-            // Newline (0x0A) is a single-byte scalar, so every recorded
-            // index is both a UTF-8 boundary and a Character boundary.
             var starts: [String.Index] = [content.startIndex]
             let utf8 = content.utf8
             var pos = utf8.startIndex
@@ -76,10 +36,7 @@ extension Parser.Diagnostic {
 }
 
 extension Parser.Diagnostic.Source {
-    /// Computes the source location for a text position.
-    ///
-    /// - Parameter offset: Text position (0-indexed).
-    /// - Returns: Source location with file identity, line, and column.
+
     public func location(at offset: Text.Position) -> Source_Primitives.Source.Location {
         let rawOffset = Int(bitPattern: offset)
         let targetIndex = content.utf8.index(
@@ -87,7 +44,6 @@ extension Parser.Diagnostic.Source {
             offsetBy: min(rawOffset, content.utf8.count)
         )
 
-        // Binary search for line
         var lo = 0
         var hi = lineStarts.count - 1
 
@@ -100,9 +56,9 @@ extension Parser.Diagnostic.Source {
             }
         }
 
-        let lineNumber = lo + 1  // 1-indexed
+        let lineNumber = lo + 1
         let lineStart = lineStarts[lo]
-        // 1-indexed, byte offset
+
         let column = content.utf8.distance(from: lineStart, to: targetIndex) + 1
 
         return Source_Primitives.Source.Location(
@@ -112,10 +68,6 @@ extension Parser.Diagnostic.Source {
         )
     }
 
-    /// Returns the content of a specific line.
-    ///
-    /// - Parameter lineNumber: 1-indexed line number.
-    /// - Returns: The line content (without newline).
     public func line(_ lineNumber: Int) -> String? {
         guard lineNumber >= 1 && lineNumber <= lineStarts.count else {
             return nil
@@ -126,7 +78,7 @@ extension Parser.Diagnostic.Source {
         let end: String.Index
 
         if idx + 1 < lineStarts.count {
-            // Next line exists
+
             end = content.index(before: lineStarts[idx + 1])
         } else {
             end = content.endIndex
@@ -140,41 +92,22 @@ extension Parser.Diagnostic.Source {
     }
 }
 
-// MARK: - Style
-
 extension Parser.Diagnostic {
-    /// Formatting style for diagnostics.
+
     public enum Style: Sendable {
-        /// Compact single-line format.
-        ///
-        /// Example: `error at offset 42: unexpected character`
+
         case compact
 
-        /// Expanded format with source context.
-        ///
-        /// Shows surrounding lines with line numbers.
         case expanded(contextLines: Int = 2)
 
-        /// Caret format pointing to error location.
-        ///
-        /// Shows single line with ^ marker.
         case caret
 
-        /// Rich format with all information.
         case rich
     }
 }
 
-// MARK: - Formatter
-
 extension Parser.Diagnostic {
-    /// Formats an error with source context.
-    ///
-    /// - Parameters:
-    ///   - error: The error to format.
-    ///   - source: Source content for context.
-    ///   - style: Formatting style.
-    /// - Returns: Formatted diagnostic string.
+
     public static func format<E: Swift.Error>(
         _ error: E,
         at offset: Text.Position,
@@ -237,14 +170,10 @@ extension Parser.Diagnostic {
         source: Source,
         contextLines: Int
     ) -> String {
-        // `Source.Location.line` is typed `Text.Line.Number`; arithmetic
-        // with `Int`-typed offsets / lookups in `source.lineStarts` go
-        // through `.underlying` once at the formatter boundary per
-        // H.4 cascade guidance.
+
         let lineInt: Int = Int(location.line.underlying)
         var lines: [String] = []
 
-        // Header
         if let filename = source.filename {
             lines.append("error: \(error)")
             lines.append("  --> \(filename):\(location.line):\(location.column)")
@@ -254,7 +183,6 @@ extension Parser.Diagnostic {
         }
         lines.append("   |")
 
-        // Context lines before
         let startLine = max(1, lineInt - contextLines)
         let endLine = min(source.lineStarts.count, lineInt + contextLines)
 
@@ -265,13 +193,7 @@ extension Parser.Diagnostic {
 
             if lineNum == lineInt {
                 lines.append(" \(lineNumStr)| \(lineContent)")
-                // Caret line — `location.column` is typed `Text.Line.Column`
-                // (Tagged<Text, Cardinal>); `String(repeating:count:)` is
-                // Int-based stdlib, so the bridge happens at the call site
-                // via `Int.init<Tag>(bitPattern: Tagged<Tag, Cardinal>)`
-                // from Cardinal Primitives ([INFRA-002] / [INFRA-101]).
-                // Convert at the boundary, then do the `- 1` arithmetic on
-                // the resulting Int in a separate statement ([CONV-010]).
+
                 let columnInt = Int(bitPattern: location.column)
                 let spaces = String(repeating: " ", count: columnInt - 1)
                 lines.append("   | \(spaces)^")
@@ -290,17 +212,11 @@ extension Parser.Diagnostic {
         location: Source_Primitives.Source.Location,
         source: Source
     ) -> String {
-        // Convert at the `Source.line(_:)` boundary per H.4 cascade
-        // guidance — `Source` is the stdlib-Int-shaped consumer here.
+
         guard let lineContent = source.line(Int(location.line.underlying)) else {
             return formatCompact(error: error, location: location, source: source)
         }
 
-        // `location.column` is typed `Text.Line.Column` (Tagged<Text, Cardinal>);
-        // `String(repeating:count:)` is Int-based stdlib — convert at boundary
-        // via the typed `Int(bitPattern:)` overload from Cardinal Primitives.
-        // The `- 1` arithmetic runs on the resulting Int in a separate
-        // statement, not chained onto the conversion call ([CONV-010]).
         let columnInt = Int(bitPattern: location.column)
         let spaces = String(repeating: " ", count: columnInt - 1)
 
@@ -317,12 +233,10 @@ extension Parser.Diagnostic {
         offset: Text.Position,
         source: Source
     ) -> String {
-        // See `formatExpanded` — `.underlying` conversion at formatter boundary
-        // per H.4 cascade guidance.
+
         let lineInt: Int = Int(location.line.underlying)
         var lines: [String] = []
 
-        // Header with filename
         lines.append(
             "================================================================================"
         )
@@ -340,7 +254,6 @@ extension Parser.Diagnostic {
         lines.append(error)
         lines.append("")
 
-        // Context with 3 lines
         let startLine = max(1, lineInt - 3)
         let endLine = min(source.lineStarts.count, lineInt + 3)
 
@@ -351,8 +264,7 @@ extension Parser.Diagnostic {
             lines.append("\(marker) \(lineNum): \(lineContent)")
 
             if lineNum == lineInt {
-                // Column bridge at the `String(repeating:count:)` Int boundary
-                // — same shape as the other formatter caret lines.
+
                 let spaces = String(
                     repeating: " ",
                     count: String(lineNum).count + 5 + Int(bitPattern: location.column)
@@ -370,15 +282,8 @@ extension Parser.Diagnostic {
     }
 }
 
-// MARK: - Error Extension
-
 extension Parser.Error.Located {
-    /// Formats this located error with source context.
-    ///
-    /// - Parameters:
-    ///   - source: Source content.
-    ///   - style: Formatting style.
-    /// - Returns: Formatted diagnostic string.
+
     public func formatted(
         in source: Parser.Diagnostic.Source,
         style: Parser.Diagnostic.Style = .expanded()
@@ -387,16 +292,8 @@ extension Parser.Error.Located {
     }
 }
 
-// MARK: - Convenience Accessors
-
 extension Parser {
-    /// Access to diagnostic types via nested accessor pattern.
-    ///
-    /// Usage:
-    /// ```swift
-    /// Parser.diagnostic.Source(content: ...)
-    /// Parser.diagnostic.format(error, at: offset, in: source)
-    /// ```
+
     @inlinable
     public static var diagnostic: Diagnostic.Type { Diagnostic.self }
 }

@@ -7,8 +7,6 @@ struct `Parser.Debug.Profile.Stats` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Helpers
-
 private struct AlwaysSucceeds: Parser.`Protocol`, Sendable {}
 
 extension AlwaysSucceeds {
@@ -18,8 +16,6 @@ extension AlwaysSucceeds {
 
     func parse(_ input: inout Input) throws(Failure) {}
 }
-
-// MARK: - Unit Tests
 
 extension `Parser.Debug.Profile.Stats`.Unit {
     @Test
@@ -50,15 +46,8 @@ extension `Parser.Debug.Profile.Stats`.Unit {
     }
 }
 
-// MARK: - Edge Case Tests
-
 extension `Parser.Debug.Profile.Stats`.`Edge Case` {
-    // Regression test for F-005: `Stats` used to be `@unchecked Sendable`
-    // with unsynchronized mutable state (Parsers.Debug.swift, plain `Int`
-    // counters mutated by `+=`). Concurrent recording from many tasks races
-    // on those counters and silently loses updates. Post-fix, all mutation
-    // routes through an internal `Mutex<State>`, so every recorded
-    // invocation is preserved under concurrency.
+
     @Test
     func `concurrent recording does not lose updates`() async {
         let stats = AlwaysSucceeds().profile("concurrent").stats

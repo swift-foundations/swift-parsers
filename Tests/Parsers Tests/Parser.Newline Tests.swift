@@ -7,8 +7,6 @@ struct `Parser.Newline` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Newline`.Unit {
     @Test
     func `LF matches line feed`() throws {
@@ -50,8 +48,6 @@ extension `Parser.Newline`.Unit {
         #expect(input.first == UInt8(ascii: "a"))
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Newline`.`Edge Case` {
     @Test

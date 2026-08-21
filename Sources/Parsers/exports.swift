@@ -1,14 +1,3 @@
-//
-//  exports.swift
-//  swift-parsers
-//
-//  Public exports for the Parsers module.
-//
-//  This module provides batteries-included parser conveniences built on
-//  swift-parser-primitives. It re-exports all primitives so users only
-//  need to import a single module.
-//
-
 @_exported public import ASCII_Primitives
 @_exported public import Async
 @_exported public import Format_Primitives

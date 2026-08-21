@@ -1,42 +1,5 @@
-//
-//  Parser.Between.swift
-//  swift-parsing
-//
-//  Combinator for parsing content between delimiters.
-//
-//  ## Design
-//
-//  `Between` parses content surrounded by open and close delimiters.
-//  Common use cases include:
-//  - Parenthesized expressions: `(expr)`
-//  - Bracketed arrays: `[1, 2, 3]`
-//  - Braced blocks: `{ ... }`
-//  - XML/HTML tags: `<tag>content</tag>`
-//
-
 extension Parser {
-    /// A parser that matches content between open and close delimiters.
-    ///
-    /// Parses `open`, then `content`, then `close`, returning the content.
-    ///
-    /// ## Grammar
-    ///
-    /// ```
-    /// between = open content close
-    /// ```
-    ///
-    /// ## Examples
-    ///
-    /// ```swift
-    /// let parens = Parser.Between(
-    ///     open: Parser.Literal("("),
-    ///     content: integerParser,
-    ///     close: Parser.Literal(")")
-    /// )
-    ///
-    /// var input = "(42)"[...].utf8
-    /// let value = try parens.parse(&input)  // 42
-    /// ```
+
     public struct Between<
         Open: Parser.`Protocol`,
         Content: Parser.`Protocol`,
@@ -44,24 +7,15 @@ extension Parser {
     >
     where Open.Input == Content.Input, Content.Input == Close.Input {
 
-        /// The opening delimiter parser.
         @usableFromInline
         let open: Open
 
-        /// The content parser.
         @usableFromInline
         let content: Content
 
-        /// The closing delimiter parser.
         @usableFromInline
         let close: Close
 
-        /// Creates a between parser.
-        ///
-        /// - Parameters:
-        ///   - open: Parser for opening delimiter.
-        ///   - content: Parser for inner content.
-        ///   - close: Parser for closing delimiter.
         @inlinable
         public init(
             open: Open,
@@ -85,14 +39,13 @@ extension Parser.Between: Parser.`Protocol` {
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
-        // Parse open
+
         do throws(Open.Failure) {
             _ = try open.parse(&input)
         } catch {
             throw .left(.left(error))
         }
 
-        // Parse content
         let result: Content.Output
         do throws(Content.Failure) {
             result = try content.parse(&input)
@@ -100,7 +53,6 @@ extension Parser.Between: Parser.`Protocol` {
             throw .left(.right(error))
         }
 
-        // Parse close
         do throws(Close.Failure) {
             _ = try close.parse(&input)
         } catch {
@@ -111,19 +63,10 @@ extension Parser.Between: Parser.`Protocol` {
     }
 }
 
-// MARK: - Parser Extension
-
 extension Parser.`Protocol` {
-    /// Creates a parser that matches this parser between delimiters.
-    ///
-    /// - Parameters:
-    ///   - open: The opening delimiter parser.
-    ///   - close: The closing delimiter parser.
-    /// - Returns: A parser matching content between delimiters.
+
     @inlinable
-    // Generic-parameter constraints: `Self` would demand identity, not
-    // conformance to `Parser.Protocol` for any Open/Close type.
-    // swiftlint:disable:next prefer_self_in_static_references
+
     public func between<Open: Parser.`Protocol`, Close: Parser.`Protocol`>(
         _ open: Open,
         _ close: Close
@@ -133,40 +76,17 @@ extension Parser.`Protocol` {
     }
 }
 
-// MARK: - Surrounded (Same Delimiter)
-
 extension Parser {
-    /// A parser that matches content surrounded by the same delimiter.
-    ///
-    /// Convenience for when open and close delimiters are identical.
-    ///
-    /// ## Examples
-    ///
-    /// ```swift
-    /// let backticked = Parser.Surrounded(
-    ///     delimiter: Parser.Literal("`"),
-    ///     content: identifierParser
-    /// )
-    ///
-    /// var input = "`foo`"[...].utf8
-    /// let value = try backticked.parse(&input)  // "foo"
-    /// ```
+
     public struct Surrounded<Delimiter: Parser.`Protocol`, Content: Parser.`Protocol`>
     where Delimiter.Input == Content.Input {
 
-        /// The delimiter parser (used for both open and close).
         @usableFromInline
         let delimiter: Delimiter
 
-        /// The content parser.
         @usableFromInline
         let content: Content
 
-        /// Creates a surrounded parser.
-        ///
-        /// - Parameters:
-        ///   - delimiter: Parser for both open and close delimiter.
-        ///   - content: Parser for inner content.
         @inlinable
         public init(
             delimiter: Delimiter,
@@ -188,14 +108,13 @@ extension Parser.Surrounded: Parser.`Protocol` {
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
-        // Parse open
+
         do throws(Delimiter.Failure) {
             _ = try delimiter.parse(&input)
         } catch {
             throw .left(.left(error))
         }
 
-        // Parse content
         let result: Content.Output
         do throws(Content.Failure) {
             result = try content.parse(&input)
@@ -203,7 +122,6 @@ extension Parser.Surrounded: Parser.`Protocol` {
             throw .left(.right(error))
         }
 
-        // Parse close
         do throws(Delimiter.Failure) {
             _ = try delimiter.parse(&input)
         } catch {
@@ -214,17 +132,10 @@ extension Parser.Surrounded: Parser.`Protocol` {
     }
 }
 
-// MARK: - Parser Extension for Surrounded
-
 extension Parser.`Protocol` {
-    /// Creates a parser that matches this parser surrounded by a delimiter.
-    ///
-    /// - Parameter delimiter: The delimiter parser (same for open and close).
-    /// - Returns: A parser matching content between identical delimiters.
+
     @inlinable
-    // Generic-parameter constraint: `Self` would demand identity, not
-    // conformance to `Parser.Protocol` for any D.
-    // swiftlint:disable:next prefer_self_in_static_references
+
     public func surrounded<D: Parser.`Protocol`>(
         by delimiter: D
     ) -> Parser.Surrounded<D, Self>

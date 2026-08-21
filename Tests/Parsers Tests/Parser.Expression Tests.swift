@@ -7,8 +7,6 @@ struct `Parser.Expression` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Helpers
-
 private struct IntAtom: Parser.`Protocol`, Sendable {}
 
 extension IntAtom {
@@ -71,8 +69,6 @@ private func makeArithmeticParser() -> Parser.Expression.Climbing<IntAtom, OpPar
     )
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Expression`.Unit {
     @Test
     func `precedence - multiply before add`() throws {
@@ -81,7 +77,7 @@ extension `Parser.Expression`.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 14)  // 2+(3*4)
+        #expect(result == 14)
     }
 
     @Test
@@ -91,7 +87,7 @@ extension `Parser.Expression`.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 4)  // 10-(2*3)
+        #expect(result == 4)
     }
 
     @Test
@@ -101,7 +97,7 @@ extension `Parser.Expression`.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 5)  // (10-3)-2
+        #expect(result == 5)
     }
 
     @Test
@@ -111,11 +107,9 @@ extension `Parser.Expression`.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 11)  // 1+(2*3)+4
+        #expect(result == 11)
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Expression`.`Edge Case` {
     @Test

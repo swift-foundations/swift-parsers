@@ -7,8 +7,6 @@ struct `Parser.Comment` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Comment`.Unit {
     @Test
     func `Line parses C-style comment`() throws {
@@ -53,8 +51,6 @@ extension `Parser.Comment`.Unit {
         #expect(input.first == UInt8(ascii: "r"))
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Comment`.`Edge Case` {
     @Test

@@ -7,8 +7,6 @@ struct `Parser.Diagnostic.Source` {
     @Suite struct `Line Content` {}
 }
 
-// MARK: - Line Start Computation
-
 extension `Parser.Diagnostic.Source`.`Line Starts` {
     @Test
     func `Single line has one line start`() {
@@ -39,7 +37,7 @@ extension `Parser.Diagnostic.Source`.`Line Starts` {
     func `Trailing newline does not create phantom line`() {
         let source = Parser.Diagnostic.Source(content: "aaa\nbbb\n")
         #expect(source.line(1) == "aaa")
-        // Last line includes trailing newline (no next lineStart to trim against)
+
         #expect(source.line(2) == "bbb\n")
         #expect(source.line(3) == nil)
     }
@@ -59,8 +57,6 @@ extension `Parser.Diagnostic.Source`.`Line Starts` {
         #expect(source.line(3) == "b")
     }
 }
-
-// MARK: - Line Content with Unicode
 
 extension `Parser.Diagnostic.Source`.`Line Content` {
     @Test
@@ -87,7 +83,7 @@ extension `Parser.Diagnostic.Source`.`Line Content` {
 
     @Test
     func `Large content with many lines`() {
-        // Exercises the O(n) scan — previously O(n²)
+
         let lines = (0..<1000).map { "line \($0)" }
         let content = lines.joined(separator: "\n")
         let source = Parser.Diagnostic.Source(content: content)

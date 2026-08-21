@@ -1,20 +1,11 @@
-//
-//  ArithmeticTests.swift
-//  swift-parsing
-//
-//  Integration tests for arithmetic expression parsing.
-//
-
 import Parsers_Test_Support
 import Testing
 
 @Suite
 struct `Arithmetic Expression Parsing` {
 
-    // Simple integer parser for atoms
     struct IntAtom: Parser.`Protocol`, Sendable {}
 
-    // Simple operator parser
     struct PlusOp: Parser.`Protocol`, Sendable {}
 
     struct MinusOp: Parser.`Protocol`, Sendable {}
@@ -29,7 +20,7 @@ struct `Arithmetic Expression Parsing` {
 
         var input = "1+2+3"[...].utf8
         let result = try parser.parse(&input)
-        #expect(result == 6)  // (1+2)+3 = 6
+        #expect(result == 6)
     }
 
     @Test

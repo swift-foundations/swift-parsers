@@ -74,8 +74,6 @@ let package = Package(
             path: "Tests/Support"
         ),
 
-        // MARK: - Tests
-
         .testTarget(
             name: "Parsers Tests",
             dependencies: ["Parsers Test Support"]

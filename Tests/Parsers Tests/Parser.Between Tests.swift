@@ -7,8 +7,6 @@ struct `Parser.Between` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Helpers
-
 private struct CharParser: Parser.`Protocol`, Sendable {
     let byte: UInt8
 }
@@ -46,8 +44,6 @@ extension ContentParser {
     }
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Between`.Unit {
     @Test
     func `matched parentheses`() throws {
@@ -77,8 +73,6 @@ extension `Parser.Between`.Unit {
         #expect(input.first == UInt8(ascii: "r"))
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Between`.`Edge Case` {
     @Test

@@ -7,8 +7,6 @@ struct `Parser.Separated` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Helpers
-
 private struct DigitParser: Parser.`Protocol`, Sendable {}
 
 extension DigitParser {
@@ -43,9 +41,6 @@ extension CommaParser {
     }
 }
 
-/// A two-byte separator ("::") that consumes its first byte before it can
-/// discover the match fails — simulating a multi-byte separator that
-/// partially matches before failing.
 private struct DoubleColonParser: Parser.`Protocol`, Sendable {}
 
 extension DoubleColonParser {
@@ -64,8 +59,6 @@ extension DoubleColonParser {
         input.removeFirst()
     }
 }
-
-// MARK: - Unit Tests
 
 extension `Parser.Separated`.Unit {
     @Test
@@ -111,8 +104,6 @@ extension `Parser.Separated`.Unit {
         #expect(input.first == UInt8(ascii: ","))
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Separated`.`Edge Case` {
     @Test
@@ -164,10 +155,6 @@ extension `Parser.Separated`.`Edge Case` {
         #expect(result.isEmpty)
     }
 
-    // Regression test for F-001: when a multi-byte separator consumes part
-    // of its match before failing, `Separated` must restore `input` to the
-    // position saved before the separator attempt — not leave the partial
-    // consumption visible to the caller.
     @Test
     func `separator partially consumes before failing, input is restored`() throws {
         let parser = DigitParser().separated(by: DoubleColonParser())
@@ -179,12 +166,6 @@ extension `Parser.Separated`.`Edge Case` {
         #expect(String(decoding: input, as: UTF8.self) == ":2")
     }
 
-    // [INST-TEST-013] Regression test for F-001 rev-1 (GAP 1, pre-review
-    // finding): when the FIRST element fails with the default
-    // `minCount == 0`, `Separated` returns an empty array as a SUCCESS but
-    // must still restore `input` to the position saved before the
-    // first-element attempt — not leave the element sub-parser's partial
-    // consumption visible to the caller.
     @Test
     func `first element partially consumes before failing, input is restored`() throws {
         let parser = DoubleColonParser().separated(by: CommaParser())
@@ -196,11 +177,6 @@ extension `Parser.Separated`.`Edge Case` {
         #expect(String(decoding: input, as: UTF8.self) == ":x")
     }
 
-    // [INST-TEST-013] Regression test for F-001 rev-1 (GAP 2, pre-review
-    // finding): when `allowTrailing` swallows an element failure after a
-    // separator has already been consumed, `Separated` must restore `input`
-    // to the position immediately after the separator — not leave the
-    // element sub-parser's partial consumption visible to the caller.
     @Test
     func `allowTrailing element partially consumes before failing, input is restored`() throws {
         let parser = DoubleColonParser().separated(by: CommaParser(), allowTrailing: true)

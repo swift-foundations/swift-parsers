@@ -7,8 +7,6 @@ struct `Parser.Chain` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Helpers
-
 private struct IntAtom: Parser.`Protocol`, Sendable {}
 
 extension IntAtom {
@@ -81,9 +79,6 @@ extension CaretOp {
     }
 }
 
-/// A two-byte operator ("++") that consumes its first byte before it can
-/// discover the match fails — simulating a multi-byte operator that
-/// partially matches before failing.
 private struct DoublePlusOp: Parser.`Protocol`, Sendable {}
 
 extension DoublePlusOp {
@@ -103,8 +98,6 @@ extension DoublePlusOp {
     }
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Chain`.Unit {
     @Test
     func `Left - left-associative addition`() throws {
@@ -115,7 +108,7 @@ extension `Parser.Chain`.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 6)  // (1+2)+3
+        #expect(result == 6)
     }
 
     @Test
@@ -127,7 +120,7 @@ extension `Parser.Chain`.Unit {
 
         let result = try parser.parse(&input)
 
-        #expect(result == 5)  // (10-3)-2
+        #expect(result == 5)
     }
 
     @Test
@@ -139,12 +132,9 @@ extension `Parser.Chain`.Unit {
 
         let result = try parser.parse(&input)
 
-        // Right-associative: 1^(2^3) = 1*10+(2*10+3) = 1*10+23 = 33
         #expect(result == 33)
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Chain`.`Edge Case` {
     @Test
@@ -184,10 +174,6 @@ extension `Parser.Chain`.`Edge Case` {
         #expect(input.first == UInt8(ascii: "*"))
     }
 
-    // Regression test for F-001: when a multi-byte operator consumes part of
-    // its match before failing, `Chain.Left` must restore `input` to the
-    // position saved before the operator attempt — not leave the partial
-    // consumption visible to the caller.
     @Test
     func `Left - operator partially consumes before failing, input is restored`() throws {
         let parser = IntAtom().chain.left(DoublePlusOp()) { lhs, _, rhs in
@@ -201,7 +187,6 @@ extension `Parser.Chain`.`Edge Case` {
         #expect(String(decoding: input, as: UTF8.self) == "+3")
     }
 
-    // Regression test for F-001: same as above, for `Chain.Right`.
     @Test
     func `Right - operator partially consumes before failing, input is restored`() throws {
         let parser = IntAtom().chain.right(DoublePlusOp()) { lhs, _, rhs in

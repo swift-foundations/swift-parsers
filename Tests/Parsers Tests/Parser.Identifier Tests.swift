@@ -7,8 +7,6 @@ struct `Parser.Identifier` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Identifier`.Unit {
     @Test
     func `CStyle matches simple identifier`() throws {
@@ -50,8 +48,6 @@ extension `Parser.Identifier`.Unit {
         #expect(count == 4)
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Identifier`.`Edge Case` {
     @Test

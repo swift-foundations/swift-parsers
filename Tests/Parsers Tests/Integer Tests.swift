@@ -1,10 +1,3 @@
-//
-//  IntegerTests.swift
-//  swift-parsing
-//
-//  Tests for integer parsers.
-//
-
 import Parsers_Test_Support
 import Testing
 
@@ -89,6 +82,6 @@ struct `Integer Parsers` {
         let parser = Parser.Integer<Int>.Octal()
         var input = "777"[...].utf8
         let value = try parser.parse(&input)
-        #expect(value == 511)  // 7*64 + 7*8 + 7 = 511
+        #expect(value == 511)
     }
 }

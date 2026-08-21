@@ -7,8 +7,6 @@ struct `Parser.Whitespace` {
     @Suite struct `Edge Case` {}
 }
 
-// MARK: - Unit Tests
-
 extension `Parser.Whitespace`.Unit {
     @Test
     func `Horizontal consumes spaces`() throws {
@@ -50,8 +48,6 @@ extension `Parser.Whitespace`.Unit {
         #expect(input.first == UInt8(ascii: "a"))
     }
 }
-
-// MARK: - Edge Case Tests
 
 extension `Parser.Whitespace`.`Edge Case` {
     @Test
