@@ -2,7 +2,7 @@
 # Triaged by AI-assisted bulk pass (2026-04-29).
 description: "Batteries-included parsers for integers, quoted strings, identifiers, comments, and precedence-climbing expression parsing in Swift."
 topics:
-  - foundations
+  - compositions
   - parsers
 homepage: "https://swift-institute.org"
 readme:

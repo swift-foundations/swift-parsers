@@ -37,7 +37,7 @@ extension Parser.Diagnostic {
 
 extension Parser.Diagnostic.Source {
 
-    public func location(at offset: Text.Position) -> Source_Primitives.Source.Location {
+    public func location(at offset: Text.Position) -> Source.Source.Location {
         let rawOffset = Int(bitPattern: offset)
         let targetIndex = content.utf8.index(
             content.utf8.startIndex,
@@ -61,7 +61,7 @@ extension Parser.Diagnostic.Source {
 
         let column = content.utf8.distance(from: lineStart, to: targetIndex) + 1
 
-        return Source_Primitives.Source.Location(
+        return Source.Source.Location(
             fileID: filename ?? "",
             line: lineNumber,
             column: column
@@ -153,7 +153,7 @@ extension Parser.Diagnostic {
     @usableFromInline
     static func formatCompact(
         error: String,
-        location: Source_Primitives.Source.Location,
+        location: Source.Source.Location,
         source: Source
     ) -> String {
         if let filename = source.filename {
@@ -166,7 +166,7 @@ extension Parser.Diagnostic {
     @usableFromInline
     static func formatExpanded(
         error: String,
-        location: Source_Primitives.Source.Location,
+        location: Source.Source.Location,
         source: Source,
         contextLines: Int
     ) -> String {
@@ -209,7 +209,7 @@ extension Parser.Diagnostic {
     @usableFromInline
     static func formatCaret(
         error: String,
-        location: Source_Primitives.Source.Location,
+        location: Source.Source.Location,
         source: Source
     ) -> String {
 
@@ -229,7 +229,7 @@ extension Parser.Diagnostic {
     @usableFromInline
     static func formatRich(
         error: String,
-        location: Source_Primitives.Source.Location,
+        location: Source.Source.Location,
         offset: Text.Position,
         source: Source
     ) -> String {

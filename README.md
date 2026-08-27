@@ -6,7 +6,7 @@ Batteries-included parsers for the recurring shapes in text formats — integers
 
 ## Overview
 
-swift-parsers is a single-import convenience layer over the parsing infrastructure in [swift-primitives](https://github.com/swift-primitives). `import Parsers` re-exports the underlying parser modules (`Parser_Primitives`, `Parser_Machine_Primitives`, `ASCII_Primitives`, `Format_Primitives`, `Time_Primitives`, `Source_Primitives`, and `Async`) and adds ready-made parsers for the token shapes that nearly every text format needs, so you compose grammars instead of rewriting byte-scanning loops.
+swift-parsers is a single-import convenience layer over the parsing infrastructure in [swift-molecules](https://github.com/swift-molecules). `import Parsers` re-exports the underlying parser modules (`Parser`, `Parser_Machine`, `ASCII`, `Format`, `Time`, `Source`, and `Async`) and adds ready-made parsers for the token shapes that nearly every text format needs, so you compose grammars instead of rewriting byte-scanning loops.
 
 Every parser is a small `Sendable` struct conforming to `Parser.Protocol`: it consumes from an `inout Substring.UTF8View` and throws a typed, parser-specific error on failure — no `any Error` anywhere in the surface.
 
@@ -44,7 +44,7 @@ Add swift-parsers to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-foundations/swift-parsers.git", branch: "main")
+    .package(url: "https://github.com/swift-compositions/swift-parsers.git", branch: "main")
 ]
 ```
 
@@ -135,7 +135,7 @@ Single library module plus a test-support product:
 
 | Product | When to import |
 |---------|----------------|
-| `Parsers` | Applications and libraries composing parsers; re-exports the underlying parser primitives so one import suffices |
+| `Parsers` | Applications and libraries composing parsers; re-exports the underlying parser modules so one import suffices |
 | `Parsers Test Support` | Test targets exercising parsers built on this package |
 
 | Namespace | Purpose |

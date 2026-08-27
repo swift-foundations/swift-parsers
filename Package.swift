@@ -23,45 +23,45 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-parser-primitives.git",
+            url: "https://github.com/swift-molecules/swift-parser.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-parser-machine-primitives.git",
+            url: "https://github.com/swift-molecules/swift-parser-machine.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-format-primitives.git",
+            url: "https://github.com/swift-molecules/swift-format.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-time-primitives.git",
+            url: "https://github.com/swift-molecules/swift-time.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-source-primitives.git",
+            url: "https://github.com/swift-molecules/swift-source.git",
             branch: "main"
         ),
-        .package(url: "https://github.com/swift-foundations/swift-async.git", branch: "main"),
-        .package(url: "https://github.com/swift-foundations/swift-clocks.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-async.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-clocks.git", branch: "main"),
     ],
     targets: [
         .target(
             name: "Parsers",
             dependencies: [
-                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
-                .product(name: "Parser Primitives", package: "swift-parser-primitives"),
+                .product(name: "ASCII", package: "swift-ascii"),
+                .product(name: "Parser", package: "swift-parser"),
                 .product(
-                    name: "Parser Machine Primitives",
-                    package: "swift-parser-machine-primitives"
+                    name: "Parser Machine",
+                    package: "swift-parser-machine"
                 ),
-                .product(name: "Format Primitives", package: "swift-format-primitives"),
-                .product(name: "Time Primitives", package: "swift-time-primitives"),
-                .product(name: "Source Primitives", package: "swift-source-primitives"),
+                .product(name: "Format", package: "swift-format"),
+                .product(name: "Time", package: "swift-time"),
+                .product(name: "Source", package: "swift-source"),
                 .product(name: "Async", package: "swift-async"),
                 .product(name: "Clocks", package: "swift-clocks"),
             ]
