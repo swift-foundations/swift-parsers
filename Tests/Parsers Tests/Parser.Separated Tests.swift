@@ -7,7 +7,7 @@ struct `Parser.Separated` {
     @Suite struct `Edge Case` {}
 }
 
-private struct DigitParser: Parser.`Protocol`, Sendable {}
+private struct DigitParser: Parsing, Sendable {}
 
 extension DigitParser {
     typealias Input = Substring.UTF8View
@@ -26,7 +26,7 @@ extension DigitParser {
     }
 }
 
-private struct CommaParser: Parser.`Protocol`, Sendable {}
+private struct CommaParser: Parsing, Sendable {}
 
 extension CommaParser {
     typealias Input = Substring.UTF8View
@@ -41,7 +41,7 @@ extension CommaParser {
     }
 }
 
-private struct DoubleColonParser: Parser.`Protocol`, Sendable {}
+private struct DoubleColonParser: Parsing, Sendable {}
 
 extension DoubleColonParser {
     typealias Input = Substring.UTF8View

@@ -5,7 +5,7 @@ extension Parser {
 
 extension Parser.Chain {
 
-    public struct Left<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>
+    public struct Left<Operand: Parsing, Operator: Parsing>
     where
         Operand.Input == Operator.Input,
         Operand.Input: Copyable
@@ -33,7 +33,7 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.Chain.Left: Parser.`Protocol` {
+extension Parser.Chain.Left: Parsing {
     public typealias Input = Operand.Input
     public typealias Output = Operand.Output
     public typealias Failure = Operand.Failure
@@ -73,7 +73,7 @@ extension Parser.Chain.Left: Parser.`Protocol` {
 
 extension Parser.Chain {
 
-    public struct Right<Operand: Parser.`Protocol`, Operator: Parser.`Protocol`>
+    public struct Right<Operand: Parsing, Operator: Parsing>
     where
         Operand.Input == Operator.Input,
         Operand.Input: Copyable
@@ -101,7 +101,7 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.Chain.Right: Parser.`Protocol` {
+extension Parser.Chain.Right: Parsing {
     public typealias Input = Operand.Input
     public typealias Output = Operand.Output
     public typealias Failure = Operand.Failure
@@ -137,7 +137,7 @@ extension Parser.Chain.Right: Parser.`Protocol` {
 
 extension Parser.Chain {
 
-    public struct Access<Operand: Parser.`Protocol`> {
+    public struct Access<Operand: Parsing> {
 
         @usableFromInline
         let operand: Operand
@@ -148,7 +148,7 @@ extension Parser.Chain {
         }
 
         @inlinable
-        public func left<Op: Parser.`Protocol`>(
+        public func left<Op: Parsing>(
             _ op: Op,
             combine: @escaping (Operand.Output, Op.Output, Operand.Output) -> Operand.Output
         ) -> Parser.Chain.Left<Operand, Op>
@@ -157,7 +157,7 @@ extension Parser.Chain {
         }
 
         @inlinable
-        public func right<Op: Parser.`Protocol`>(
+        public func right<Op: Parsing>(
             _ op: Op,
             combine: @escaping (Operand.Output, Op.Output, Operand.Output) -> Operand.Output
         ) -> Parser.Chain.Right<Operand, Op>
@@ -167,7 +167,7 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.`Protocol` {
+extension Parsing {
 
     @inlinable
     public var chain: Parser.Chain.Access<Self> {

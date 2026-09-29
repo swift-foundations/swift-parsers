@@ -11,7 +11,7 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.LF: Parser.`Protocol` {
+extension Parser.Newline.LF: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Parser.Match.Error
@@ -33,7 +33,7 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.CR: Parser.`Protocol` {
+extension Parser.Newline.CR: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Parser.Match.Error
@@ -55,7 +55,7 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.CRLF: Parser.`Protocol` {
+extension Parser.Newline.CRLF: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Parser.Match.Error
@@ -86,7 +86,7 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.`Any`: Parser.`Protocol` {
+extension Parser.Newline.`Any`: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Parser.Match.Error
@@ -120,7 +120,7 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.Line: Parser.`Protocol` {
+extension Parser.Newline.Line: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Never

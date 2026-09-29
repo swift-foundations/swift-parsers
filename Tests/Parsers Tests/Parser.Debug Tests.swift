@@ -7,7 +7,7 @@ struct `Parser.Debug.Profile.Stats` {
     @Suite struct `Edge Case` {}
 }
 
-private struct AlwaysSucceeds: Parser.`Protocol`, Sendable {}
+private struct AlwaysSucceeds: Parsing, Sendable {}
 
 extension AlwaysSucceeds {
     typealias Input = Substring.UTF8View

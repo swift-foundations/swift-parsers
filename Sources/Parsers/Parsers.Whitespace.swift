@@ -11,7 +11,7 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.Horizontal: Parser.`Protocol` {
+extension Parser.Whitespace.Horizontal: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Parser.Constraint.Error
@@ -43,7 +43,7 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.Vertical: Parser.`Protocol` {
+extension Parser.Whitespace.Vertical: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Parser.Constraint.Error
@@ -84,7 +84,7 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.`Any`: Parser.`Protocol` {
+extension Parser.Whitespace.`Any`: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Parser.Constraint.Error
@@ -131,7 +131,7 @@ extension Parser.Whitespace.Skip {
     }
 }
 
-extension Parser.Whitespace.Skip: Parser.`Protocol` {
+extension Parser.Whitespace.Skip: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Never

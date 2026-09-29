@@ -36,7 +36,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Decimal: Parser.`Protocol` {
+extension Parser.Integer.Decimal: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -113,7 +113,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Hexadecimal: Parser.`Protocol` {
+extension Parser.Integer.Hexadecimal: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -189,7 +189,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Binary: Parser.`Protocol` {
+extension Parser.Integer.Binary: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 
@@ -253,7 +253,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Octal: Parser.`Protocol` {
+extension Parser.Integer.Octal: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parser.Integer<Output>.Error
 

@@ -11,7 +11,7 @@ extension Parser.Identifier {
     }
 }
 
-extension Parser.Identifier.CStyle: Parser.`Protocol` {
+extension Parser.Identifier.CStyle: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Parser.Match.Error
@@ -65,7 +65,7 @@ extension Parser.Identifier {
     }
 }
 
-extension Parser.Identifier.Custom: Parser.`Protocol` {
+extension Parser.Identifier.Custom: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Parser.Match.Error

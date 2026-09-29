@@ -7,7 +7,7 @@ struct `Parser.Chain` {
     @Suite struct `Edge Case` {}
 }
 
-private struct IntAtom: Parser.`Protocol`, Sendable {}
+private struct IntAtom: Parsing, Sendable {}
 
 extension IntAtom {
     typealias Input = Substring.UTF8View
@@ -34,7 +34,7 @@ extension IntAtom {
     }
 }
 
-private struct PlusOp: Parser.`Protocol`, Sendable {}
+private struct PlusOp: Parsing, Sendable {}
 
 extension PlusOp {
     typealias Input = Substring.UTF8View
@@ -49,7 +49,7 @@ extension PlusOp {
     }
 }
 
-private struct MinusOp: Parser.`Protocol`, Sendable {}
+private struct MinusOp: Parsing, Sendable {}
 
 extension MinusOp {
     typealias Input = Substring.UTF8View
@@ -64,7 +64,7 @@ extension MinusOp {
     }
 }
 
-private struct CaretOp: Parser.`Protocol`, Sendable {}
+private struct CaretOp: Parsing, Sendable {}
 
 extension CaretOp {
     typealias Input = Substring.UTF8View
@@ -79,7 +79,7 @@ extension CaretOp {
     }
 }
 
-private struct DoublePlusOp: Parser.`Protocol`, Sendable {}
+private struct DoublePlusOp: Parsing, Sendable {}
 
 extension DoublePlusOp {
     typealias Input = Substring.UTF8View

@@ -1,5 +1,4 @@
 @_exported public import ASCII
-@_exported public import Async
 @_exported public import Formatter
 @_exported public import Parser_Machine
 @_exported public import Parser

@@ -17,7 +17,7 @@ extension Parser.Expression {
 
 extension Parser.Expression {
 
-    public struct Operator<Operand, Op: Parser.`Protocol`> {
+    public struct Operator<Operand, Op: Parsing> {
 
         public let parser: Op
 
@@ -44,7 +44,7 @@ extension Parser.Expression {
 
 extension Parser.Expression {
 
-    public struct PrefixOperator<Operand, Op: Parser.`Protocol`> {
+    public struct PrefixOperator<Operand, Op: Parsing> {
 
         public let parser: Op
 
@@ -63,7 +63,7 @@ extension Parser.Expression {
 
 extension Parser.Expression {
 
-    public struct PostfixOperator<Operand, Op: Parser.`Protocol`> {
+    public struct PostfixOperator<Operand, Op: Parsing> {
 
         public let parser: Op
 
@@ -82,7 +82,7 @@ extension Parser.Expression {
 
 extension Parser.Expression {
 
-    public struct Climbing<Atom: Parser.`Protocol`, Op: Parser.`Protocol`>
+    public struct Climbing<Atom: Parsing, Op: Parsing>
     where
         Atom.Input == Op.Input,
         Atom.Input: Copyable
@@ -118,7 +118,7 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression.Climbing: Parser.`Protocol` {
+extension Parser.Expression.Climbing: Parsing {
     public typealias Input = Atom.Input
     public typealias Output = Atom.Output
     public typealias Failure = Atom.Failure

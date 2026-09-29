@@ -1,9 +1,9 @@
 extension Parser {
 
     public struct Between<
-        Open: Parser.`Protocol`,
-        Content: Parser.`Protocol`,
-        Close: Parser.`Protocol`
+        Open: Parsing,
+        Content: Parsing,
+        Close: Parsing
     >
     where Open.Input == Content.Input, Content.Input == Close.Input {
 
@@ -29,7 +29,7 @@ extension Parser {
     }
 }
 
-extension Parser.Between: Parser.`Protocol` {
+extension Parser.Between: Parsing {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
     public typealias Failure = Either<
@@ -63,11 +63,11 @@ extension Parser.Between: Parser.`Protocol` {
     }
 }
 
-extension Parser.`Protocol` {
+extension Parsing {
 
     @inlinable
 
-    public func between<Open: Parser.`Protocol`, Close: Parser.`Protocol`>(
+    public func between<Open: Parsing, Close: Parsing>(
         _ open: Open,
         _ close: Close
     ) -> Parser.Between<Open, Self, Close>
@@ -78,7 +78,7 @@ extension Parser.`Protocol` {
 
 extension Parser {
 
-    public struct Surrounded<Delimiter: Parser.`Protocol`, Content: Parser.`Protocol`>
+    public struct Surrounded<Delimiter: Parsing, Content: Parsing>
     where Delimiter.Input == Content.Input {
 
         @usableFromInline
@@ -98,7 +98,7 @@ extension Parser {
     }
 }
 
-extension Parser.Surrounded: Parser.`Protocol` {
+extension Parser.Surrounded: Parsing {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
     public typealias Failure = Either<
@@ -132,11 +132,11 @@ extension Parser.Surrounded: Parser.`Protocol` {
     }
 }
 
-extension Parser.`Protocol` {
+extension Parsing {
 
     @inlinable
 
-    public func surrounded<D: Parser.`Protocol`>(
+    public func surrounded<D: Parsing>(
         by delimiter: D
     ) -> Parser.Surrounded<D, Self>
     where D.Input == Input {

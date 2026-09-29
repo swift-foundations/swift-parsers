@@ -4,13 +4,13 @@ import Testing
 @Suite
 struct `Arithmetic Expression Parsing` {
 
-    struct IntAtom: Parser.`Protocol`, Sendable {}
+    struct IntAtom: Parsing, Sendable {}
 
-    struct PlusOp: Parser.`Protocol`, Sendable {}
+    struct PlusOp: Parsing, Sendable {}
 
-    struct MinusOp: Parser.`Protocol`, Sendable {}
+    struct MinusOp: Parsing, Sendable {}
 
-    struct StarOp: Parser.`Protocol`, Sendable {}
+    struct StarOp: Parsing, Sendable {}
 
     @Test
     func `ChainLeft - simple addition`() throws {

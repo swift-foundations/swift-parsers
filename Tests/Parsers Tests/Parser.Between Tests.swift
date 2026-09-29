@@ -7,7 +7,7 @@ struct `Parser.Between` {
     @Suite struct `Edge Case` {}
 }
 
-private struct CharParser: Parser.`Protocol`, Sendable {
+private struct CharParser: Parsing, Sendable {
     let byte: UInt8
 }
 
@@ -24,7 +24,7 @@ extension CharParser {
     }
 }
 
-private struct ContentParser: Parser.`Protocol`, Sendable {}
+private struct ContentParser: Parsing, Sendable {}
 
 extension ContentParser {
     typealias Input = Substring.UTF8View

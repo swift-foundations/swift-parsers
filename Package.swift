@@ -23,11 +23,11 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-molecules/swift-ascii.git",
+            url: "https://github.com/swift-atoms/swift-ascii.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-parser.git",
+            url: "https://github.com/swift-atoms/swift-parser.git",
             branch: "main"
         ),
         .package(
@@ -35,18 +35,16 @@ let package = Package(
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-format.git",
-            branch: "main"
-        ),
+            url: "https://github.com/swift-atoms/swift-formatter.git",
+            branch: "main", traits: ["Number", "Time"]),
         .package(
-            url: "https://github.com/swift-molecules/swift-time.git",
+            url: "https://github.com/swift-atoms/swift-time.git",
             branch: "main"
         ),
         .package(
             url: "https://github.com/swift-molecules/swift-source.git",
             branch: "main"
         ),
-        .package(url: "https://github.com/swift-compositions/swift-async.git", branch: "main"),
         .package(url: "https://github.com/swift-compositions/swift-clocks.git", branch: "main"),
     ],
     targets: [
@@ -59,10 +57,9 @@ let package = Package(
                     name: "Parser Machine",
                     package: "swift-parser-machine"
                 ),
-                .product(name: "Format", package: "swift-format"),
+                .product(name: "Formatter", package: "swift-formatter"),
                 .product(name: "Time", package: "swift-time"),
                 .product(name: "Source", package: "swift-source"),
-                .product(name: "Async", package: "swift-async"),
                 .product(name: "Clocks", package: "swift-clocks"),
             ]
         ),

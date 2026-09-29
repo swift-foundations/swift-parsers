@@ -1,6 +1,6 @@
 extension Parser {
 
-    public struct Separated<Element: Parser.`Protocol`, Separator: Parser.`Protocol`>
+    public struct Separated<Element: Parsing, Separator: Parsing>
     where
         Element.Input == Separator.Input,
         Element.Input: Copyable
@@ -35,7 +35,7 @@ extension Parser {
     }
 }
 
-extension Parser.Separated: Parser.`Protocol` {
+extension Parser.Separated: Parsing {
     public typealias Input = Element.Input
     public typealias Output = [Element.Output]
     public typealias Failure = Either<
@@ -98,11 +98,11 @@ extension Parser.Separated: Parser.`Protocol` {
     }
 }
 
-extension Parser.`Protocol` {
+extension Parsing {
 
     @inlinable
 
-    public func separated<S: Parser.`Protocol`>(
+    public func separated<S: Parsing>(
         by separator: S,
         allowTrailing: Bool = false
     ) -> Parser.Separated<Self, S>

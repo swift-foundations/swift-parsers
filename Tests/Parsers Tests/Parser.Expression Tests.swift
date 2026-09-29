@@ -7,7 +7,7 @@ struct `Parser.Expression` {
     @Suite struct `Edge Case` {}
 }
 
-private struct IntAtom: Parser.`Protocol`, Sendable {}
+private struct IntAtom: Parsing, Sendable {}
 
 extension IntAtom {
     typealias Input = Substring.UTF8View
@@ -34,7 +34,7 @@ extension IntAtom {
     }
 }
 
-private struct OpParser: Parser.`Protocol`, Sendable {
+private struct OpParser: Parsing, Sendable {
     let byte: UInt8
 }
 

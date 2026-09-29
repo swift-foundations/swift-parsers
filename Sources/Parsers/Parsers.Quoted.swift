@@ -42,7 +42,7 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Double: Parser.`Protocol` {
+extension Parser.Quoted.Double: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parser.Quoted.Error
@@ -114,7 +114,7 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Single: Parser.`Protocol` {
+extension Parser.Quoted.Single: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parser.Quoted.Error
@@ -165,7 +165,7 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Doubling: Parser.`Protocol` {
+extension Parser.Quoted.Doubling: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parser.Quoted.Error

@@ -8,7 +8,7 @@ extension Parser {
 
 extension Parser.Debug {
 
-    public struct Trace<P: Parser.`Protocol`>
+    public struct Trace<P: Parsing>
     where P.Input: Swift.Collection {
 
         @usableFromInline
@@ -32,7 +32,7 @@ extension Parser.Debug {
     }
 }
 
-extension Parser.Debug.Trace: Parser.`Protocol` {
+extension Parser.Debug.Trace: Parsing {
     public typealias Input = P.Input
     public typealias Output = P.Output
     public typealias Failure = P.Failure
@@ -57,7 +57,7 @@ extension Parser.Debug.Trace: Parser.`Protocol` {
 
 extension Parser.Debug {
 
-    public struct Profile<P: Parser.`Protocol`> {
+    public struct Profile<P: Parsing> {
 
         @usableFromInline
         let inner: P
@@ -172,17 +172,17 @@ extension Parser.Debug.Profile.Stats {
 
         let successPercent = Int(Double(snapshot.successes) / Double(snapshot.invocations) * 100)
         let average = snapshot.totalDuration / snapshot.invocations
-        let minStr = snapshot.minDuration?.formatted(.duration) ?? "N/A"
+        let minStr = snapshot.minDuration?.formatted(Formatter::Formatter.Duration(numeric: Formatter::Formatter.Number())) ?? "N/A"
 
         return """
             \(label) Statistics:
               Invocations: \(snapshot.invocations)
               Successes:   \(snapshot.successes) (\(successPercent)%)
               Failures:    \(snapshot.failures)
-              Total time:  \(snapshot.totalDuration.formatted(.duration))
-              Average:     \(average.formatted(.duration))
+              Total time:  \(snapshot.totalDuration.formatted(Formatter::Formatter.Duration(numeric: Formatter::Formatter.Number())))
+              Average:     \(average.formatted(Formatter::Formatter.Duration(numeric: Formatter::Formatter.Number())))
               Min:         \(minStr)
-              Max:         \(snapshot.maxDuration.formatted(.duration))
+              Max:         \(snapshot.maxDuration.formatted(Formatter::Formatter.Duration(numeric: Formatter::Formatter.Number())))
             """
     }
 
@@ -193,7 +193,7 @@ extension Parser.Debug.Profile.Stats {
     }
 }
 
-extension Parser.Debug.Profile: Parser.`Protocol` {
+extension Parser.Debug.Profile: Parsing {
     public typealias Input = P.Input
     public typealias Output = P.Output
     public typealias Failure = P.Failure
@@ -215,7 +215,7 @@ extension Parser.Debug.Profile: Parser.`Protocol` {
     }
 }
 
-extension Parser.`Protocol` where Input: Swift.Collection {
+extension Parsing where Input: Swift.Collection {
 
     @inlinable
     public func trace(
@@ -226,7 +226,7 @@ extension Parser.`Protocol` where Input: Swift.Collection {
     }
 }
 
-extension Parser.`Protocol` {
+extension Parsing {
 
     @inlinable
     public func profile(_ label: String) -> Parser.Debug.Profile<Self> {

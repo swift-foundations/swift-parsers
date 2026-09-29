@@ -17,7 +17,7 @@ extension Parser.Comment {
     }
 }
 
-extension Parser.Comment.Line: Parser.`Protocol` {
+extension Parser.Comment.Line: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parser.Match.Error
@@ -79,7 +79,7 @@ extension Parser.Comment.Block {
     }
 }
 
-extension Parser.Comment.Block: Parser.`Protocol` {
+extension Parser.Comment.Block: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parser.Comment.Block.Error
