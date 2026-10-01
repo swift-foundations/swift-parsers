@@ -105,6 +105,8 @@ let value = try arithmetic.parse(&input)
 
 `Parser.Chain.Left` and `Parser.Chain.Right` are the lighter alternatives when all operators share one precedence level.
 
+Both families require a `Restorable` input whose `Checkpoint` is `Equatable` (`Substring`, `ArraySlice` and other checkpointed inputs qualify; a `Copyable` input without a checkpoint no longer does). They use it to stop when an operator and operand together consume nothing: the input is restored to before that operator and the last valid result is returned, instead of looping or recursing at the same position. This guards repeated same-position iteration only; it is not a bound on stack depth or a complexity guarantee for long valid input.
+
 ### Structural combinators
 
 `Parser.Separated` parses delimiter-separated sequences with count constraints and trailing-separator policy; `Parser.Between` parses content between open and close delimiters — both generic over any element parsers that share an input type.

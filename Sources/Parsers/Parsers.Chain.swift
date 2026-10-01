@@ -1,3 +1,5 @@
+public import Checkpoint
+
 extension Parsers {
 
     public enum Chain: Sendable {}
@@ -8,7 +10,8 @@ extension Parsers.Chain {
     public struct Left<Operand: Parsing, Operator: Parsing>
     where
         Operand.Input == Operator.Input,
-        Operand.Input: Copyable
+        Operand.Input: Copyable & Restorable,
+        Operand.Input.Checkpoint: Equatable
     {
 
         @usableFromInline
@@ -64,6 +67,11 @@ extension Parsers.Chain.Left: Parsing {
                 break
             }
 
+            guard input.checkpoint != saved.checkpoint else {
+                input = saved
+                break
+            }
+
             result = combine(result, op, rhs)
         }
 
@@ -76,7 +84,8 @@ extension Parsers.Chain {
     public struct Right<Operand: Parsing, Operator: Parsing>
     where
         Operand.Input == Operator.Input,
-        Operand.Input: Copyable
+        Operand.Input: Copyable & Restorable,
+        Operand.Input.Checkpoint: Equatable
     {
 
         @usableFromInline
@@ -109,6 +118,8 @@ extension Parsers.Chain.Right: Parsing {
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
 
+        let entry = input.checkpoint
+
         let lhs = try operand.parse(&input)
 
         let saved = input
@@ -118,6 +129,11 @@ extension Parsers.Chain.Right: Parsing {
             op = try `operator`.parse(&input)
         } catch {
 
+            input = saved
+            return lhs
+        }
+
+        guard input.checkpoint != entry else {
             input = saved
             return lhs
         }
@@ -152,7 +168,7 @@ extension Parsers.Chain {
             _ op: Op,
             combine: @escaping (Operand.Output, Op.Output, Operand.Output) -> Operand.Output
         ) -> Parsers.Chain.Left<Operand, Op>
-        where Op.Input == Operand.Input, Operand.Input: Copyable {
+        where Op.Input == Operand.Input, Operand.Input: Copyable & Restorable, Operand.Input.Checkpoint: Equatable {
             Parsers.Chain.Left(operand: operand, operator: op, combine: combine)
         }
 
@@ -161,7 +177,7 @@ extension Parsers.Chain {
             _ op: Op,
             combine: @escaping (Operand.Output, Op.Output, Operand.Output) -> Operand.Output
         ) -> Parsers.Chain.Right<Operand, Op>
-        where Op.Input == Operand.Input, Operand.Input: Copyable {
+        where Op.Input == Operand.Input, Operand.Input: Copyable & Restorable, Operand.Input.Checkpoint: Equatable {
             Parsers.Chain.Right(operand: operand, operator: op, combine: combine)
         }
     }

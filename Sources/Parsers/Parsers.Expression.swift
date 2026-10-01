@@ -1,3 +1,5 @@
+public import Checkpoint
+
 extension Parsers {
 
     public enum Expression: Sendable {}
@@ -85,7 +87,8 @@ extension Parsers.Expression {
     public struct Climbing<Atom: Parsing, Op: Parsing>
     where
         Atom.Input == Op.Input,
-        Atom.Input: Copyable
+        Atom.Input: Copyable & Restorable,
+        Atom.Input.Checkpoint: Equatable
     {
 
         public typealias Operand = Atom.Output
@@ -133,6 +136,8 @@ extension Parsers.Expression.Climbing: Parsing {
         _ input: inout Input,
         minPrecedence: Int
     ) throws(Failure) -> Operand {
+        let entry = input.checkpoint
+
         var lhs = try parsePrimary(&input)
 
         for postfix in postfixOps {
@@ -166,6 +171,11 @@ extension Parsers.Expression.Climbing: Parsing {
                 break
             }
 
+            guard input.checkpoint != entry else {
+                input = opSaved
+                break
+            }
+
             let nextPrecedence: Int
             switch op.associativity {
             case .left:
@@ -187,6 +197,11 @@ extension Parsers.Expression.Climbing: Parsing {
                 break
             }
 
+            guard input.checkpoint != opSaved.checkpoint else {
+                input = opSaved
+                break
+            }
+
             lhs = op.apply(lhs, rhs)
         }
 
@@ -198,10 +213,18 @@ extension Parsers.Expression.Climbing: Parsing {
 
         for prefix in prefixOps {
             let saved = input
-            do {
+            do throws(Op.Failure) {
                 _ = try prefix.parser.parse(&input)
-                let operand = try parsePrimary(&input)
-                return prefix.apply(operand)
+            } catch {
+                input = saved
+                continue
+            }
+            guard input.checkpoint != saved.checkpoint else {
+                input = saved
+                continue
+            }
+            do throws(Failure) {
+                return prefix.apply(try parsePrimary(&input))
             } catch {
                 input = saved
             }
