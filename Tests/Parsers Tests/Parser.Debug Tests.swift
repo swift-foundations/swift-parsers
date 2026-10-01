@@ -2,7 +2,7 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Debug.Profile.Stats` {
+struct `Parsers.Debug.Profile.Stats` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
@@ -12,12 +12,12 @@ private struct AlwaysSucceeds: Parsing, Sendable {}
 extension AlwaysSucceeds {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {}
 }
 
-extension `Parser.Debug.Profile.Stats`.Unit {
+extension `Parsers.Debug.Profile.Stats`.Unit {
     @Test
     func `records successes and failures sequentially`() {
         let stats = AlwaysSucceeds().profile("test").stats
@@ -46,7 +46,7 @@ extension `Parser.Debug.Profile.Stats`.Unit {
     }
 }
 
-extension `Parser.Debug.Profile.Stats`.`Edge Case` {
+extension `Parsers.Debug.Profile.Stats`.`Edge Case` {
 
     @Test
     func `concurrent recording does not lose updates`() async {

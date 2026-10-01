@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Expression: Sendable {}
 }
 
-extension Parser.Expression {
+extension Parsers.Expression {
 
     public enum Associativity: Sendable {
 
@@ -15,7 +15,7 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression {
+extension Parsers.Expression {
 
     public struct Operator<Operand, Op: Parsing> {
 
@@ -42,7 +42,7 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression {
+extension Parsers.Expression {
 
     public struct PrefixOperator<Operand, Op: Parsing> {
 
@@ -61,7 +61,7 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression {
+extension Parsers.Expression {
 
     public struct PostfixOperator<Operand, Op: Parsing> {
 
@@ -80,7 +80,7 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression {
+extension Parsers.Expression {
 
     public struct Climbing<Atom: Parsing, Op: Parsing>
     where
@@ -118,7 +118,7 @@ extension Parser.Expression {
     }
 }
 
-extension Parser.Expression.Climbing: Parsing {
+extension Parsers.Expression.Climbing: Parsing {
     public typealias Input = Atom.Input
     public typealias Output = Atom.Output
     public typealias Failure = Atom.Failure
@@ -147,7 +147,7 @@ extension Parser.Expression.Climbing: Parsing {
 
         while true {
 
-            var matchedOp: Parser.Expression.Operator<Operand, Op>?
+            var matchedOp: Parsers.Expression.Operator<Operand, Op>?
             var opSaved = input
 
             for op in operators where op.precedence >= minPrecedence {
@@ -211,7 +211,7 @@ extension Parser.Expression.Climbing: Parsing {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var expression: Expression.Type { Expression.self }

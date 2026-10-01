@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Whitespace: Sendable {}
 }
 
-extension Parser.Whitespace {
+extension Parsers.Whitespace {
 
     public struct Horizontal: Sendable {
         @inlinable
@@ -11,10 +11,10 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.Horizontal: Parsing {
+extension Parsers.Whitespace.Horizontal: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parser.Constraint.Error
+    public typealias Failure = Parsers.Constraint.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -35,7 +35,7 @@ extension Parser.Whitespace.Horizontal: Parsing {
     }
 }
 
-extension Parser.Whitespace {
+extension Parsers.Whitespace {
 
     public struct Vertical: Sendable {
         @inlinable
@@ -43,10 +43,10 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.Vertical: Parsing {
+extension Parsers.Whitespace.Vertical: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parser.Constraint.Error
+    public typealias Failure = Parsers.Constraint.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -76,7 +76,7 @@ extension Parser.Whitespace.Vertical: Parsing {
     }
 }
 
-extension Parser.Whitespace {
+extension Parsers.Whitespace {
 
     public struct `Any`: Sendable {
         @inlinable
@@ -84,16 +84,16 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.`Any`: Parsing {
+extension Parsers.Whitespace.`Any`: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parser.Constraint.Error
+    public typealias Failure = Parsers.Constraint.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
         var count = 0
 
-        while let byte = input.first, Parser.Whitespace.isWhitespace(byte) {
+        while let byte = input.first, Parsers.Whitespace.isWhitespace(byte) {
             input.removeFirst()
             count += 1
         }
@@ -106,7 +106,7 @@ extension Parser.Whitespace.`Any`: Parsing {
     }
 }
 
-extension Parser.Whitespace {
+extension Parsers.Whitespace {
 
     public struct Skip: Sendable {
 
@@ -119,7 +119,7 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser.Whitespace.Skip {
+extension Parsers.Whitespace.Skip {
 
     public enum Kind: Sendable {
 
@@ -131,7 +131,7 @@ extension Parser.Whitespace.Skip {
     }
 }
 
-extension Parser.Whitespace.Skip: Parsing {
+extension Parsers.Whitespace.Skip: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
     public typealias Failure = Never
@@ -161,14 +161,14 @@ extension Parser.Whitespace.Skip: Parsing {
             }
 
         case .any:
-            while let byte = input.first, Parser.Whitespace.isWhitespace(byte) {
+            while let byte = input.first, Parsers.Whitespace.isWhitespace(byte) {
                 input.removeFirst()
             }
         }
     }
 }
 
-extension Parser.Whitespace {
+extension Parsers.Whitespace {
 
     @inlinable
     package static func isWhitespace(_ byte: UInt8) -> Bool {
@@ -176,7 +176,7 @@ extension Parser.Whitespace {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var whitespace: Whitespace.Type { Whitespace.self }

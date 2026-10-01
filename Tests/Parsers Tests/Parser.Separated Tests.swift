@@ -2,7 +2,7 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Separated` {
+struct `Parsers.Separated` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
@@ -12,7 +12,7 @@ private struct DigitParser: Parsing, Sendable {}
 extension DigitParser {
     typealias Input = Substring.UTF8View
     typealias Output = Int
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
         guard let byte = input.first,
@@ -31,7 +31,7 @@ private struct CommaParser: Parsing, Sendable {}
 extension CommaParser {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: ",") else {
@@ -46,7 +46,7 @@ private struct DoubleColonParser: Parsing, Sendable {}
 extension DoubleColonParser {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: ":") else {
@@ -60,7 +60,7 @@ extension DoubleColonParser {
     }
 }
 
-extension `Parser.Separated`.Unit {
+extension `Parsers.Separated`.Unit {
     @Test
     func `basic CSV-like separation`() throws {
         let parser = DigitParser().separated(by: CommaParser())
@@ -105,7 +105,7 @@ extension `Parser.Separated`.Unit {
     }
 }
 
-extension `Parser.Separated`.`Edge Case` {
+extension `Parsers.Separated`.`Edge Case` {
     @Test
     func `empty input returns empty array`() throws {
         let parser = DigitParser().separated(by: CommaParser())
@@ -118,7 +118,7 @@ extension `Parser.Separated`.`Edge Case` {
 
     @Test
     func `minCount enforced`() {
-        let parser = Parser.Separated(
+        let parser = Parsers.Separated(
             element: DigitParser(),
             separator: CommaParser(),
             minCount: 3
@@ -132,7 +132,7 @@ extension `Parser.Separated`.`Edge Case` {
 
     @Test
     func `maxCount caps elements`() throws {
-        let parser = Parser.Separated(
+        let parser = Parsers.Separated(
             element: DigitParser(),
             separator: CommaParser(),
             maxCount: 2

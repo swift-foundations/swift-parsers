@@ -38,7 +38,7 @@ struct `Arithmetic Expression Parsing` {
 extension `Arithmetic Expression Parsing`.IntAtom {
     typealias Input = Substring.UTF8View
     typealias Output = Int
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
         var result = 0
@@ -64,7 +64,7 @@ extension `Arithmetic Expression Parsing`.IntAtom {
 extension `Arithmetic Expression Parsing`.PlusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "+") else {
@@ -77,7 +77,7 @@ extension `Arithmetic Expression Parsing`.PlusOp {
 extension `Arithmetic Expression Parsing`.MinusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "-") else {
@@ -90,7 +90,7 @@ extension `Arithmetic Expression Parsing`.MinusOp {
 extension `Arithmetic Expression Parsing`.StarOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "*") else {

@@ -2,7 +2,7 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Chain` {
+struct `Parsers.Chain` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
@@ -12,7 +12,7 @@ private struct IntAtom: Parsing, Sendable {}
 extension IntAtom {
     typealias Input = Substring.UTF8View
     typealias Output = Int
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
         var result = 0
@@ -39,7 +39,7 @@ private struct PlusOp: Parsing, Sendable {}
 extension PlusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "+") else {
@@ -54,7 +54,7 @@ private struct MinusOp: Parsing, Sendable {}
 extension MinusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "-") else {
@@ -69,7 +69,7 @@ private struct CaretOp: Parsing, Sendable {}
 extension CaretOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "^") else {
@@ -84,7 +84,7 @@ private struct DoublePlusOp: Parsing, Sendable {}
 extension DoublePlusOp {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == UInt8(ascii: "+") else {
@@ -98,7 +98,7 @@ extension DoublePlusOp {
     }
 }
 
-extension `Parser.Chain`.Unit {
+extension `Parsers.Chain`.Unit {
     @Test
     func `Left - left-associative addition`() throws {
         let parser = IntAtom().chain.left(PlusOp()) { lhs, _, rhs in
@@ -136,7 +136,7 @@ extension `Parser.Chain`.Unit {
     }
 }
 
-extension `Parser.Chain`.`Edge Case` {
+extension `Parsers.Chain`.`Edge Case` {
     @Test
     func `Left - single operand`() throws {
         let parser = IntAtom().chain.left(PlusOp()) { lhs, _, rhs in

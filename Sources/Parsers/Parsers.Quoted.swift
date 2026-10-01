@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Quoted: Sendable {}
 }
 
-extension Parser.Quoted {
+extension Parsers.Quoted {
 
     public enum EscapeStyle: Sendable {
 
@@ -15,7 +15,7 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted {
+extension Parsers.Quoted {
 
     public enum Error: Swift.Error, Sendable, Equatable {
 
@@ -29,7 +29,7 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted {
+extension Parsers.Quoted {
 
     public struct Double: Sendable {
 
@@ -42,10 +42,10 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Double: Parsing {
+extension Parsers.Quoted.Double: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parser.Quoted.Error
+    public typealias Failure = Parsers.Quoted.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -101,7 +101,7 @@ extension Parser.Quoted.Double: Parsing {
     }
 }
 
-extension Parser.Quoted {
+extension Parsers.Quoted {
 
     public struct Single: Sendable {
 
@@ -114,10 +114,10 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Single: Parsing {
+extension Parsers.Quoted.Single: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parser.Quoted.Error
+    public typealias Failure = Parsers.Quoted.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -152,7 +152,7 @@ extension Parser.Quoted.Single: Parsing {
     }
 }
 
-extension Parser.Quoted {
+extension Parsers.Quoted {
 
     public struct Doubling: Sendable {
 
@@ -165,10 +165,10 @@ extension Parser.Quoted {
     }
 }
 
-extension Parser.Quoted.Doubling: Parsing {
+extension Parsers.Quoted.Doubling: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parser.Quoted.Error
+    public typealias Failure = Parsers.Quoted.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -201,7 +201,7 @@ extension Parser.Quoted.Doubling: Parsing {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var quoted: Quoted.Type { Quoted.self }

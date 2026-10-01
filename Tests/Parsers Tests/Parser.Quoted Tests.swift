@@ -2,15 +2,15 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Quoted` {
+struct `Parsers.Quoted` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
 
-extension `Parser.Quoted`.Unit {
+extension `Parsers.Quoted`.Unit {
     @Test
     func `Double parses simple string`() throws {
-        let parser = Parser.Quoted.Double()
+        let parser = Parsers.Quoted.Double()
         var input = "\"hello\"rest"[...].utf8
 
         let result = try parser.parse(&input)
@@ -21,7 +21,7 @@ extension `Parser.Quoted`.Unit {
 
     @Test
     func `Double parses escape sequences`() throws {
-        let parser = Parser.Quoted.Double()
+        let parser = Parsers.Quoted.Double()
         var input = "\"a\\nb\""[...].utf8
 
         let result = try parser.parse(&input)
@@ -31,7 +31,7 @@ extension `Parser.Quoted`.Unit {
 
     @Test
     func `Single parses literal content`() throws {
-        let parser = Parser.Quoted.Single()
+        let parser = Parsers.Quoted.Single()
         var input = "'hello'rest"[...].utf8
 
         let result = try parser.parse(&input)
@@ -42,7 +42,7 @@ extension `Parser.Quoted`.Unit {
 
     @Test
     func `Doubling parses escaped quote`() throws {
-        let parser = Parser.Quoted.Doubling()
+        let parser = Parsers.Quoted.Doubling()
         var input = "\"say \"\"hi\"\"\"rest"[...].utf8
 
         let result = try parser.parse(&input)
@@ -51,30 +51,30 @@ extension `Parser.Quoted`.Unit {
     }
 }
 
-extension `Parser.Quoted`.`Edge Case` {
+extension `Parsers.Quoted`.`Edge Case` {
     @Test
     func `Double fails on unclosed string`() {
-        let parser = Parser.Quoted.Double()
+        let parser = Parsers.Quoted.Double()
         var input = "\"unclosed"[...].utf8
 
-        #expect(throws: Parser.Quoted.Error.self) {
+        #expect(throws: Parsers.Quoted.Error.self) {
             try parser.parse(&input)
         }
     }
 
     @Test
     func `Double fails on missing open quote`() {
-        let parser = Parser.Quoted.Double()
+        let parser = Parsers.Quoted.Double()
         var input = "no quotes"[...].utf8
 
-        #expect(throws: Parser.Quoted.Error.self) {
+        #expect(throws: Parsers.Quoted.Error.self) {
             try parser.parse(&input)
         }
     }
 
     @Test
     func `Double parses empty string`() throws {
-        let parser = Parser.Quoted.Double()
+        let parser = Parsers.Quoted.Double()
         var input = "\"\""[...].utf8
 
         let result = try parser.parse(&input)

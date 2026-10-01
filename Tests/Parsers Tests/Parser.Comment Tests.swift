@@ -2,15 +2,15 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Comment` {
+struct `Parsers.Comment` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
 
-extension `Parser.Comment`.Unit {
+extension `Parsers.Comment`.Unit {
     @Test
     func `Line parses C-style comment`() throws {
-        let parser = Parser.Comment.Line()
+        let parser = Parsers.Comment.Line()
         var input = "// hello\nworld"[...].utf8
 
         let result = try parser.parse(&input)
@@ -21,7 +21,7 @@ extension `Parser.Comment`.Unit {
 
     @Test
     func `Line parses hash comment`() throws {
-        let parser = Parser.Comment.Line(prefix: "#")
+        let parser = Parsers.Comment.Line(prefix: "#")
         var input = "# comment\nnext"[...].utf8
 
         let result = try parser.parse(&input)
@@ -31,7 +31,7 @@ extension `Parser.Comment`.Unit {
 
     @Test
     func `Block parses simple block comment`() throws {
-        let parser = Parser.Comment.Block()
+        let parser = Parsers.Comment.Block()
         var input = "/* hello */rest"[...].utf8
 
         let result = try parser.parse(&input)
@@ -42,7 +42,7 @@ extension `Parser.Comment`.Unit {
 
     @Test
     func `Block parses nested comment when nestable`() throws {
-        let parser = Parser.Comment.Block(nestable: true)
+        let parser = Parsers.Comment.Block(nestable: true)
         var input = "/* outer /* inner */ end */rest"[...].utf8
 
         let result = try parser.parse(&input)
@@ -52,40 +52,40 @@ extension `Parser.Comment`.Unit {
     }
 }
 
-extension `Parser.Comment`.`Edge Case` {
+extension `Parsers.Comment`.`Edge Case` {
     @Test
     func `Line fails without prefix`() {
-        let parser = Parser.Comment.Line()
+        let parser = Parsers.Comment.Line()
         var input = "not a comment"[...].utf8
 
-        #expect(throws: Parser.Match.Error.self) {
+        #expect(throws: Parsers.Match.Error.self) {
             try parser.parse(&input)
         }
     }
 
     @Test
     func `Block fails when unterminated`() {
-        let parser = Parser.Comment.Block()
+        let parser = Parsers.Comment.Block()
         var input = "/* unclosed"[...].utf8
 
-        #expect(throws: Parser.Comment.Block.Error.self) {
+        #expect(throws: Parsers.Comment.Block.Error.self) {
             try parser.parse(&input)
         }
     }
 
     @Test
     func `Block fails without opening delimiter`() {
-        let parser = Parser.Comment.Block()
+        let parser = Parsers.Comment.Block()
         var input = "not a comment */"[...].utf8
 
-        #expect(throws: Parser.Comment.Block.Error.self) {
+        #expect(throws: Parsers.Comment.Block.Error.self) {
             try parser.parse(&input)
         }
     }
 
     @Test
     func `Line parses to end when no newline`() throws {
-        let parser = Parser.Comment.Line()
+        let parser = Parsers.Comment.Line()
         var input = "// final comment"[...].utf8
 
         let result = try parser.parse(&input)

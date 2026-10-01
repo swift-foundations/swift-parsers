@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Integer<Output: FixedWidthInteger> {}
 }
 
-extension Parser.Integer {
+extension Parsers.Integer {
 
     public enum Error: Swift.Error, Sendable, Equatable {
 
@@ -17,7 +17,7 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer {
+extension Parsers.Integer {
 
     public struct Decimal: Sendable {
 
@@ -36,9 +36,9 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Decimal: Parsing {
+extension Parsers.Integer.Decimal: Parsing {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parser.Integer<Output>.Error
+    public typealias Failure = Parsers.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -100,7 +100,7 @@ extension Parser.Integer.Decimal: Parsing {
     }
 }
 
-extension Parser.Integer {
+extension Parsers.Integer {
 
     public struct Hexadecimal: Sendable {
 
@@ -113,9 +113,9 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Hexadecimal: Parsing {
+extension Parsers.Integer.Hexadecimal: Parsing {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parser.Integer<Output>.Error
+    public typealias Failure = Parsers.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -176,7 +176,7 @@ extension Parser.Integer.Hexadecimal: Parsing {
     }
 }
 
-extension Parser.Integer {
+extension Parsers.Integer {
 
     public struct Binary: Sendable {
 
@@ -189,9 +189,9 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Binary: Parsing {
+extension Parsers.Integer.Binary: Parsing {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parser.Integer<Output>.Error
+    public typealias Failure = Parsers.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -240,7 +240,7 @@ extension Parser.Integer.Binary: Parsing {
     }
 }
 
-extension Parser.Integer {
+extension Parsers.Integer {
 
     public struct Octal: Sendable {
 
@@ -253,9 +253,9 @@ extension Parser.Integer {
     }
 }
 
-extension Parser.Integer.Octal: Parsing {
+extension Parsers.Integer.Octal: Parsing {
     public typealias Input = Substring.UTF8View
-    public typealias Failure = Parser.Integer<Output>.Error
+    public typealias Failure = Parsers.Integer<Output>.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -304,7 +304,7 @@ extension Parser.Integer.Octal: Parsing {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static func integer<T: FixedWidthInteger>(

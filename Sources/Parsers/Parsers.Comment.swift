@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Comment: Sendable {}
 }
 
-extension Parser.Comment {
+extension Parsers.Comment {
 
     public struct Line: Sendable {
 
@@ -17,10 +17,10 @@ extension Parser.Comment {
     }
 }
 
-extension Parser.Comment.Line: Parsing {
+extension Parsers.Comment.Line: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -44,7 +44,7 @@ extension Parser.Comment.Line: Parsing {
     }
 }
 
-extension Parser.Comment {
+extension Parsers.Comment {
 
     public struct Block: Sendable {
 
@@ -69,7 +69,7 @@ extension Parser.Comment {
     }
 }
 
-extension Parser.Comment.Block {
+extension Parsers.Comment.Block {
 
     public enum Error: Swift.Error, Sendable, Equatable {
 
@@ -79,10 +79,10 @@ extension Parser.Comment.Block {
     }
 }
 
-extension Parser.Comment.Block: Parsing {
+extension Parsers.Comment.Block: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = String
-    public typealias Failure = Parser.Comment.Block.Error
+    public typealias Failure = Parsers.Comment.Block.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -144,7 +144,7 @@ extension Parser.Comment.Block: Parsing {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var comment: Comment.Type { Comment.self }

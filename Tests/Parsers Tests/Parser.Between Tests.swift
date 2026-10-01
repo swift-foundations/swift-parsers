@@ -2,7 +2,7 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Between` {
+struct `Parsers.Between` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
@@ -14,7 +14,7 @@ private struct CharParser: Parsing, Sendable {
 extension CharParser {
     typealias Input = Substring.UTF8View
     typealias Output = Void
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) {
         guard input.first == byte else {
@@ -29,7 +29,7 @@ private struct ContentParser: Parsing, Sendable {}
 extension ContentParser {
     typealias Input = Substring.UTF8View
     typealias Output = Int
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
         var count = 0
@@ -44,7 +44,7 @@ extension ContentParser {
     }
 }
 
-extension `Parser.Between`.Unit {
+extension `Parsers.Between`.Unit {
     @Test
     func `matched parentheses`() throws {
         let open = CharParser(byte: UInt8(ascii: "("))
@@ -74,7 +74,7 @@ extension `Parser.Between`.Unit {
     }
 }
 
-extension `Parser.Between`.`Edge Case` {
+extension `Parsers.Between`.`Edge Case` {
     @Test
     func `missing open delimiter fails`() {
         let open = CharParser(byte: UInt8(ascii: "("))

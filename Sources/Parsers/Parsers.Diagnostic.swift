@@ -1,9 +1,11 @@
-extension Parser {
+public import Text
+
+extension Parsers {
 
     public enum Diagnostic: Sendable {}
 }
 
-extension Parser.Diagnostic {
+extension Parsers.Diagnostic {
 
     public struct Source: Sendable {
 
@@ -35,7 +37,7 @@ extension Parser.Diagnostic {
     }
 }
 
-extension Parser.Diagnostic.Source {
+extension Parsers.Diagnostic.Source {
 
     public func location(at offset: Text.Position) -> Source::Source.Location {
         let rawOffset = Int(bitPattern: offset)
@@ -92,7 +94,7 @@ extension Parser.Diagnostic.Source {
     }
 }
 
-extension Parser.Diagnostic {
+extension Parsers.Diagnostic {
 
     public enum Style: Sendable {
 
@@ -106,7 +108,7 @@ extension Parser.Diagnostic {
     }
 }
 
-extension Parser.Diagnostic {
+extension Parsers.Diagnostic {
 
     public static func format<E: Swift.Error>(
         _ error: E,
@@ -282,17 +284,17 @@ extension Parser.Diagnostic {
     }
 }
 
-extension Parser.Error.Located {
+extension Parsers.Diagnostic.Located {
 
     public func formatted(
-        in source: Parser.Diagnostic.Source,
-        style: Parser.Diagnostic.Style = .expanded()
+        in source: Parsers.Diagnostic.Source,
+        style: Parsers.Diagnostic.Style = .expanded()
     ) -> String {
-        Parser.Diagnostic.format(self, at: offset, in: source, style: style)
+        Parsers.Diagnostic.format(self, at: offset, in: source, style: style)
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var diagnostic: Diagnostic.Type { Diagnostic.self }

@@ -1,12 +1,12 @@
 public import Clocks
 public import Synchronization
 
-extension Parser {
+extension Parsers {
 
     public enum Debug: Sendable {}
 }
 
-extension Parser.Debug {
+extension Parsers.Debug {
 
     public struct Trace<P: Parsing>
     where P.Input: Swift.Collection {
@@ -32,7 +32,7 @@ extension Parser.Debug {
     }
 }
 
-extension Parser.Debug.Trace: Parsing {
+extension Parsers.Debug.Trace: Parsing {
     public typealias Input = P.Input
     public typealias Output = P.Output
     public typealias Failure = P.Failure
@@ -55,7 +55,7 @@ extension Parser.Debug.Trace: Parsing {
     }
 }
 
-extension Parser.Debug {
+extension Parsers.Debug {
 
     public struct Profile<P: Parsing> {
 
@@ -75,7 +75,7 @@ extension Parser.Debug {
     }
 }
 
-extension Parser.Debug.Profile {
+extension Parsers.Debug.Profile {
 
     public final class Stats: @unchecked Sendable {
         @usableFromInline
@@ -88,7 +88,7 @@ extension Parser.Debug.Profile {
     }
 }
 
-extension Parser.Debug.Profile.Stats {
+extension Parsers.Debug.Profile.Stats {
 
     @usableFromInline
     struct State: Sendable {
@@ -104,7 +104,7 @@ extension Parser.Debug.Profile.Stats {
     }
 }
 
-extension Parser.Debug.Profile.Stats {
+extension Parsers.Debug.Profile.Stats {
 
     public var invocations: Int { _state.withLock { $0.invocations } }
 
@@ -193,7 +193,7 @@ extension Parser.Debug.Profile.Stats {
     }
 }
 
-extension Parser.Debug.Profile: Parsing {
+extension Parsers.Debug.Profile: Parsing {
     public typealias Input = P.Input
     public typealias Output = P.Output
     public typealias Failure = P.Failure
@@ -204,11 +204,11 @@ extension Parser.Debug.Profile: Parsing {
 
         do throws(P.Failure) {
             let result = try inner.parse(&input)
-            let elapsed = Clock.Continuous.now - start
+            let elapsed = Clock.Continuous.now.offset - start.offset
             stats.recordSuccess(elapsed: elapsed)
             return result
         } catch {
-            let elapsed = Clock.Continuous.now - start
+            let elapsed = Clock.Continuous.now.offset - start.offset
             stats.recordFailure(elapsed: elapsed)
             throw error
         }
@@ -221,20 +221,20 @@ extension Parsing where Input: Swift.Collection {
     public func trace(
         _ label: String,
         output: @escaping (String) -> Void = { print($0) }
-    ) -> Parser.Debug.Trace<Self> {
-        Parser.Debug.Trace(self, label: label, output: output)
+    ) -> Parsers.Debug.Trace<Self> {
+        Parsers.Debug.Trace(self, label: label, output: output)
     }
 }
 
 extension Parsing {
 
     @inlinable
-    public func profile(_ label: String) -> Parser.Debug.Profile<Self> {
-        Parser.Debug.Profile(self, label: label)
+    public func profile(_ label: String) -> Parsers.Debug.Profile<Self> {
+        Parsers.Debug.Profile(self, label: label)
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var debug: Debug.Type { Debug.self }

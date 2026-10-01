@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Chain: Sendable {}
 }
 
-extension Parser.Chain {
+extension Parsers.Chain {
 
     public struct Left<Operand: Parsing, Operator: Parsing>
     where
@@ -33,7 +33,7 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.Chain.Left: Parsing {
+extension Parsers.Chain.Left: Parsing {
     public typealias Input = Operand.Input
     public typealias Output = Operand.Output
     public typealias Failure = Operand.Failure
@@ -71,7 +71,7 @@ extension Parser.Chain.Left: Parsing {
     }
 }
 
-extension Parser.Chain {
+extension Parsers.Chain {
 
     public struct Right<Operand: Parsing, Operator: Parsing>
     where
@@ -101,7 +101,7 @@ extension Parser.Chain {
     }
 }
 
-extension Parser.Chain.Right: Parsing {
+extension Parsers.Chain.Right: Parsing {
     public typealias Input = Operand.Input
     public typealias Output = Operand.Output
     public typealias Failure = Operand.Failure
@@ -135,7 +135,7 @@ extension Parser.Chain.Right: Parsing {
     }
 }
 
-extension Parser.Chain {
+extension Parsers.Chain {
 
     public struct Access<Operand: Parsing> {
 
@@ -151,18 +151,18 @@ extension Parser.Chain {
         public func left<Op: Parsing>(
             _ op: Op,
             combine: @escaping (Operand.Output, Op.Output, Operand.Output) -> Operand.Output
-        ) -> Parser.Chain.Left<Operand, Op>
+        ) -> Parsers.Chain.Left<Operand, Op>
         where Op.Input == Operand.Input, Operand.Input: Copyable {
-            Parser.Chain.Left(operand: operand, operator: op, combine: combine)
+            Parsers.Chain.Left(operand: operand, operator: op, combine: combine)
         }
 
         @inlinable
         public func right<Op: Parsing>(
             _ op: Op,
             combine: @escaping (Operand.Output, Op.Output, Operand.Output) -> Operand.Output
-        ) -> Parser.Chain.Right<Operand, Op>
+        ) -> Parsers.Chain.Right<Operand, Op>
         where Op.Input == Operand.Input, Operand.Input: Copyable {
-            Parser.Chain.Right(operand: operand, operator: op, combine: combine)
+            Parsers.Chain.Right(operand: operand, operator: op, combine: combine)
         }
     }
 }
@@ -170,7 +170,7 @@ extension Parser.Chain {
 extension Parsing {
 
     @inlinable
-    public var chain: Parser.Chain.Access<Self> {
-        Parser.Chain.Access(operand: self)
+    public var chain: Parsers.Chain.Access<Self> {
+        Parsers.Chain.Access(operand: self)
     }
 }

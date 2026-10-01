@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Identifier: Sendable {}
 }
 
-extension Parser.Identifier {
+extension Parsers.Identifier {
 
     public struct CStyle: Sendable {
         @inlinable
@@ -11,10 +11,10 @@ extension Parser.Identifier {
     }
 }
 
-extension Parser.Identifier.CStyle: Parsing {
+extension Parsers.Identifier.CStyle: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -45,7 +45,7 @@ extension Parser.Identifier.CStyle: Parsing {
     }
 }
 
-extension Parser.Identifier {
+extension Parsers.Identifier {
 
     public struct Custom: Sendable {
         @usableFromInline
@@ -65,10 +65,10 @@ extension Parser.Identifier {
     }
 }
 
-extension Parser.Identifier.Custom: Parsing {
+extension Parsers.Identifier.Custom: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) -> Output {
@@ -89,7 +89,7 @@ extension Parser.Identifier.Custom: Parsing {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var identifier: Identifier.Type { Identifier.self }

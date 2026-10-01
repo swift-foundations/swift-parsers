@@ -1,4 +1,4 @@
-extension Parser {
+extension Parsers {
 
     public struct Separated<Element: Parsing, Separator: Parsing>
     where
@@ -35,11 +35,11 @@ extension Parser {
     }
 }
 
-extension Parser.Separated: Parsing {
+extension Parsers.Separated: Parsing {
     public typealias Input = Element.Input
     public typealias Output = [Element.Output]
     public typealias Failure = Either<
-        Parser.Constraint.Error,
+        Parsers.Constraint.Error,
         Element.Failure
     >
 
@@ -105,9 +105,9 @@ extension Parsing {
     public func separated<S: Parsing>(
         by separator: S,
         allowTrailing: Bool = false
-    ) -> Parser.Separated<Self, S>
+    ) -> Parsers.Separated<Self, S>
     where S.Input == Input, Input: Copyable {
-        Parser.Separated(
+        Parsers.Separated(
             element: self,
             separator: separator,
             allowTrailing: allowTrailing

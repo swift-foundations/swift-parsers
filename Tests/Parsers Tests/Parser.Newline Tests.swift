@@ -2,15 +2,15 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Newline` {
+struct `Parsers.Newline` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
 
-extension `Parser.Newline`.Unit {
+extension `Parsers.Newline`.Unit {
     @Test
     func `LF matches line feed`() throws {
-        let parser = Parser.Newline.LF()
+        let parser = Parsers.Newline.LF()
         var input = "\nabc"[...].utf8
 
         try parser.parse(&input)
@@ -20,7 +20,7 @@ extension `Parser.Newline`.Unit {
 
     @Test
     func `CR matches carriage return`() throws {
-        let parser = Parser.Newline.CR()
+        let parser = Parsers.Newline.CR()
         var input = "\rabc"[...].utf8
 
         try parser.parse(&input)
@@ -30,7 +30,7 @@ extension `Parser.Newline`.Unit {
 
     @Test
     func `CRLF matches carriage return line feed`() throws {
-        let parser = Parser.Newline.CRLF()
+        let parser = Parsers.Newline.CRLF()
         var input = "\r\nabc"[...].utf8
 
         try parser.parse(&input)
@@ -40,7 +40,7 @@ extension `Parser.Newline`.Unit {
 
     @Test
     func `Any matches LF`() throws {
-        let parser = Parser.Newline.Any()
+        let parser = Parsers.Newline.Any()
         var input = "\nabc"[...].utf8
 
         try parser.parse(&input)
@@ -49,20 +49,20 @@ extension `Parser.Newline`.Unit {
     }
 }
 
-extension `Parser.Newline`.`Edge Case` {
+extension `Parsers.Newline`.`Edge Case` {
     @Test
     func `LF fails on non-newline`() {
-        let parser = Parser.Newline.LF()
+        let parser = Parsers.Newline.LF()
         var input = "abc"[...].utf8
 
-        #expect(throws: Parser.Match.Error.self) {
+        #expect(throws: Parsers.Match.Error.self) {
             try parser.parse(&input)
         }
     }
 
     @Test
     func `Line consumes until newline`() {
-        let parser = Parser.Newline.Line()
+        let parser = Parsers.Newline.Line()
         var input = "hello\nworld"[...].utf8
 
         let count = parser.parse(&input)
@@ -73,7 +73,7 @@ extension `Parser.Newline`.`Edge Case` {
 
     @Test
     func `Line on empty input returns zero`() {
-        let parser = Parser.Newline.Line()
+        let parser = Parsers.Newline.Line()
         var input = ""[...].utf8
 
         let count = parser.parse(&input)
@@ -83,7 +83,7 @@ extension `Parser.Newline`.`Edge Case` {
 
     @Test
     func `Line consumes to end when no newline`() {
-        let parser = Parser.Newline.Line()
+        let parser = Parsers.Newline.Line()
         var input = "hello"[...].utf8
 
         let count = parser.parse(&input)

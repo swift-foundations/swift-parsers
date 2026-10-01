@@ -2,7 +2,7 @@ import Parsers_Test_Support
 import Testing
 
 @Suite
-struct `Parser.Expression` {
+struct `Parsers.Expression` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
 }
@@ -12,7 +12,7 @@ private struct IntAtom: Parsing, Sendable {}
 extension IntAtom {
     typealias Input = Substring.UTF8View
     typealias Output = Int
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> Int {
         var result = 0
@@ -41,7 +41,7 @@ private struct OpParser: Parsing, Sendable {
 extension OpParser {
     typealias Input = Substring.UTF8View
     typealias Output = UInt8
-    typealias Failure = Parser.Match.Error
+    typealias Failure = Parsers.Match.Error
 
     func parse(_ input: inout Input) throws(Failure) -> UInt8 {
         guard input.first == byte else {
@@ -52,8 +52,8 @@ extension OpParser {
     }
 }
 
-private func makeArithmeticParser() -> Parser.Expression.Climbing<IntAtom, OpParser> {
-    Parser.Expression.Climbing(
+private func makeArithmeticParser() -> Parsers.Expression.Climbing<IntAtom, OpParser> {
+    Parsers.Expression.Climbing(
         atom: IntAtom(),
         operators: [
             .init(parser: OpParser(byte: UInt8(ascii: "+")), precedence: 1, associativity: .left) {
@@ -69,7 +69,7 @@ private func makeArithmeticParser() -> Parser.Expression.Climbing<IntAtom, OpPar
     )
 }
 
-extension `Parser.Expression`.Unit {
+extension `Parsers.Expression`.Unit {
     @Test
     func `precedence - multiply before add`() throws {
         let parser = makeArithmeticParser()
@@ -111,7 +111,7 @@ extension `Parser.Expression`.Unit {
     }
 }
 
-extension `Parser.Expression`.`Edge Case` {
+extension `Parsers.Expression`.`Edge Case` {
     @Test
     func `single atom`() throws {
         let parser = makeArithmeticParser()
@@ -127,7 +127,7 @@ extension `Parser.Expression`.`Edge Case` {
         let parser = makeArithmeticParser()
         var input = "+3"[...].utf8
 
-        #expect(throws: Parser.Match.Error.self) {
+        #expect(throws: Parsers.Match.Error.self) {
             try parser.parse(&input)
         }
     }
@@ -146,7 +146,7 @@ extension `Parser.Expression`.`Edge Case` {
     @Test
     func `prefix operator - unary minus`() throws {
         let negParser = OpParser(byte: UInt8(ascii: "-"))
-        let parser = Parser.Expression.Climbing(
+        let parser = Parsers.Expression.Climbing(
             atom: IntAtom(),
             operators: [
                 .init(

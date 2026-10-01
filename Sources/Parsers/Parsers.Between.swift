@@ -1,4 +1,4 @@
-extension Parser {
+extension Parsers {
 
     public struct Between<
         Open: Parsing,
@@ -29,7 +29,7 @@ extension Parser {
     }
 }
 
-extension Parser.Between: Parsing {
+extension Parsers.Between: Parsing {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
     public typealias Failure = Either<
@@ -70,13 +70,13 @@ extension Parsing {
     public func between<Open: Parsing, Close: Parsing>(
         _ open: Open,
         _ close: Close
-    ) -> Parser.Between<Open, Self, Close>
+    ) -> Parsers.Between<Open, Self, Close>
     where Open.Input == Input, Close.Input == Input {
-        Parser.Between(open: open, content: self, close: close)
+        Parsers.Between(open: open, content: self, close: close)
     }
 }
 
-extension Parser {
+extension Parsers {
 
     public struct Surrounded<Delimiter: Parsing, Content: Parsing>
     where Delimiter.Input == Content.Input {
@@ -98,7 +98,7 @@ extension Parser {
     }
 }
 
-extension Parser.Surrounded: Parsing {
+extension Parsers.Surrounded: Parsing {
     public typealias Input = Content.Input
     public typealias Output = Content.Output
     public typealias Failure = Either<
@@ -138,8 +138,8 @@ extension Parsing {
 
     public func surrounded<D: Parsing>(
         by delimiter: D
-    ) -> Parser.Surrounded<D, Self>
+    ) -> Parsers.Surrounded<D, Self>
     where D.Input == Input {
-        Parser.Surrounded(delimiter: delimiter, content: self)
+        Parsers.Surrounded(delimiter: delimiter, content: self)
     }
 }

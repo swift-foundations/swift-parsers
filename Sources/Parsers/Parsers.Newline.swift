@@ -1,9 +1,9 @@
-extension Parser {
+extension Parsers {
 
     public enum Newline: Sendable {}
 }
 
-extension Parser.Newline {
+extension Parsers.Newline {
 
     public struct LF: Sendable {
         @inlinable
@@ -11,10 +11,10 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.LF: Parsing {
+extension Parsers.Newline.LF: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) {
@@ -25,7 +25,7 @@ extension Parser.Newline.LF: Parsing {
     }
 }
 
-extension Parser.Newline {
+extension Parsers.Newline {
 
     public struct CR: Sendable {
         @inlinable
@@ -33,10 +33,10 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.CR: Parsing {
+extension Parsers.Newline.CR: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) {
@@ -47,7 +47,7 @@ extension Parser.Newline.CR: Parsing {
     }
 }
 
-extension Parser.Newline {
+extension Parsers.Newline {
 
     public struct CRLF: Sendable {
         @inlinable
@@ -55,10 +55,10 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.CRLF: Parsing {
+extension Parsers.Newline.CRLF: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) {
@@ -78,7 +78,7 @@ extension Parser.Newline.CRLF: Parsing {
     }
 }
 
-extension Parser.Newline {
+extension Parsers.Newline {
 
     public struct `Any`: Sendable {
         @inlinable
@@ -86,10 +86,10 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.`Any`: Parsing {
+extension Parsers.Newline.`Any`: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
-    public typealias Failure = Parser.Match.Error
+    public typealias Failure = Parsers.Match.Error
 
     @inlinable
     public func parse(_ input: inout Input) throws(Failure) {
@@ -112,7 +112,7 @@ extension Parser.Newline.`Any`: Parsing {
     }
 }
 
-extension Parser.Newline {
+extension Parsers.Newline {
 
     public struct Line: Sendable {
         @inlinable
@@ -120,7 +120,7 @@ extension Parser.Newline {
     }
 }
 
-extension Parser.Newline.Line: Parsing {
+extension Parsers.Newline.Line: Parsing {
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
     public typealias Failure = Never
@@ -138,7 +138,7 @@ extension Parser.Newline.Line: Parsing {
     }
 }
 
-extension Parser {
+extension Parsers {
 
     @inlinable
     public static var newline: Newline.Type { Newline.self }
