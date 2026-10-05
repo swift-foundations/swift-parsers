@@ -9,6 +9,12 @@ struct `Parsers - progress guards` {
     }
 
     struct Budgeted: Parsing {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
         typealias Input = Substring.UTF8View
         typealias Output = Void
         typealias Failure = Parsers.Match.Error
@@ -24,6 +30,12 @@ struct `Parsers - progress guards` {
     }
 
     struct Digit: Parsing {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
         typealias Input = Substring.UTF8View
         typealias Output = Int
         typealias Failure = Parsers.Match.Error
@@ -41,6 +53,12 @@ struct `Parsers - progress guards` {
     }
 
     struct Plus: Parsing {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
         typealias Input = Substring.UTF8View
         typealias Output = Void
         typealias Failure = Parsers.Match.Error

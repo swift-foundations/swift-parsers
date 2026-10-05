@@ -30,6 +30,12 @@ extension Parsers {
 }
 
 extension Parsers.Between: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Content.Input
     public typealias Output = Content.Output
     public typealias Failure = Either<
@@ -99,6 +105,12 @@ extension Parsers {
 }
 
 extension Parsers.Surrounded: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Content.Input
     public typealias Output = Content.Output
     public typealias Failure = Either<

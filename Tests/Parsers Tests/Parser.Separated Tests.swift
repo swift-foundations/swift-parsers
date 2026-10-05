@@ -7,7 +7,13 @@ struct `Parsers.Separated` {
     @Suite struct `Edge Case` {}
 }
 
-private struct DigitParser: Parsing, Sendable {}
+private struct DigitParser: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension DigitParser {
     typealias Input = Substring.UTF8View
@@ -26,7 +32,13 @@ extension DigitParser {
     }
 }
 
-private struct CommaParser: Parsing, Sendable {}
+private struct CommaParser: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension CommaParser {
     typealias Input = Substring.UTF8View
@@ -41,7 +53,13 @@ extension CommaParser {
     }
 }
 
-private struct DoubleColonParser: Parsing, Sendable {}
+private struct DoubleColonParser: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension DoubleColonParser {
     typealias Input = Substring.UTF8View

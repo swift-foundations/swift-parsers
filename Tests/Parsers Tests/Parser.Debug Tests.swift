@@ -7,7 +7,13 @@ struct `Parsers.Debug.Profile.Stats` {
     @Suite struct `Edge Case` {}
 }
 
-private struct AlwaysSucceeds: Parsing, Sendable {}
+private struct AlwaysSucceeds: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension AlwaysSucceeds {
     typealias Input = Substring.UTF8View

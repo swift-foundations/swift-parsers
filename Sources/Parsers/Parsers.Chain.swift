@@ -37,6 +37,12 @@ extension Parsers.Chain {
 }
 
 extension Parsers.Chain.Left: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Operand.Input
     public typealias Output = Operand.Output
     public typealias Failure = Operand.Failure
@@ -111,6 +117,12 @@ extension Parsers.Chain {
 }
 
 extension Parsers.Chain.Right: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Operand.Input
     public typealias Output = Operand.Output
     public typealias Failure = Operand.Failure

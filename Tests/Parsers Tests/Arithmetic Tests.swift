@@ -4,13 +4,37 @@ import Testing
 @Suite
 struct `Arithmetic Expression Parsing` {
 
-    struct IntAtom: Parsing, Sendable {}
+    struct IntAtom: Parsing, Sendable {
+        var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+            }
+        }
+    }
 
-    struct PlusOp: Parsing, Sendable {}
+    struct PlusOp: Parsing, Sendable {
+        var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+            }
+        }
+    }
 
-    struct MinusOp: Parsing, Sendable {}
+    struct MinusOp: Parsing, Sendable {
+        var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+            }
+        }
+    }
 
-    struct StarOp: Parsing, Sendable {}
+    struct StarOp: Parsing, Sendable {
+        var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+            }
+        }
+    }
 
     @Test
     func `ChainLeft - simple addition`() throws {

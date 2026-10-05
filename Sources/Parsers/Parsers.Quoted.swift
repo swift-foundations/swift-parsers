@@ -43,6 +43,12 @@ extension Parsers.Quoted {
 }
 
 extension Parsers.Quoted.Double: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parsers.Quoted.Error
@@ -115,6 +121,12 @@ extension Parsers.Quoted {
 }
 
 extension Parsers.Quoted.Single: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parsers.Quoted.Error
@@ -166,6 +178,12 @@ extension Parsers.Quoted {
 }
 
 extension Parsers.Quoted.Doubling: Parsing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     public typealias Input = Substring.UTF8View
     public typealias Output = String
     public typealias Failure = Parsers.Quoted.Error

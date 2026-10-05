@@ -7,7 +7,13 @@ struct `Parsers.Chain` {
     @Suite struct `Edge Case` {}
 }
 
-private struct IntAtom: Parsing, Sendable {}
+private struct IntAtom: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension IntAtom {
     typealias Input = Substring.UTF8View
@@ -34,7 +40,13 @@ extension IntAtom {
     }
 }
 
-private struct PlusOp: Parsing, Sendable {}
+private struct PlusOp: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension PlusOp {
     typealias Input = Substring.UTF8View
@@ -49,7 +61,13 @@ extension PlusOp {
     }
 }
 
-private struct MinusOp: Parsing, Sendable {}
+private struct MinusOp: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension MinusOp {
     typealias Input = Substring.UTF8View
@@ -64,7 +82,13 @@ extension MinusOp {
     }
 }
 
-private struct CaretOp: Parsing, Sendable {}
+private struct CaretOp: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension CaretOp {
     typealias Input = Substring.UTF8View
@@ -79,7 +103,13 @@ extension CaretOp {
     }
 }
 
-private struct DoublePlusOp: Parsing, Sendable {}
+private struct DoublePlusOp: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension DoublePlusOp {
     typealias Input = Substring.UTF8View

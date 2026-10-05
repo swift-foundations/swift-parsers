@@ -7,7 +7,13 @@ struct `Parsers.Expression` {
     @Suite struct `Edge Case` {}
 }
 
-private struct IntAtom: Parsing, Sendable {}
+private struct IntAtom: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension IntAtom {
     typealias Input = Substring.UTF8View
@@ -35,6 +41,12 @@ extension IntAtom {
 }
 
 private struct OpParser: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     let byte: UInt8
 }
 

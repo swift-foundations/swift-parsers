@@ -8,6 +8,12 @@ struct `Parsers.Between` {
 }
 
 private struct CharParser: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     let byte: UInt8
 }
 
@@ -24,7 +30,13 @@ extension CharParser {
     }
 }
 
-private struct ContentParser: Parsing, Sendable {}
+private struct ContentParser: Parsing, Sendable {
+    var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+}
 
 extension ContentParser {
     typealias Input = Substring.UTF8View
