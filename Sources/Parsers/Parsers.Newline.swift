@@ -12,11 +12,6 @@ extension Parsers.Newline {
 }
 
 extension Parsers.Newline.LF: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
@@ -40,11 +35,6 @@ extension Parsers.Newline {
 }
 
 extension Parsers.Newline.CR: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
@@ -68,11 +58,6 @@ extension Parsers.Newline {
 }
 
 extension Parsers.Newline.CRLF: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
@@ -105,11 +90,6 @@ extension Parsers.Newline {
 }
 
 extension Parsers.Newline.`Any`: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Void
@@ -145,11 +125,6 @@ extension Parsers.Newline {
 }
 
 extension Parsers.Newline.Line: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Int

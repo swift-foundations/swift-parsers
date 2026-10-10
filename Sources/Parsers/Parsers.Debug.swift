@@ -33,11 +33,6 @@ extension Parsers.Debug {
 }
 
 extension Parsers.Debug.Trace: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = P.Input
     public typealias Output = P.Output
@@ -200,11 +195,6 @@ extension Parsers.Debug.Profile.Stats {
 }
 
 extension Parsers.Debug.Profile: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = P.Input
     public typealias Output = P.Output

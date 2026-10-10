@@ -122,11 +122,6 @@ extension Parsers.Expression {
 }
 
 extension Parsers.Expression.Climbing: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Atom.Input
     public typealias Output = Atom.Output

@@ -12,11 +12,6 @@ extension Parsers.Whitespace {
 }
 
 extension Parsers.Whitespace.Horizontal: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
@@ -50,11 +45,6 @@ extension Parsers.Whitespace {
 }
 
 extension Parsers.Whitespace.Vertical: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
@@ -97,11 +87,6 @@ extension Parsers.Whitespace {
 }
 
 extension Parsers.Whitespace.`Any`: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Int
@@ -150,11 +135,6 @@ extension Parsers.Whitespace.Skip {
 }
 
 extension Parsers.Whitespace.Skip: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = Void

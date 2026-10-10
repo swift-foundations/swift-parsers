@@ -18,11 +18,6 @@ extension Parsers.Comment {
 }
 
 extension Parsers.Comment.Line: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = String
@@ -86,11 +81,6 @@ extension Parsers.Comment.Block {
 }
 
 extension Parsers.Comment.Block: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Output = String

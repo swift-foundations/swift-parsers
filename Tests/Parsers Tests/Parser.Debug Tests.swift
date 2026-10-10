@@ -8,11 +8,6 @@ struct `Parsers.Debug.Profile.Stats` {
 }
 
 private struct AlwaysSucceeds: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension AlwaysSucceeds {

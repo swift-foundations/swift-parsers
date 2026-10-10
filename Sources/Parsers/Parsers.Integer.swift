@@ -37,11 +37,6 @@ extension Parsers.Integer {
 }
 
 extension Parsers.Integer.Decimal: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parsers.Integer<Output>.Error
@@ -120,11 +115,6 @@ extension Parsers.Integer {
 }
 
 extension Parsers.Integer.Hexadecimal: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parsers.Integer<Output>.Error
@@ -202,11 +192,6 @@ extension Parsers.Integer {
 }
 
 extension Parsers.Integer.Binary: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parsers.Integer<Output>.Error
@@ -272,11 +257,6 @@ extension Parsers.Integer {
 }
 
 extension Parsers.Integer.Octal: Parsing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     public typealias Input = Substring.UTF8View
     public typealias Failure = Parsers.Integer<Output>.Error

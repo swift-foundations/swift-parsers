@@ -8,11 +8,6 @@ struct `Parsers.Separated` {
 }
 
 private struct DigitParser: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension DigitParser {
@@ -33,11 +28,6 @@ extension DigitParser {
 }
 
 private struct CommaParser: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension CommaParser {
@@ -54,11 +44,6 @@ extension CommaParser {
 }
 
 private struct DoubleColonParser: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension DoubleColonParser {

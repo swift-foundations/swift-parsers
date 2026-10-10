@@ -8,11 +8,6 @@ struct `Parsers.Chain` {
 }
 
 private struct IntAtom: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension IntAtom {
@@ -41,11 +36,6 @@ extension IntAtom {
 }
 
 private struct PlusOp: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension PlusOp {
@@ -62,11 +52,6 @@ extension PlusOp {
 }
 
 private struct MinusOp: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension MinusOp {
@@ -83,11 +68,6 @@ extension MinusOp {
 }
 
 private struct CaretOp: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension CaretOp {
@@ -104,11 +84,6 @@ extension CaretOp {
 }
 
 private struct DoublePlusOp: Parsing, Sendable {
-    var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 }
 
 extension DoublePlusOp {
